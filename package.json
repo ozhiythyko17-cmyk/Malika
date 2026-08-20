@@ -1,0 +1,17 @@
+{
+  "name": "malika",
+  "version": "1.0.0",
+  "description": "AI Agent for sales admin and Customer Service, connected to WhatsApp via Twilio and powered by Claude (Anthropic API)",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "twilio": "^5.3.5"
+  }
+}
