@@ -1,115 +1,111 @@
-# Perencanaan Aplikasi Bantu Skripsi/Tugas Akhir Mahasiswa
+# Perencanaan Aplikasi Agentic AI Penyusun Skripsi/Tugas Akhir
 
 ## 1. Ringkasan
 
 **Nama kerja:** SkripsiKu (nama sementara, bisa diganti)
 
-**Tujuan:** Membantu mahasiswa S1/D4 (dan bisa diperluas ke S2) menyusun skripsi/tugas akhir secara lebih terstruktur, lebih cepat, dan lebih rapi — mulai dari pencarian topik, penyusunan outline, penulisan bab per bab, sitasi, sampai revisi bersama dosen pembimbing.
+**Konsep inti:** Mahasiswa cukup memberi **satu prompt** (topik, jurusan, rumusan masalah singkat, atau bahkan sekadar ide kasar) melalui aplikasi. Sebuah **AI agent** kemudian secara otomatis mengerjakan pipeline penyusunan skripsi — riset literatur, susun kerangka, tulis tiap bab, sitasi, sampai format akhir — dan menghasilkan **draft skripsi lengkap** yang siap direview mahasiswa.
 
-**Masalah yang diselesaikan:**
-- Mahasiswa sering stuck menentukan topik/judul dan kerangka penelitian.
-- Proses bimbingan tidak terlacak rapi (revisi hilang, feedback dosen tercecer di WA/email).
-- Manajemen referensi & sitasi manual, rawan salah format (APA/IEEE/Chicago/format kampus).
-- Progres penulisan tidak terpantau → banyak yang telat sidang.
-- Takut plagiarisme tapi tidak ada alat cek yang terjangkau.
-- Format penulisan (margin, penomoran, daftar isi) sering revisi berkali-kali karena tidak sesuai pedoman kampus.
+Aplikasi ini bukan sekadar "asisten nulis", tapi **agen otomatis end-to-end**: mahasiswa mengarahkan lewat prompt (di awal & saat revisi), agent yang mengeksekusi seluruh proses penelitian-tulisan.
 
 ## 2. Target Pengguna
 
 | Persona | Kebutuhan utama |
 |---|---|
-| Mahasiswa tingkat akhir | Panduan terstruktur, template, AI bantu nulis & parafrase, tracker progres |
-| Dosen pembimbing | Melihat progres bimbingan, memberi komentar/revisi langsung di dokumen |
-| Prodi/Kampus (opsional, B2B) | Standarisasi template, rekap progres mahasiswa bimbingan per dosen |
+| Mahasiswa tingkat akhir | Draft skripsi cepat dari prompt, bisa diarahkan ulang/direvisi lewat prompt lanjutan |
+| Dosen pembimbing | Melihat draft hasil agent, memberi komentar/revisi, riwayat perubahan jelas |
+| Prodi/Kampus (opsional, B2B) | Kontrol kebijakan penggunaan AI, standarisasi template, audit trail penggunaan |
 
-## 3. Fitur — MVP (Fase 1, ~3 bulan)
+## 3. Alur Inti: Prompt → Draft Skripsi Otomatis
 
-1. **Manajemen Proyek Skripsi**
-   - Buat proyek: judul, jurusan, dosen pembimbing, target sidang.
-   - Struktur bab standar (BAB I–V) yang bisa disesuaikan per template kampus.
-2. **Outline & Mind Map Generator**
-   - Bantu menyusun kerangka bab berdasarkan topik & rumusan masalah (AI-assisted).
-3. **AI Writing Assistant**
-   - Bantu mengembangkan paragraf dari poin-poin, parafrase, ringkas jurnal/artikel.
-   - Deteksi kalimat tidak baku / saran perbaikan tata bahasa Indonesia & Inggris akademik.
-4. **Manajemen Referensi & Sitasi**
-   - Simpan referensi (import dari DOI/Google Scholar), auto-generate sitasi & daftar pustaka (APA 7, IEEE, dll).
-5. **Progress Tracker**
-   - Checklist per bab, target tanggal, riwayat revisi (versioning dokumen).
-6. **Editor Dokumen**
-   - Editor teks dasar dengan dukungan format akademik (heading, tabel, gambar, nomor halaman), export ke Word/PDF sesuai template kampus.
-7. **Autentikasi & Peran**
-   - Role mahasiswa & dosen pembimbing; dosen bisa komentar & approve per bab.
+1. **Input prompt** — mahasiswa mengisi form/prompt: topik, bidang studi, rumusan masalah (opsional), jenis penelitian (kualitatif/kuantitatif/studi kasus/dsb), kampus & format sitasi yang dipakai.
+2. **Agent Orchestrator** memecah proses jadi rangkaian sub-agent (lihat Bab 4) yang berjalan otomatis secara berurutan/paralel.
+3. Progres tiap tahap ditampilkan real-time ke mahasiswa (mis. "Mencari referensi... Menyusun BAB I... Menulis BAB II...").
+4. **Output:** draft skripsi lengkap (BAB I–V + daftar pustaka) dalam editor yang bisa diedit, lengkap dengan sitasi & sumber yang dipakai agent.
+5. Mahasiswa bisa memberi **prompt revisi** ("perbanyak studi kasus di BAB II", "ganti metode jadi kualitatif", "perbaiki BAB IV sesuai catatan dosen ini: ...") → agent regenerate bagian terkait, bukan seluruh dokumen.
+6. Sebelum submit ke dosen/sidang, mahasiswa **wajib melalui tahap review** (lihat Bab 6) — aplikasi tidak mengizinkan ekspor final tanpa mahasiswa menandai tiap bab sudah dibaca/diverifikasi.
 
-## 4. Fitur — Fase 2 (Pengembangan lanjutan)
+## 4. Arsitektur Multi-Agent (Detail Pipeline)
 
-- **Cek Kemiripan/Plagiarisme** (integrasi API pihak ketiga atau self-hosted).
-- **Rekomendasi Literatur** — cari jurnal relevan (integrasi Semantic Scholar/Crossref/Google Scholar API) berdasarkan topik.
-- **Kolaborasi real-time** ala Google Docs antara mahasiswa & dosen, dengan komentar inline.
-- **Reminder & Jadwal Bimbingan** — kalender, notifikasi WA/email H-1 sebelum bimbingan.
-- **Analisis Data Bantu** — bantu interpretasi hasil statistik sederhana (jika relevan dengan skripsi kuantitatif).
-- **Template Multi-Kampus** — library template sesuai pedoman berbagai universitas.
+| Agent | Tugas |
+|---|---|
+| **Orchestrator Agent** | Menerima prompt, menyusun rencana kerja, mengatur urutan/paralelisasi sub-agent, menangani prompt revisi |
+| **Research Agent** | Mencari & meringkas literatur relevan (Semantic Scholar/Crossref/Google Scholar API), memilih sumber kredibel & terbaru |
+| **Outline Agent** | Menyusun kerangka BAB I–V (latar belakang, rumusan masalah, tinjauan pustaka, metodologi, dst) sesuai jenis penelitian & pedoman kampus |
+| **Writing Agent** (per bab) | Menulis draf tiap bab berdasarkan outline + hasil riset, dengan gaya bahasa akademik |
+| **Citation Agent** | Menyisipkan sitasi in-text & menyusun daftar pustaka otomatis sesuai gaya (APA/IEEE/Chicago), memverifikasi setiap sitasi merujuk sumber nyata (anti-halusinasi referensi) |
+| **Consistency/QA Agent** | Cek koherensi antar bab, konsistensi istilah, kelengkapan struktur, dan menjalankan **similarity/plagiarism check** |
+| **Formatting Agent** | Menata dokumen sesuai template kampus (margin, penomoran, cover, daftar isi otomatis), export ke Word/PDF |
 
-## 5. Fitur — Fase 3 (Skalabilitas & B2B)
+Pipeline ini didesain agar tiap sub-agent bisa **dipanggil ulang secara terisolasi** saat mahasiswa merevisi satu bagian — tidak perlu re-generate seluruh dokumen.
 
-- Dashboard untuk Prodi: rekap progres seluruh mahasiswa bimbingan.
-- Integrasi dengan sistem akademik kampus (SIAKAD) via API.
-- Mode multi-bahasa & multi-jenjang (S1/S2/S3).
-- Mobile app (iOS/Android) untuk baca & komentar cepat saat bimbingan.
+## 5. Fitur Pendukung (di sekitar mesin agent)
 
-## 6. Arsitektur Teknis (usulan)
+1. **Manajemen Proyek** — riwayat versi tiap generate/revisi, bisa rollback ke draft sebelumnya.
+2. **Editor Dokumen** — hasil agent muncul di editor rich-text yang bisa diedit manual langsung oleh mahasiswa.
+3. **Panel Sumber/Referensi** — semua referensi yang dipakai agent ditampilkan transparan, mahasiswa bisa cek/ganti sumber.
+4. **Similarity/Plagiarism Report** — skor kemiripan otomatis tiap kali draft digenerate/direvisi, ditampilkan ke mahasiswa (dan opsional ke dosen).
+5. **Kolaborasi Dosen** — dosen bisa lihat draft, comment per paragraf, dan riwayat prompt yang dipakai mahasiswa (transparansi penggunaan AI).
+6. **Log Transparansi Penggunaan AI** — mencatat bagian mana yang di-generate agent vs. ditulis/diedit manual mahasiswa (penting untuk kejujuran akademik & kebijakan kampus terkait AI).
 
-- **Frontend:** Next.js (React) + TypeScript, editor berbasis rich-text (mis. TipTap/ProseMirror) untuk pengalaman menulis seperti Word/Google Docs.
-- **Backend:** Node.js (NestJS) atau Python (FastAPI) — REST/GraphQL API.
-- **Database:** PostgreSQL (data terstruktur) + object storage (S3-compatible) untuk file dokumen/referensi.
-- **AI Layer:** LLM API (Claude) untuk writing assistant, ringkasan, & saran outline; embedding + vector DB untuk pencarian referensi semantik.
-- **Autentikasi:** OAuth (Google/kampus SSO jika tersedia) + email/password.
-- **Infrastruktur:** containerized (Docker), deploy ke cloud (mis. Railway/Fly.io/AWS) untuk mulai kecil dulu, scalable belakangan.
+## 6. Guardrail Integritas Akademik (wajib, bukan opsional)
 
-## 7. Alur Pengguna Utama (Happy Path)
+Karena aplikasi men-generate draf secara otomatis, ini adalah risiko terbesar yang harus didesain sejak awal:
 
-1. Mahasiswa daftar → buat proyek skripsi → pilih template kampus.
-2. Isi rumusan masalah & topik → AI bantu susun outline bab.
-3. Menulis per bab di editor, AI membantu mengembangkan/parafrase, referensi otomatis tersitasi.
-4. Submit bab ke dosen pembimbing → dosen beri komentar/revisi.
-5. Mahasiswa revisi, progress tracker ter-update.
-6. Setelah semua bab disetujui → export dokumen final sesuai format kampus untuk sidang.
+- **Mode "draft berbantuan AI", bukan "submit otomatis"** — hasil generate selalu berstatus draft; mahasiswa harus menandai review selesai per bab sebelum bisa export final.
+- **Anti-halusinasi sitasi** — Citation Agent wajib verifikasi tiap referensi benar-benar ada (cross-check ke DOI/API), tidak boleh mengarang sumber.
+- **Watermark/metadata** — dokumen hasil ekspor menyertakan log "bagian ini dibuat dengan bantuan AI" agar mahasiswa & kampus punya transparansi (mencegah tuduhan plagiarisme mendadak saat sidang).
+- **Disclaimer & edukasi** — saat onboarding, jelaskan ke mahasiswa bahwa hasil AI adalah starting point yang tetap perlu dipahami & dipertanggungjawabkan sendiri (karena akan diuji saat sidang).
+- **Kontrol tingkat kampus (opsional)** — Prodi bisa set kebijakan (mis. wajib similarity score di bawah X%, wajib approval dosen per bab) sebelum mahasiswa bisa lanjut ke bab berikutnya.
+
+## 7. Arsitektur Teknis (usulan)
+
+- **Frontend:** Next.js (React) + TypeScript, editor rich-text (TipTap/ProseMirror) + panel progress agent real-time (streaming status).
+- **Backend/Agent Layer:** Python (FastAPI) menjalankan agent orchestration (mis. pola multi-agent dengan LLM Claude sebagai reasoning engine tiap agent), job queue (mis. Redis/Celery atau task queue serupa) untuk proses generate yang berjalan async & bisa lama.
+- **AI Layer:** LLM API (Claude) untuk tiap sub-agent; embedding + vector DB (mis. pgvector) untuk pencarian & pencocokan referensi semantik.
+- **Database:** PostgreSQL — data proyek, versi draft, log prompt & sumber yang dipakai tiap generate.
+- **Storage:** object storage (S3-compatible) untuk dokumen final & referensi (PDF jurnal, dsb).
+- **Autentikasi:** OAuth (Google/kampus SSO) + email/password; role mahasiswa/dosen/admin prodi.
+- **Infrastruktur:** containerized (Docker), deploy cloud (mulai kecil: Railway/Fly.io, scale ke AWS/GCP saat traffic naik).
 
 ## 8. Model Bisnis (opsional, untuk didiskusikan)
 
-- **Freemium:** fitur dasar gratis (outline, editor, sitasi manual), fitur AI premium (parafrase tak terbatas, cek similarity) berlangganan bulanan per mahasiswa.
-- **B2B Kampus:** lisensi tahunan untuk Prodi/Fakultas dengan dashboard monitoring dosen.
+- **Freemium:** generate terbatas (mis. 1 draft lengkap gratis, revisi terbatas), berlangganan bulanan untuk generate/revisi tak terbatas + similarity check.
+- **B2B Kampus:** lisensi tahunan per Prodi/Fakultas dengan dashboard kontrol kebijakan AI & monitoring dosen.
 
 ## 9. Roadmap Bertahap
 
 | Fase | Durasi | Output |
 |---|---|---|
-| Riset & Desain | 2–3 minggu | Riset kebutuhan mahasiswa/dosen, wireframe, pemilihan template kampus prioritas |
-| MVP Development | 8–10 minggu | Fitur di Fase 1 (manajemen proyek, editor, sitasi dasar, AI assistant dasar) |
-| Beta Testing | 3–4 minggu | Uji coba dengan 20–50 mahasiswa & beberapa dosen, kumpulkan feedback |
-| Iterasi & Fase 2 | Berkelanjutan | Plagiarism check, rekomendasi literatur, kolaborasi real-time |
+| Riset & Desain | 2–3 minggu | Validasi kebutuhan, desain pipeline agent, pilih 1 template kampus prioritas |
+| MVP: Single-shot Generator | 6–8 minggu | Prompt → outline → draft BAB I–V dasar (tanpa multi-agent kompleks dulu, 1 pipeline linear) + editor + export |
+| MVP+: Multi-Agent Pipeline | 4–6 minggu | Pecah jadi Research/Outline/Writing/Citation/QA/Formatting Agent terpisah + revisi per-bagian |
+| Guardrail & QA | 3–4 minggu | Anti-halusinasi sitasi, similarity check, watermark transparansi, log penggunaan AI |
+| Beta Testing | 3–4 minggu | Uji coba 20–50 mahasiswa & beberapa dosen, evaluasi kualitas draft & risiko integritas |
+| Iterasi Lanjutan | Berkelanjutan | Kolaborasi dosen real-time, dashboard prodi, multi-template kampus |
 
 ## 10. Risiko & Mitigasi
 
 | Risiko | Mitigasi |
 |---|---|
-| Akurasi AI kurang tepat untuk konteks akademik Indonesia | Fine-tune prompt dengan contoh skripsi nyata, beri disclaimer & opsi edit manual |
-| Kekhawatiran plagiarisme/etika akademik (mahasiswa "curang" pakai AI) | Posisikan sebagai *assistant* (bukan generator otomatis), sertakan mode "cek similarity" untuk transparansi ke dosen |
-| Privasi data skripsi (topik penelitian belum publish) | Enkripsi data, kebijakan privasi jelas, opsi dokumen private per default |
-| Adopsi dosen pembimbing rendah (masih pakai cara manual) | Buat fitur dosen sesederhana mungkin (cukup lihat & komen, tanpa perlu setup rumit) |
-| Ketergantungan API pihak ketiga (LLM, plagiarism checker) mahal saat scale | Rancang caching & batas pemakaian fair-use di tier gratis |
+| **Integritas akademik** — draft "terlalu otomatis" dianggap kecurangan oleh kampus/dosen | Positioning jelas sebagai "AI-assisted draft", wajib review manusia, watermark transparansi (Bab 6) |
+| **Halusinasi sitasi** — LLM mengarang referensi yang tidak ada | Citation Agent wajib verifikasi via API sumber asli sebelum dimasukkan ke draft |
+| **Kualitas/relevansi draft rendah** untuk konteks riset spesifik | Beri opsi mahasiswa upload data/sumber sendiri sebagai konteks tambahan agent |
+| **Similarity/plagiarism tinggi** karena draft antar mahasiswa mirip (topik sejenis) | QA Agent jalankan similarity check tiap generate, beri peringatan sebelum export |
+| **Ketergantungan API pihak ketiga (LLM, literature API) mahal saat scale** | Rancang caching hasil riset, batasi jumlah generate di tier gratis |
+| **Resistensi kampus/dosen terhadap tools generate-otomatis** | Sediakan mode "kontrol kampus" (Bab 6) agar Prodi bisa atur batasan penggunaan resmi |
 
 ## 11. Metrik Keberhasilan (KPI)
 
-- Jumlah mahasiswa aktif menyelesaikan minimal 1 bab lewat aplikasi.
-- Rata-rata waktu penyelesaian skripsi (dibandingkan baseline sebelum pakai app).
-- Tingkat retensi mingguan/bulanan.
-- Skor kepuasan dosen pembimbing terhadap fitur kolaborasi.
+- Jumlah mahasiswa yang berhasil generate draft lengkap dari 1 prompt.
+- Rata-rata jumlah revisi/prompt lanjutan sampai draft dianggap siap direview dosen.
+- Similarity score rata-rata draft yang dihasilkan (target: di bawah ambang batas kampus).
+- Tingkat kelulusan review dosen tanpa revisi besar (indikator kualitas draft awal).
 
 ## 12. Langkah Selanjutnya
 
-1. Validasi masalah & fitur prioritas lewat wawancara singkat ke 5–10 mahasiswa tingkat akhir.
-2. Tentukan template kampus mana yang jadi prioritas MVP (mulai dari 1 kampus/format dulu).
-3. Buat wireframe/prototype fitur inti (proyek → outline → editor → sitasi).
-4. Setup repo & arsitektur teknis awal (frontend, backend, database).
-5. Bangun MVP sesuai Fase 1 di atas.
+1. Validasi ke 5–10 mahasiswa: apakah mereka nyaman submit ke dosen draft yang di-generate otomatis (cek sentimen soal integritas akademik).
+2. Bangun **prototype single-shot** dulu: prompt → 1 pipeline linear (bukan multi-agent penuh) yang menghasilkan outline + BAB I sebagai proof of concept.
+3. Uji kualitas Citation Agent (anti-halusinasi) sebagai prioritas teknis #1 sebelum fitur lain — ini risiko kredibilitas terbesar.
+4. Setelah proof of concept jalan, pecah jadi arsitektur multi-agent penuh (Bab 4) dan tambah guardrail (Bab 6).
+5. Setup repo & skeleton teknis (frontend, backend/agent layer, database).
