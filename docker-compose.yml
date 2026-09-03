@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: skripsiku
+      POSTGRES_PASSWORD: skripsiku
+      POSTGRES_DB: skripsiku
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U skripsiku"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY belum di-set}
+      SKRIPSIKU_DATABASE_URL: postgresql+psycopg://skripsiku:skripsiku@db:5432/skripsiku
+      SKRIPSIKU_CROSSREF_MAILTO: ${SKRIPSIKU_CROSSREF_MAILTO:-dev@skripsiku.local}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:

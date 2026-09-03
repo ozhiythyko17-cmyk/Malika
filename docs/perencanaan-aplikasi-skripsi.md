@@ -102,10 +102,27 @@ Karena aplikasi men-generate draf secara otomatis, ini adalah risiko terbesar ya
 - Similarity score rata-rata draft yang dihasilkan (target: di bawah ambang batas kampus).
 - Tingkat kelulusan review dosen tanpa revisi besar (indikator kualitas draft awal).
 
-## 12. Langkah Selanjutnya
+## 12. Status Implementasi
+
+| Bagian rencana | Status | Lokasi |
+|---|---|---|
+| Skeleton teknis (frontend, agent layer, DB) | **sudah** | `frontend/`, `backend/`, `backend/app/store.py` |
+| Pipeline multi-agent (Bab 4) | **sudah (kerangka jalan)** | `backend/app/agents/` |
+| Citation Agent anti-halusinasi | **sudah + teruji** | `backend/app/citation/`, [spec](spec-citation-agent.md) |
+| Template pedoman kampus | **sudah (1 template generik)** | `backend/app/templates_data/`, [spec](spec-template-kampus.md) |
+| Guardrail integritas (Bab 6) | **sudah ditegakkan di API** | `GET /api/projects/{id}/export` menolak 409 |
+| Cek kemiripan/plagiarisme | belum | `NullSimilarityChecker` (placeholder yang jujur) |
+| Ekspor DOCX/PDF | belum (Markdown saja) | `FormattingAgent` |
+| Autentikasi & peran dosen | belum | — |
+| Queue produksi (bukan BackgroundTasks) | belum | — |
+
+Batasan MVP lengkap ada di [README](../README.md#batasan-mvp-jujur-bukan-roadmap-pemasaran).
+
+## 13. Langkah Selanjutnya
 
 1. Validasi ke 5–10 mahasiswa: apakah mereka nyaman submit ke dosen draft yang di-generate otomatis (cek sentimen soal integritas akademik).
-2. Bangun **prototype single-shot** dulu: prompt → 1 pipeline linear (bukan multi-agent penuh) yang menghasilkan outline + BAB I sebagai proof of concept.
-3. Uji kualitas Citation Agent (anti-halusinasi) sebagai prioritas teknis #1 sebelum fitur lain — ini risiko kredibilitas terbesar.
-4. Setelah proof of concept jalan, pecah jadi arsitektur multi-agent penuh (Bab 4) dan tambah guardrail (Bab 6).
-5. Setup repo & skeleton teknis (frontend, backend/agent layer, database).
+2. **Integrasi indeks jurnal nasional (Garuda/Sinta).** Saat ini referensi nyata dari jurnal Indonesia bisa ditolak `not_found` karena tidak ada di Crossref — ini false-positive yang paling merusak kepercayaan pengguna.
+3. Uji end-to-end dengan satu prompt nyata + kredensial Claude, ukur biaya per draft dan kualitas keluaran tiap agent.
+4. Ganti `BackgroundTasks` dengan queue nyata dan SSE berkelanjutan.
+5. Eksporter DOCX sesuai margin/font template, lalu tambah template kampus asli pertama.
+6. Autentikasi + peran dosen pembimbing (komentar per bab) sebelum dipakai dengan data nyata.

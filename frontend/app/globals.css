@@ -1,0 +1,120 @@
+:root {
+  --bg: #fbfbf9;
+  --fg: #1a1a18;
+  --muted: #5f5f58;
+  --line: #e2e2dc;
+  --warn-bg: #fff6e5;
+  --warn-line: #e0b567;
+  --error: #a3312a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+h1 {
+  margin-bottom: 0.25rem;
+}
+
+.lede {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+section {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+textarea,
+input[type="text"],
+input:not([type]) {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
+}
+
+button {
+  margin-top: 0.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--fg);
+  border-radius: 6px;
+  background: var(--fg);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+ul,
+ol {
+  padding-left: 1.2rem;
+}
+
+.chapter {
+  margin-bottom: 0.9rem;
+  list-style: none;
+}
+
+.chapter label {
+  font-weight: 500;
+}
+
+.events code {
+  background: #efefe9;
+  padding: 0 0.3rem;
+  border-radius: 3px;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.9rem;
+  overflow-x: auto;
+}
+
+.export {
+  max-height: 28rem;
+  overflow-y: auto;
+}
+
+.warning {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+}
+
+.error {
+  color: var(--error);
+  font-weight: 600;
+}
