@@ -22,6 +22,8 @@ from sqlalchemy.orm import (
 )
 
 from .schemas import (
+    AssistantAction,
+    ChatMessage,
     JobStatus,
     Project,
     ProgressEvent,
@@ -47,6 +49,21 @@ class ProjectRow(Base):
     document_json: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    # Tahapan yang tidak bisa dideteksi aplikasi (seminar, sidang) ditandai manual.
+    stage_overrides: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+
+
+class ChatRow(Base):
+    """Riwayat percakapan dengan asisten AI, per proyek."""
+
+    __tablename__ = "chat_messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
+    role: Mapped[str] = mapped_column(String(16))  # "user" | "assistant"
+    text: Mapped[str] = mapped_column(Text)
+    action_json: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
 class EventRow(Base):
@@ -141,6 +158,32 @@ class ProjectStore:
             session.add(EventRow(project_id=project_id, agent=agent, message=message))
             session.commit()
 
+    def append_chat(self, project_id: str, message: ChatMessage) -> None:
+        with self.session() as session:
+            session.add(
+                ChatRow(
+                    project_id=project_id,
+                    role=message.role,
+                    text=message.text,
+                    action_json=(
+                        message.action.model_dump(mode="json") if message.action else None
+                    ),
+                )
+            )
+            session.commit()
+
+    def set_stage_override(self, project_id: str, stage_id: str, done: bool) -> list[str]:
+        """Tandai/lepas tahap yang hanya bisa dinilai mahasiswa sendiri."""
+        with self.session() as session:
+            row = session.get(ProjectRow, project_id)
+            if row is None:
+                return []
+            marked = set(row.stage_overrides or [])
+            marked.add(stage_id) if done else marked.discard(stage_id)
+            row.stage_overrides = sorted(marked)
+            session.commit()
+            return list(row.stage_overrides)
+
     # -- baca ------------------------------------------------------------- #
 
     def get(self, project_id: str) -> Optional[Project]:
@@ -166,7 +209,25 @@ class ProjectStore:
             ],
             error=row.error,
             created_at=row.created_at,
+            stage_overrides=list(row.stage_overrides or []),
         )
+
+    def chat_history(self, project_id: str) -> list[ChatMessage]:
+        with self.session() as session:
+            rows = session.scalars(
+                select(ChatRow).where(ChatRow.project_id == project_id).order_by(ChatRow.id)
+            ).all()
+        return [
+            ChatMessage(
+                role=row.role,
+                text=row.text,
+                action=AssistantAction.model_validate(row.action_json)
+                if row.action_json
+                else None,
+                at=row.at,
+            )
+            for row in rows
+        ]
 
     def events_since(self, project_id: str, after_id: int = 0) -> list[tuple[int, ProgressEvent]]:
         with self.session() as session:

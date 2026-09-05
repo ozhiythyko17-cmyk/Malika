@@ -23,11 +23,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
+from . import majors as majors_data
+from .agents.assistant import AssistantAgent
 from .agents.formatting import FormattingAgent
 from .agents.orchestrator import Orchestrator, ThesisPipeline
+from .agents.topic import TopicAgent
 from .config import Settings, get_settings
 from .literature import build_index
-from .schemas import JobStatus, Project, RevisionRequest, ThesisRequest
+from .schemas import (
+    AssistantReply,
+    AssistantRequest,
+    ChatMessage,
+    JobStatus,
+    Project,
+    RevisionRequest,
+    Stage,
+    ThesisRequest,
+    TopicRequest,
+    TopicResponse,
+)
+from .stages import derive_stages, stage_ids
 from .store import ProjectStore
 from .templates import TemplateNotFound, list_templates, load_template
 
@@ -67,6 +82,17 @@ def get_pipeline() -> ThesisPipeline:
     )
 
 
+@lru_cache
+def get_topic_agent() -> TopicAgent:
+    settings: Settings = get_settings()
+    return TopicAgent(anthropic.Anthropic(), settings, index=build_index(settings))
+
+
+@lru_cache
+def get_assistant_agent() -> AssistantAgent:
+    return AssistantAgent(anthropic.Anthropic(), get_settings())
+
+
 # --------------------------------------------------------------------------- #
 # Payload
 # --------------------------------------------------------------------------- #
@@ -79,6 +105,10 @@ class CreateProjectResponse(BaseModel):
 
 class ReviewRequest(BaseModel):
     reviewed: bool = True
+
+
+class StageMarkRequest(BaseModel):
+    done: bool = True
 
 
 class ExportBlocked(BaseModel):
@@ -224,6 +254,106 @@ def review_chapter(
         f"Bab {chapter_key} ditandai {'sudah' if payload.reviewed else 'belum'} direview mahasiswa.",
     )
     return {"chapter_key": chapter_key, "reviewed_by_student": payload.reviewed}
+
+
+@app.get("/api/majors")
+def list_majors() -> dict:
+    """Jurusan yang punya konteks tambahan; prodi lain tetap diterima apa adanya."""
+    return {"majors": majors_data.as_dicts()}
+
+
+@app.post("/api/topics/suggest", response_model=TopicResponse)
+def suggest_topics(
+    request: TopicRequest,
+    agent: TopicAgent = Depends(get_topic_agent),
+) -> TopicResponse:
+    """Usulan topik untuk mahasiswa yang belum punya ide.
+
+    Jumlah pustaka pada tiap usulan berasal dari pencarian nyata ke
+    Crossref/OpenAlex, bukan klaim model.
+    """
+    try:
+        return agent.suggest(request)
+    except Exception as exc:  # noqa: BLE001 - kegagalan agent dilaporkan sebagai 502
+        logger.exception("Pencarian topik gagal")
+        raise HTTPException(status_code=502, detail=f"Pencarian topik gagal: {exc}") from exc
+
+
+@app.get("/api/projects/{project_id}/stages", response_model=list[Stage])
+def project_stages(project_id: str, store: ProjectStore = Depends(get_store)) -> list[Stage]:
+    """Tahapan dari penentuan topik sampai sidang, diturunkan dari keadaan draft."""
+    project = store.get(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Proyek tidak ditemukan.")
+    return derive_stages(project.document, project.stage_overrides)
+
+
+@app.post("/api/projects/{project_id}/stages/{stage_id}", response_model=list[Stage])
+def mark_stage(
+    project_id: str,
+    stage_id: str,
+    payload: StageMarkRequest,
+    store: ProjectStore = Depends(get_store),
+) -> list[Stage]:
+    """Tandai tahap yang tidak bisa dideteksi aplikasi (seminar proposal, sidang)."""
+    if stage_id not in stage_ids():
+        raise HTTPException(status_code=404, detail=f"Tahap {stage_id} tidak dikenal.")
+
+    project = store.get(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Proyek tidak ditemukan.")
+
+    overrides = store.set_stage_override(project_id, stage_id, payload.done)
+    store.append_event(
+        project_id,
+        "tahapan",
+        f"Tahap {stage_id} ditandai {'selesai' if payload.done else 'belum selesai'} oleh mahasiswa.",
+    )
+    return derive_stages(project.document, overrides)
+
+
+@app.get("/api/projects/{project_id}/assistant", response_model=list[ChatMessage])
+def assistant_history(
+    project_id: str, store: ProjectStore = Depends(get_store)
+) -> list[ChatMessage]:
+    project = store.get(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Proyek tidak ditemukan.")
+    return store.chat_history(project_id)
+
+
+@app.post("/api/projects/{project_id}/assistant", response_model=AssistantReply)
+def ask_assistant(
+    project_id: str,
+    payload: AssistantRequest,
+    store: ProjectStore = Depends(get_store),
+    agent: AssistantAgent = Depends(get_assistant_agent),
+) -> AssistantReply:
+    """Tanya asisten tentang draft sendiri.
+
+    Percakapan ikut tercatat di jejak penggunaan AI — bagian dari transparansi
+    yang bisa ditunjukkan ke dosen pembimbing.
+    """
+    project = store.get(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Proyek tidak ditemukan.")
+
+    history = store.chat_history(project_id)
+    stages = derive_stages(project.document, project.stage_overrides)
+
+    try:
+        reply = agent.answer(payload.message, project, stages, history)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Asisten gagal menjawab untuk proyek %s", project_id)
+        raise HTTPException(status_code=502, detail=f"Asisten gagal menjawab: {exc}") from exc
+
+    store.append_chat(project_id, ChatMessage(role="user", text=payload.message))
+    store.append_chat(
+        project_id, ChatMessage(role="assistant", text=reply.answer, action=reply.action)
+    )
+    store.log_prompt(project_id, "asisten", payload.message)
+    store.append_event(project_id, "asisten", f"Pertanyaan mahasiswa: {payload.message[:80]}")
+    return reply
 
 
 @app.get("/api/projects/{project_id}/ai-disclosure")

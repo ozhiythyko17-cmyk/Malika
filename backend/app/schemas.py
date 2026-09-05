@@ -194,3 +194,99 @@ class Project(BaseModel):
     events: list[ProgressEvent] = Field(default_factory=list)
     error: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    stage_overrides: list[str] = Field(
+        default_factory=list,
+        description="Tahapan yang ditandai selesai secara manual oleh mahasiswa",
+    )
+
+
+# --------------------------------------------------------------------------- #
+# Pencarian topik (untuk mahasiswa yang belum punya ide)
+# --------------------------------------------------------------------------- #
+
+
+class Difficulty(str, Enum):
+    RINGAN = "ringan"
+    SEDANG = "sedang"
+    BERAT = "berat"
+
+
+class TopicRequest(BaseModel):
+    major: str = Field(description="Nama atau id jurusan, mis. 'si' atau 'Manajemen'")
+    interests: list[str] = Field(default_factory=list)
+    data_access: str = Field(
+        default="Belum tahu",
+        description="Data yang realistis bisa didapat mahasiswa",
+    )
+    language: str = "id"
+    count: int = Field(default=3, ge=1, le=6)
+
+
+class TopicSuggestion(BaseModel):
+    """Usulan topik. `reference_count` diisi dari pencarian literatur nyata."""
+
+    judul: str
+    rumusan_masalah: str
+    metode: str
+    difficulty: Difficulty = Difficulty.SEDANG
+    data_needed: str = Field(description="Data apa yang harus dikumpulkan mahasiswa")
+    why_relevant: str = ""
+    reference_count: int = Field(
+        default=0, description="Jumlah literatur nyata yang ditemukan di indeks"
+    )
+    sample_references: list[Reference] = Field(default_factory=list)
+
+
+class TopicResponse(BaseModel):
+    major: str
+    suggestions: list[TopicSuggestion] = Field(default_factory=list)
+
+
+# --------------------------------------------------------------------------- #
+# Tahapan skripsi (dari awal sampai sidang)
+# --------------------------------------------------------------------------- #
+
+
+class StageState(str, Enum):
+    DONE = "done"
+    CURRENT = "current"
+    PENDING = "pending"
+
+
+class Stage(BaseModel):
+    id: str
+    number: int
+    name: str
+    note: str
+    state: StageState = StageState.PENDING
+    tool: str = Field(description="Alat bantu yang membuka tahap ini di aplikasi")
+    hint: str = Field(default="", description="Apa yang harus dikerjakan sekarang")
+
+
+# --------------------------------------------------------------------------- #
+# Asisten AI
+# --------------------------------------------------------------------------- #
+
+
+class AssistantAction(BaseModel):
+    """Tindakan lanjutan yang bisa dijalankan aplikasi dari jawaban asisten."""
+
+    label: str
+    kind: str = Field(description="chapter | screen | tool")
+    target: str = Field(description="mis. 'bab2', 'sumber', 'sidang'")
+
+
+class AssistantRequest(BaseModel):
+    message: str = Field(min_length=2)
+
+
+class AssistantReply(BaseModel):
+    answer: str = Field(description="Jawaban dalam Markdown ringkas")
+    action: Optional[AssistantAction] = None
+
+
+class ChatMessage(BaseModel):
+    role: str = Field(description="user | assistant")
+    text: str
+    action: Optional[AssistantAction] = None
+    at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

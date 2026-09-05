@@ -13,6 +13,7 @@ mahasiswa per bab sebelum bisa diekspor.
 
 | Dokumen | Isi |
 |---|---|
+| [docs/prd-skripsiku.md](docs/prd-skripsiku.md) | **PRD** — sasaran, persona, kebutuhan fungsional ber-ID + kriteria penerimaan, lingkup rilis |
 | [docs/perencanaan-aplikasi-skripsi.md](docs/perencanaan-aplikasi-skripsi.md) | Rencana produk: konsep, pipeline agent, guardrail, roadmap, risiko |
 | [docs/spec-citation-agent.md](docs/spec-citation-agent.md) | Spesifikasi anti-halusinasi sitasi (prioritas teknis #1) |
 | [docs/spec-template-kampus.md](docs/spec-template-kampus.md) | Skema template pedoman kampus & cara menambah kampus baru |
@@ -74,7 +75,7 @@ docker compose up --build
 ## Pengujian
 
 ```bash
-cd backend && python -m pytest      # 34 test, tanpa memanggil API Claude/Crossref
+cd backend && python -m pytest      # 63 test, tanpa memanggil API Claude/Crossref
 cd frontend && npm run typecheck
 ```
 
@@ -84,6 +85,8 @@ Test suite menutup tiga hal yang paling mudah rusak diam-diam:
 2. Gerbang anti-halusinasi sitasi (`tests/test_citation_verifier.py`) — termasuk
    memastikan DOI fiktif **tidak** punya jalur penyelamatan lewat pencarian judul.
 3. Gerbang ekspor & transparansi AI (`tests/test_api_guardrail.py`).
+4. Penurunan tahapan skripsi dari keadaan draft (`tests/test_stages.py`).
+5. Pencari topik, asisten AI, dan penandaan tahap (`tests/test_assistant_topic_api.py`).
 
 Pipeline agent yang memanggil Claude diuji lewat `FakePipeline`, jadi test tidak
 memerlukan kredensial dan tidak mengeluarkan biaya.
@@ -97,6 +100,12 @@ memerlukan kredensial dan tidak mengeluarkan biaya.
 | `GET /api/projects/{id}/events` | Progres agent (SSE) |
 | `POST /api/projects/{id}/revise` | Prompt revisi (bab tertentu atau ditebak dari teks) |
 | `POST /api/projects/{id}/chapters/{key}/review` | Mahasiswa menandai satu bab sudah direview |
+| `GET /api/majors` | Daftar jurusan lintas fakultas untuk pencari topik |
+| `POST /api/topics/suggest` | Usulan topik + kelayakan (jumlah pustaka dari indeks nyata) |
+| `GET /api/projects/{id}/stages` | Tahapan skripsi, diturunkan dari keadaan draft |
+| `POST /api/projects/{id}/stages/{stage_id}` | Tandai tahap manual (seminar, sidang) |
+| `POST /api/projects/{id}/assistant` | Tanya asisten AI tentang draft sendiri |
+| `GET /api/projects/{id}/assistant` | Riwayat percakapan asisten |
 | `GET /api/projects/{id}/ai-disclosure` | Log prompt + status review + referensi yang ditolak |
 | `GET /api/projects/{id}/export` | Markdown final — **409** bila gerbang belum terlewati |
 | `GET /api/templates` | Daftar template pedoman kampus |

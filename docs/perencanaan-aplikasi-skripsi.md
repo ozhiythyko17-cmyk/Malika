@@ -104,8 +104,14 @@ Karena aplikasi men-generate draf secara otomatis, ini adalah risiko terbesar ya
 
 ## 12. Status Implementasi
 
+> Kebutuhan produk yang lebih rinci (sasaran, persona, kebutuhan ber-ID, kriteria
+> penerimaan, lingkup rilis) kini ada di [PRD](prd-skripsiku.md).
+
 | Bagian rencana | Status | Lokasi |
 |---|---|---|
+| Pencari topik lintas jurusan | **sudah** | `backend/app/agents/topic.py`, `POST /api/topics/suggest` |
+| Tahapan skripsi (topik → sidang) | **sudah** | `backend/app/stages.py`, `GET /api/projects/{id}/stages` |
+| Asisten AI pendamping | **sudah** | `backend/app/agents/assistant.py`, `POST /api/projects/{id}/assistant` |
 | Skeleton teknis (frontend, agent layer, DB) | **sudah** | `frontend/`, `backend/`, `backend/app/store.py` |
 | Pipeline multi-agent (Bab 4) | **sudah (kerangka jalan)** | `backend/app/agents/` |
 | Citation Agent anti-halusinasi | **sudah + teruji** | `backend/app/citation/`, [spec](spec-citation-agent.md) |
