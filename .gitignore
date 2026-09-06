@@ -1,0 +1,4 @@
+# Artefak uji — fixture dibuat ulang oleh tests/test_remove_bg.py
+assets/fixture.jpg
+assets/out/
+__pycache__/
