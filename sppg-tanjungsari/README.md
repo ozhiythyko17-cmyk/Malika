@@ -13,8 +13,10 @@ server dan tanpa koneksi internet.
 
 | Lapisan | Sumber | Ketelitian |
 |---|---|---|
-| Dinding (42 segmen, tebal 150 mm) | vektor DENAH | presisi 1:1 terhadap as-grid 1–13 / A–Q |
+| Dinding (45 segmen, tebal 150 mm) | vektor DENAH | presisi 1:1 terhadap as-grid 1–13 / A–Q |
 | 29 ruang + peil lantai | vektor DENAH | presisi |
+| 19 pintu + arah ayun & titik engsel | vektor DENAH (busur ayun) | presisi di denah; tinggi asumsi |
+| 15 jendela · 9 bukaan tanpa daun | vektor DENAH | presisi di denah; ambang asumsi |
 | Gutter + grill (4 segmen, 22.628 mm) | vektor DENAH PENUTUP LANTAI | presisi |
 | R. Gas + 6 tabung LPG | vektor DENAH + denah berperabot | presisi (posisi ruang) |
 | Septictank · grease trap / IPAL · sumur resapan | vektor INST. AIR KOTOR DAN LIMBAH | presisi |
@@ -33,8 +35,11 @@ boleh dipakai dan mana yang masih perlu dikunci.
   Pada Denah atas, kitchen hood otomatis dibuat tembus pandang agar hot line
   di bawahnya tetap terbaca.
 - **Fokus area** — mengisolasi satu kelompok ruang dan memindahkan kamera.
-- **Lapisan** — nyala/mati per sistem: peralatan, gutter, hood, jalur gas,
-  air kotor, lampu, nama ruang, kode peralatan.
+- **Lapisan** — nyala/mati per sistem: peralatan, pintu & jendela, gutter, hood,
+  jalur gas, air kotor, lampu, nama ruang, kode peralatan.
+- **Pintu** digambar terbuka 90° persis seperti arah ayun pada denah, lengkap
+  dengan busur ayun di lantai — jadi bentrokan ruang bebas ayun terhadap
+  peralatan langsung terlihat.
 - **Klik objek** di 3D atau baris di panel kanan untuk melihat dimensi dan
   catatan `basis` — dari mana angka itu berasal.
 
@@ -49,6 +54,7 @@ boleh dipakai dan mana yang masih perlu dikunci.
 | Tinggi potong dinding | 1.250 mm (model cutaway, bukan tinggi dinding asli) |
 | Tebal dinding | 150 mm |
 | Peil toilet | − 0,05 m |
+| Ambang / kusen jendela | 900 / 2.100 mm (asumsi) |
 
 ## Membangun ulang
 
@@ -84,3 +90,6 @@ vendor/
    overhang 150 mm di tiap ujung (total 5.480 mm). Overhang ini asumsi.
 4. **Jenis unit masak** — PR-01/02 bersimbol panci bertutup, PR-03…06 bersimbol
    kuali. Tipe kompor dan kapasitasnya belum tercantum di gambar.
+5. **Ketinggian bukaan** — lebar dan posisi pintu/jendela presisi dari denah,
+   tetapi tinggi daun, ambang, dan kusen memakai angka lazim karena paket
+   gambar tidak memuat gambar potongan.

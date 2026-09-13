@@ -1,5 +1,6 @@
-// ── Dinding: diekstrak dari vektor CAD GBR_SPPG_TANJUNGSARI_004.pdf (DENAH, skala 1:100).
-// Format: [sumbu, posisi_mm, mulai_mm, selesai_mm, tebal_mm]. Tebal dinding 150 mm.
+// ── Dinding, pintu, jendela ────────────────────────────────────────────────
+// Diekstrak dari vektor CAD GBR_SPPG_TANJUNGSARI_004.pdf (DENAH, skala 1:100).
+// Dinding: [sumbu, posisi_mm, mulai_mm, selesai_mm, tebal_mm]. Tebal 150 mm.
 const WALLS = [
   ["h", -15, 66, 7416, 150],
   ["h", -15, 8816, 19917, 150],
@@ -26,6 +27,8 @@ const WALLS = [
   ["h", 17987, 13066, 19917, 150],
   ["h", 19987, 66, 6991, 150],
   ["h", 19987, 12991, 19917, 150],
+  ["h", 2485, 20067, 21567, 150],   // R. Gas
+  ["h", 4986, 20142, 21567, 150],   // R. Gas
   ["v", -9, 60, 19912, 150],
   ["v", 1991, 60, 1560, 150],
   ["v", 1991, 6411, 7911, 150],
@@ -43,4 +46,58 @@ const WALLS = [
   ["v", 12991, 11411, 19912, 150],
   ["v", 16492, 15061, 17912, 150],
   ["v", 19992, 60, 19912, 150],
+  ["v", 21492, 2410, 5061, 150],   // R. Gas
+];
+
+// Bukaan pada dinding. Ketiganya dibaca dari persegi putih yang menimpa arsiran
+// dinding pada DENAH; pintu dibedakan dari jendela lewat ada-tidaknya busur ayun,
+// dan engsel tiap daun dihitung dari pusat busur tersebut.
+//   door    = berdaun, arah ayun sesuai gambar
+//   opening = bukaan tanpa daun (lubang lewat orang/barang)
+//   window  = jendela; ambang 900 mm dan tinggi kusen 2.100 mm ASUMSI,
+//             paket gambar tidak memuat gambar potongan.
+const OPENINGS = [
+  { kind: "door", axis: "h", pos: -15, a: 3566, b: 4266, leaves: [{ hinge: 3606, dir: 1, r: 620 }] },
+  { kind: "door", axis: "h", pos: -15, a: 6716, b: 7416, leaves: [{ hinge: 7376, dir: 1, r: 620 }] },
+  { kind: "door", axis: "h", pos: 1485, a: 7766, b: 8666, leaves: [{ hinge: 8627, dir: -1, r: 807 }] },
+  { kind: "door", axis: "h", pos: 3486, a: 10766, b: 11666, leaves: [{ hinge: 11627, dir: -1, r: 807 }] },
+  { kind: "door", axis: "h", pos: 4986, a: 20142, b: 21042, leaves: [{ hinge: 20181, dir: 1, r: 807 }] },
+  { kind: "door", axis: "h", pos: 11486, a: 7881, b: 9601, leaves: [{ hinge: 9562, dir: -1, r: 807 }, { hinge: 7920, dir: -1, r: 807 }] },
+  { kind: "door", axis: "h", pos: 16486, a: 2566, b: 3416, leaves: [{ hinge: 3376, dir: -1, r: 758 }] },
+  { kind: "door", axis: "h", pos: 19987, a: 2566, b: 4286, leaves: [{ hinge: 4247, dir: -1, r: 807 }, { hinge: 2605, dir: -1, r: 807 }] },
+  { kind: "door", axis: "v", pos: -9, a: 1560, b: 2461, leaves: [{ hinge: 1600, dir: 1, r: 807 }] },
+  { kind: "door", axis: "v", pos: -9, a: 5511, b: 6411, leaves: [{ hinge: 6372, dir: 1, r: 807 }] },
+  { kind: "door", axis: "v", pos: -9, a: 11011, b: 11911, leaves: [{ hinge: 11872, dir: 1, r: 807 }] },
+  { kind: "door", axis: "v", pos: 1991, a: 710, b: 1410, leaves: [{ hinge: 1370, dir: -1, r: 620 }] },
+  { kind: "door", axis: "v", pos: 1991, a: 6561, b: 7261, leaves: [{ hinge: 6601, dir: -1, r: 620 }] },
+  { kind: "door", axis: "v", pos: 1991, a: 8722, b: 9422, leaves: [{ hinge: 9382, dir: -1, r: 620 }] },
+  { kind: "door", axis: "v", pos: 1991, a: 12061, b: 12761, leaves: [{ hinge: 12101, dir: -1, r: 620 }] },
+  { kind: "door", axis: "v", pos: 2491, a: 16561, b: 17461, leaves: [{ hinge: 16601, dir: -1, r: 807 }] },
+  { kind: "door", axis: "v", pos: 7491, a: 2010, b: 2911, leaves: [{ hinge: 2871, dir: -1, r: 807 }] },
+  { kind: "door", axis: "v", pos: 12991, a: 15061, b: 15961, leaves: [{ hinge: 15100, dir: 1, r: 807 }] },
+  { kind: "door", axis: "v", pos: 12991, a: 17011, b: 17911, leaves: [{ hinge: 17872, dir: 1, r: 807 }] },
+  { kind: "opening", axis: "h", pos: 7986, a: 13066, b: 14786 },
+  { kind: "opening", axis: "h", pos: 9486, a: 6516, b: 7416 },
+  { kind: "opening", axis: "h", pos: 11486, a: 6016, b: 6916 },
+  { kind: "opening", axis: "h", pos: 14986, a: 18942, b: 19842 },
+  { kind: "opening", axis: "h", pos: 17987, a: 19017, b: 19917 },
+  { kind: "opening", axis: "v", pos: 6991, a: 15511, b: 16411 },
+  { kind: "opening", axis: "v", pos: 7491, a: 5011, b: 5911 },
+  { kind: "opening", axis: "v", pos: 7491, a: 6061, b: 6961 },
+  { kind: "opening", axis: "v", pos: 12991, a: 13191, b: 14911 },
+  { kind: "window", axis: "h", pos: -15, a: 9066, b: 9666 },
+  { kind: "window", axis: "h", pos: -15, a: 10816, b: 11416 },
+  { kind: "window", axis: "h", pos: -15, a: 12516, b: 14216 },
+  { kind: "window", axis: "h", pos: 19987, a: 391, b: 2091 },
+  { kind: "window", axis: "h", pos: 19987, a: 5141, b: 6841 },
+  { kind: "window", axis: "h", pos: 19987, a: 13141, b: 14841 },
+  { kind: "window", axis: "h", pos: 19987, a: 17892, b: 19592 },
+  { kind: "window", axis: "v", pos: -9, a: 3208, b: 3808 },
+  { kind: "window", axis: "v", pos: -9, a: 4152, b: 4752 },
+  { kind: "window", axis: "v", pos: -9, a: 10258, b: 10858 },
+  { kind: "window", axis: "v", pos: -9, a: 13936, b: 14536 },
+  { kind: "window", axis: "v", pos: -9, a: 15436, b: 16036 },
+  { kind: "window", axis: "v", pos: 19992, a: 385, b: 2085 },
+  { kind: "window", axis: "v", pos: 19992, a: 10386, b: 12086 },
+  { kind: "window", axis: "v", pos: 19992, a: 12886, b: 14586 },
 ];

@@ -23,7 +23,10 @@ const GRID_Y = { Q: 0, P: 1500, O: 3000, N: 3500, M: 4000, L: 6000, K: 6500,
                  J: 8000, H: 9500, "H'": 11500, G: 12000, F: 13500, E: 14500,
                  D: 15000, C: 16500, B: 18000, A: 20000 };
 
-const BUILDING = { w: 20000, d: 20000, wallH: 3200, cutH: 1250, wallT: 150 };
+// sill / head: tinggi ambang dan kusen jendela — ASUMSI, paket gambar tidak
+// memuat gambar potongan.
+const BUILDING = { w: 20000, d: 20000, wallH: 3200, cutH: 1250, wallT: 150,
+                   sill: 900, head: 2100 };
 
 const ZONES = {
   produksi:   { label: "Produksi",        color: 0xd9534f, tint: 0x3a2422 },

@@ -25,6 +25,7 @@
     gas: 0xff9c3f, hood: 0xa8b6bd, gutter: 0x0b1215, grill: 0x7e9099,
     tray: 0x2f3a40, bin: 0x3f7d4a, wood: 0xa9855c, fabric: 0x2f3a45,
     glass: 0x86c8d4, waste: 0x4a5a62, lamp: 0xfff3d0,
+    leaf: 0xaab6bd, frame: 0x7d8c94, swing: 0xf1ca48,
   };
 
   // ── Elemen dasar ─────────────────────────────────────────────────────────
@@ -189,21 +190,123 @@
   }
   ROOMS.forEach(addFloor);
 
-  // ── Dinding ──────────────────────────────────────────────────────────────
+  // ── Dinding, pintu, jendela ──────────────────────────────────────────────
   const wallsGroup = new THREE.Group(); world.add(wallsGroup);
+  const doorsGroup = new THREE.Group(); world.add(doorsGroup);
   const wallMat = mat(COL.wall, { roughness: 0.82, metalness: 0.05 });
   const capMat = mat(COL.wallTop, { roughness: 0.6, metalness: 0.12, opacity: 0.34 });
+  const leafMat = mat(COL.leaf, { roughness: 0.55, metalness: 0.1 });
+  const frameMat = mat(COL.frame, { roughness: 0.5, metalness: 0.25 });
+  const glassMat = mat(COL.glass, { opacity: 0.3, roughness: 0.08, metalness: 0.25, depthWrite: false });
   const H = M(BUILDING.cutH), T = M(BUILDING.wallT);
+  const SILL = M(BUILDING.sill), HEAD = M(BUILDING.head);
+
+  // Sebuah bukaan "milik" dinding bila sumbu dan posisi as-nya sama.
+  const onWall = (o, axis, pos) => o.axis === axis && Math.abs(o.pos - pos) < 90;
+
+  // Potong satu bentang dinding dengan daftar bukaan → sisa bentang masif.
+  function subtract(a, b, cuts) {
+    let spans = [[a, b]];
+    cuts.forEach((c) => {
+      const next = [];
+      spans.forEach(([s, e]) => {
+        if (c.b <= s || c.a >= e) { next.push([s, e]); return; }
+        if (c.a > s) next.push([s, c.a]);
+        if (c.b < e) next.push([c.b, e]);
+      });
+      spans = next;
+    });
+    return spans.filter(([s, e]) => e - s > 20);
+  }
+
+  function wallPiece(axis, pos, a, b, h, y) {
+    const len = M(b - a), mid = M((a + b) / 2), p = M(pos);
+    const sz = axis === "h" ? [len, h, T] : [T, h, len];
+    const ps = axis === "h" ? [mid, y + h / 2, p] : [p, y + h / 2, mid];
+    return box(wallsGroup, sz, ps, COL.wall, { material: wallMat });
+  }
 
   WALLS.forEach(([axis, pos, a, b]) => {
+    const cuts = OPENINGS.filter((o) => onWall(o, axis, pos));
+    // Setiap bukaan memotong dinding setinggi penuh; jendela mendapat
+    // dinding ambang kembali di bawahnya.
+    subtract(a, b, cuts).forEach(([s, e]) => wallPiece(axis, pos, s, e, H, 0));
+    cuts.filter((o) => o.kind === "window")
+        .forEach((o) => wallPiece(axis, pos, o.a, o.b, SILL, 0));
+    // Pita transparan di atas potongan: kesan dinding menerus ke atas.
     const len = M(b - a), mid = M((a + b) / 2), p = M(pos);
-    const sz = axis === "h" ? [len, H, T] : [T, H, len];
-    const ps = axis === "h" ? [mid, H / 2, p] : [p, H / 2, mid];
-    box(wallsGroup, sz, ps, COL.wall, { material: wallMat });
-    // Pita transparan di atas potongan: memberi kesan dinding menerus ke atas.
     const cz = axis === "h" ? [len, M(220), T] : [T, M(220), len];
     const cp = axis === "h" ? [mid, H + M(110), p] : [p, H + M(110), mid];
     box(wallsGroup, cz, cp, COL.wallTop, { material: capMat, shadow: false });
+  });
+
+  // Titik pada denah → posisi dunia, dengan memperhatikan sumbu bukaan.
+  const at = (axis, along, pos) => (axis === "h" ? [M(along), M(pos)] : [M(pos), M(along)]);
+
+  OPENINGS.forEach((o, i) => {
+    const g = new THREE.Group();
+    const code = `${o.kind === "door" ? "P" : o.kind === "window" ? "J" : "B"}-${String(i + 1).padStart(2, "0")}`;
+    const len = M(o.b - o.a), mid = (o.a + o.b) / 2;
+    const [mx0, mz0] = at(o.axis, mid, o.pos);
+
+    if (o.kind === "window") {
+      // Kaca dari ambang sampai garis potong, plus kusen tipis di ambang.
+      const gz = o.axis === "h" ? [len, H - SILL, M(40)] : [M(40), H - SILL, len];
+      box(g, gz, [mx0, SILL + (H - SILL) / 2, mz0], COL.glass, { material: glassMat, shadow: false });
+      const fz = o.axis === "h" ? [len, M(60), T + M(20)] : [T + M(20), M(60), len];
+      box(g, fz, [mx0, SILL, mz0], COL.frame, { material: frameMat });
+    } else {
+      // Kusen: dua tiang di pipi bukaan.
+      [o.a, o.b].forEach((t) => {
+        const [jx, jz] = at(o.axis, t, o.pos);
+        const jz2 = o.axis === "h" ? [M(60), H, T + M(20)] : [T + M(20), H, M(60)];
+        box(g, jz2, [jx, H / 2, jz], COL.frame, { material: frameMat });
+      });
+      // Ambang lantai supaya bukaan terbaca juga dari denah atas.
+      const tz = o.axis === "h" ? [len, M(16), T] : [T, M(16), len];
+      box(g, tz, [mx0, M(34), mz0], COL.frame, { material: frameMat, shadow: false });
+    }
+
+    // Daun pintu digambar terbuka 90° persis seperti arah ayun pada denah,
+    // sehingga ruang bebas ayunnya ikut terlihat terhadap peralatan.
+    //
+    // Sudut kerja memakai konvensi bidang XZ: arah (dx, dz) setara sudut
+    // theta = atan2(−dz, dx), yaitu sudut lokal RingGeometry maupun rotasi-Y
+    // sebuah box yang sisi panjangnya searah +X lokal.
+    const ang = (dx, dz) => Math.atan2(-dz, dx);
+    (o.leaves || []).forEach((lf) => {
+      const swing = M(lf.r);
+      const [hx, hz] = at(o.axis, lf.hinge, o.pos);
+      // Arah daun saat terbuka: tegak lurus dinding, ke sisi yang ditunjuk busur.
+      const [ox, oz] = o.axis === "h" ? [0, lf.dir] : [lf.dir, 0];
+      // Arah menyusur dinding, dari engsel menuju pipi seberang.
+      const s = Math.sign(mid - lf.hinge) || 1;
+      const [wx, wz] = o.axis === "h" ? [s, 0] : [0, s];
+
+      const aOpen = ang(ox, oz), aWall = ang(wx, wz);
+      const cx = hx + (ox * swing) / 2, cz = hz + (oz * swing) / 2;
+      const panel = box(g, [swing, H, M(38)], [cx, H / 2, cz], COL.leaf, { material: leafMat });
+      panel.rotation.y = aOpen;
+      const inset = box(g, [swing * 0.74, H * 0.62, M(46)], [cx, H * 0.55, cz], 0x8e9ba2,
+        { roughness: 0.6, metalness: 0.1, shadow: false });
+      inset.rotation.y = aOpen;
+
+      let d = aWall - aOpen;
+      while (d <= -Math.PI) d += 2 * Math.PI;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      const arc = new THREE.Mesh(
+        new THREE.RingGeometry(swing - 0.014, swing, 44, 1,
+          d > 0 ? aOpen : aWall, Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: COL.swing, transparent: true, opacity: 0.55 })
+      );
+      arc.rotation.x = -Math.PI / 2;
+      arc.position.set(hx, M(36), hz);
+      g.add(arc);
+    });
+
+    g.traverse((m) => { if (m.isMesh) m.userData.pick = { type: "opening", code }; });
+    o.code = code;
+    doorsGroup.add(g);
   });
 
   // ── Label ruang ──────────────────────────────────────────────────────────
@@ -531,9 +634,9 @@
   // ── Grup lapisan ─────────────────────────────────────────────────────────
   const LAYERS = {
     equip: equipGroup, gas: gasGroup, hood: hoodGroup, gutter: gutterGroup,
-    lamp: lampGroup, waste: wasteGroup, roomLabel: roomLabels,
+    lamp: lampGroup, waste: wasteGroup, roomLabel: roomLabels, doors: doorsGroup,
   };
-  const layerState = { equip: true, gas: true, hood: true, gutter: true, lamp: false, waste: true, roomLabel: true, code: false };
+  const layerState = { equip: true, gas: true, hood: true, gutter: true, lamp: false, waste: true, roomLabel: true, code: false, doors: true };
   function applyLayers() {
     Object.entries(LAYERS).forEach(([k, g]) => { g.visible = layerState[k]; });
     equipGroup.traverse((o) => { if (o.isSprite && o.userData.layer === "code") o.visible = layerState.code; });
@@ -702,7 +805,7 @@
 
     const g3 = el("div", "rail-group");
     g3.appendChild(el("p", "rail-title", "Lapisan"));
-    [["equip", "Peralatan"], ["gutter", "Gutter + grill"], ["hood", "Kitchen hood"],
+    [["equip", "Peralatan"], ["doors", "Pintu & jendela"], ["gutter", "Gutter + grill"], ["hood", "Kitchen hood"],
      ["gas", "Jalur gas"], ["waste", "Air kotor & limbah"], ["lamp", "Lampu TL"],
      ["roomLabel", "Nama ruang"], ["code", "Kode peralatan"]].forEach(([k, t]) => {
       g3.appendChild(railButton(t, layerState[k], () => {
@@ -881,6 +984,21 @@
       } else if (selection.type === "waste") {
         const w = WASTE.find((x) => x.code === selection.code);
         if (w) body.appendChild(detailSimple(w.name, w.code, "Air kotor", w.basis));
+      } else if (selection.type === "opening") {
+        const o = OPENINGS.find((x) => x.code === selection.code);
+        if (o) {
+          const jenis = o.kind === "door" ? "Pintu" : o.kind === "window" ? "Jendela" : "Bukaan tanpa daun";
+          const arah = o.axis === "h" ? "dinding arah timur–barat" : "dinding arah utara–selatan";
+          const tinggi = o.kind === "window"
+            ? `Ambang ${id(BUILDING.sill)} mm, kusen ${id(BUILDING.head)} mm — keduanya asumsi, paket gambar tidak memuat gambar potongan.`
+            : `Tinggi daun 2.100 mm (asumsi standar, tidak tercantum pada denah); pada model daun dipotong setinggi garis potong dinding ${id(BUILDING.cutH)} mm.`;
+          const ayun = o.leaves && o.leaves.length
+            ? ` Arah ayun dan titik engsel dihitung dari pusat busur ayun pada denah; daun digambar terbuka 90° agar ruang bebas ayunnya terlihat.`
+            : "";
+          body.appendChild(detailSimple(`${jenis} ${id(o.b - o.a)} mm`, o.code, arah,
+            `Lebar bersih ${id(o.b - o.a)} mm pada as ${o.axis === "h" ? "Y" : "X"} = ${id(o.pos)} mm, ` +
+            `dibaca dari persegi putih yang menimpa arsiran dinding pada DENAH [A].${ayun} ${tinggi}`));
+        }
       } else if (selection.type === "lpg") {
         body.appendChild(detailSimple("Tabung LPG", selection.code, "R. Gas",
           "Enam tabung LPG terbaca pada denah berperabot di R. Gas (1.500 × 2.500 mm) yang menempel di dinding timur R. Produksi. Diameter simbol ±370 mm, setara tabung 50 kg. Jumlah dan kapasitas perlu dikonfirmasi ke spesifikasi mekanikal."));
@@ -929,10 +1047,20 @@
 
     f.appendChild(el("p", "list-sub", "Tingkat kepastian"));
     f.appendChild(note("", "Presisi terhadap gambar kerja",
-      "Dinding (42 segmen, tebal 150 mm), batas dan peil ruang, gutter + grill, posisi " +
+      `Dinding (${WALLS.length} segmen, tebal ${id(BUILDING.wallT)} mm), batas dan peil ruang, ` +
+      "posisi tiap pintu/jendela, gutter + grill, posisi " +
       "R. Gas, septictank / grease trap / sumur resapan, serta titik lampu TL diekstrak " +
       "langsung dari vektor [A] — bukan dijiplak dari raster, sehingga cocok 1:1 dengan " +
       "as-grid 1–13 / A–Q."));
+    const nD = OPENINGS.filter((o) => o.kind === "door").length;
+    const nW = OPENINGS.filter((o) => o.kind === "window").length;
+    const nB = OPENINGS.filter((o) => o.kind === "opening").length;
+    f.appendChild(note("", `Bukaan — ${nD} pintu, ${nW} jendela, ${nB} bukaan tanpa daun`,
+      "Setiap bukaan dibaca dari persegi putih yang menimpa arsiran dinding pada DENAH. " +
+      "Pintu dipisahkan dari jendela lewat ada-tidaknya busur ayun, dan titik engsel tiap " +
+      "daun dihitung dari pusat busur itu — jadi arah ayunnya sama persis dengan gambar. " +
+      "Yang masih asumsi hanya ketinggiannya: ambang jendela 900 mm, kusen 2.100 mm, tinggi " +
+      "daun pintu 2.100 mm, karena paket gambar tidak memuat gambar potongan."));
     f.appendChild(note("warn", `Estimasi — ${est} dari ${EQUIPMENT.length} unit peralatan`,
       "Paket gambar tidak memuat BoQ/daftar peralatan dapur. Panjang dan lebar tiap unit " +
       "diukur dari simbol pada denah berperabot [B]; tinggi memakai ukuran fabrikasi lazim. " +
@@ -980,7 +1108,10 @@
     }, 0);
 
     const ts = $("#topstats");
+    const nDoor = OPENINGS.filter((o) => o.kind === "door").length;
+    const nWin = OPENINGS.filter((o) => o.kind === "window").length;
     [[String(ROOMS.length), "Ruang"], [String(EQUIPMENT.length), "Unit alat"],
+     [`${nDoor} / ${nWin}`, "Pintu / jendela"],
      [area.toFixed(0) + " m²", "Luas ruang"], [id(gutterLen) + " mm", "Gutter"]].forEach(([v, k]) => {
       const s = el("div", "stat");
       s.appendChild(el("b", null, v));
