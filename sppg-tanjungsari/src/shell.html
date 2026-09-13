@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Visualisasi 3D terukur layout SPPG Tanjungsari #004 — Sirnarasa, Bogor. Arsitektur, peralatan dapur, gutter, jalur gas, dan instalasi limbah." />
+    <title>Layout SPPG Tanjungsari #004 — Model 3D</title>
+    <style>/*__CSS__*/</style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21V8l9-5 9 5v13" /><path d="M3 12h18" /><path d="M9 21v-6h6v6" />
+          </svg>
+        </div>
+        <div class="brand-copy">
+          <p class="eyebrow">Gambar kerja &amp; denah berperabot · Skala 1:1</p>
+          <h1>SPPG Tanjungsari #004 — Sirnarasa, Bogor</h1>
+        </div>
+        <div class="topstats" id="topstats"></div>
+      </header>
+
+      <div class="workbench">
+        <nav class="rail" id="rail"></nav>
+
+        <section class="viewport" id="viewport">
+          <div class="overlay">
+            <div class="badge badge-compass">
+              <div class="north">&uarr; Utara</div>
+              <div class="size">20,00 &times; 20,00 m</div>
+            </div>
+            <div class="badge badge-metrics" id="metrics"></div>
+            <div class="hint">Geser untuk memutar &bull; Scroll untuk zoom &bull; Klik objek untuk detail</div>
+          </div>
+        </section>
+
+        <aside class="inspector">
+          <div class="tabs" id="tabs"></div>
+          <div class="panel-body" id="panel-body"></div>
+        </aside>
+      </div>
+    </main>
+
+    <script>/*__THREE__*/</script>
+    <script>/*__ORBIT__*/</script>
+    <script>/*__WALLS__*/</script>
+    <script>/*__DATA__*/</script>
+    <script>/*__APP__*/</script>
+  </body>
+</html>
