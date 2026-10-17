@@ -1,0 +1,23 @@
+{
+  "name": "JOTI2026-SummitBareng",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "SummitShared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "SummitServer": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "SummitClient": {
+          "$path": "src/client"
+        }
+      }
+    }
+  }
+}
