@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UMKM Plus Rencana Kecil</title>
+<meta name="description" content="Rencana kecil UMKM Plus: membangun versi pribadi aplikasi untuk usaha sendiri dengan modal Rp5 juta sebagai tahap uji coba.">
+<style>
+:root{
+  --bg:#f6f7fb; --surface:#ffffff; --surface-2:#eef1f8; --text:#1b2033; --muted:#5d6580;
+  --line:#dde2ee; --brand:#1f6feb; --brand-2:#0f9d76; --accent:#f59e0b; --danger:#dc3545;
+  --brand-soft:#e6efff; --green-soft:#e3f6ef; --amber-soft:#fff3dc; --red-soft:#fde8ea;
+  --shadow:0 4px 18px rgba(20,30,60,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1320; --surface:#171c2c; --surface-2:#1f2539; --text:#e8ebf5; --muted:#9aa3bd;
+    --line:#2b3350; --brand:#5b9bff; --brand-2:#2fc79a; --accent:#fbbf24; --danger:#f17482;
+    --brand-soft:#1c2b4d; --green-soft:#143329; --amber-soft:#3a2d10; --red-soft:#3d1c22;
+    --shadow:0 4px 18px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1320; --surface:#171c2c; --surface-2:#1f2539; --text:#e8ebf5; --muted:#9aa3bd;
+  --line:#2b3350; --brand:#5b9bff; --brand-2:#2fc79a; --accent:#fbbf24; --danger:#f17482;
+  --brand-soft:#1c2b4d; --green-soft:#143329; --amber-soft:#3a2d10; --red-soft:#3d1c22;
+  --shadow:0 4px 18px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--brand)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header.hero{background:linear-gradient(135deg,var(--brand-2),var(--brand));color:#fff;padding:48px 0 40px}
+.hero h1{font-size:clamp(1.9rem,5vw,2.8rem);margin:0 0 8px;line-height:1.15}
+.hero p{max-width:700px;font-size:1.08rem;opacity:.95;margin:0 0 18px}
+.pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:999px;font-size:.85rem;margin:0 6px 6px 0}
+nav.toc{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--muted);font-size:.88rem;padding:6px 10px;border-radius:8px}
+nav.toc a:hover{background:var(--surface-2);color:var(--text)}
+section{padding:44px 0;border-bottom:1px solid var(--line)}
+section h2{font-size:1.65rem;margin:0 0 6px;line-height:1.25}
+section h2 .num{color:var(--brand-2);margin-right:8px}
+.lead{color:var(--muted);margin:0 0 22px;max-width:760px}
+h3{margin:26px 0 10px;font-size:1.15rem}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.card h4{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:.93rem}
+.icon{font-size:1.6rem;line-height:1;margin-bottom:8px}
+.stat{font-size:1.8rem;font-weight:700;color:var(--brand-2);line-height:1.1}
+.callout{background:var(--brand-soft);border-left:4px solid var(--brand);padding:14px 16px;border-radius:10px;margin:18px 0}
+.callout.green{background:var(--green-soft);border-color:var(--brand-2)}
+.callout.amber{background:var(--amber-soft);border-color:var(--accent)}
+.callout.red{background:var(--red-soft);border-color:var(--danger)}
+.callout b{display:block;margin-bottom:2px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--surface-2);font-weight:600}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.total td{font-weight:700;background:var(--surface-2)}
+.tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:999px;margin:2px 4px 2px 0}
+.tag.in{background:var(--green-soft);color:var(--brand-2)}
+.tag.out{background:var(--red-soft);color:var(--danger)}
+.tag.opt{background:var(--amber-soft);color:var(--accent)}
+.vs{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.vs .card.pick{border:2px solid var(--brand-2)}
+.ribbon{display:inline-block;background:var(--brand-2);color:#fff;font-size:.75rem;padding:2px 10px;border-radius:999px;margin-bottom:6px}
+.timeline{position:relative;padding-left:22px;border-left:3px solid var(--line)}
+.timeline .ph{position:relative;margin-bottom:20px}
+.timeline .ph::before{content:"";position:absolute;left:-31px;top:6px;width:15px;height:15px;border-radius:50%;background:var(--brand-2);border:3px solid var(--bg)}
+.timeline .ph h4{margin:0}
+.timeline .ph .when{color:var(--brand-2);font-weight:600;font-size:.88rem}
+.timeline .ph p{margin:4px 0 0;color:var(--muted)}
+.check{list-style:none;padding:0;margin:0}
+.check li{padding:6px 0 6px 30px;position:relative;border-bottom:1px dashed var(--line)}
+.check li:last-child{border-bottom:none}
+.check li::before{content:"☐";position:absolute;left:4px;top:5px;color:var(--brand-2);font-size:1.05rem}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flow span{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.9rem}
+.flow i{font-style:normal;color:var(--muted)}
+footer{padding:28px 0 44px;color:var(--muted);font-size:.9rem;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">Rencana Kecil · Tahap 0</span><span class="pill">Modal Rp5 juta</span><span class="pill">Untuk usaha sendiri</span>
+    <h1>UMKM Plus "Versi Pribadi"</h1>
+    <p>Bangun dulu aplikasinya untuk usaha sendiri, pakai setiap hari, dan buktikan manfaatnya — sebelum mengeluarkan modal besar. Target: aplikasi bisa dipakai dalam <b>8 minggu</b>, lalu diuji selama <b>3–4 bulan</b>.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Daftar isi">
+  <div class="wrap">
+    <a href="#tujuan">1. Tujuan</a>
+    <a href="#cara">2. Cara Membangun</a>
+    <a href="#fitur">3. Fitur</a>
+    <a href="#modal">4. Rincian Modal</a>
+    <a href="#alat">5. Alat & Teknologi</a>
+    <a href="#jadwal">6. Jadwal</a>
+    <a href="#uji">7. Cara Menguji</a>
+    <a href="#lanjut">8. Kapan Naik Level</a>
+    <a href="#mulai">9. Mulai Hari Ini</a>
+  </div>
+</nav>
+
+<main>
+
+<section id="tujuan">
+  <div class="wrap">
+    <h2><span class="num">1.</span>Tujuan Rencana Kecil</h2>
+    <p class="lead">Rencana besar (Rp3,5 M) tetap jadi arah jangka panjang. Rencana kecil ini adalah "Tahap 0": percobaan murah untuk menjawab satu pertanyaan — <b>apakah aplikasi ini benar-benar membantu usaha?</b></p>
+    <div class="grid g4">
+      <div class="card"><div class="stat">Rp5 jt</div><p>Total modal, termasuk uji iklan & cadangan</p></div>
+      <div class="card"><div class="stat">8 minggu</div><p>Sampai aplikasi bisa dipakai harian</p></div>
+      <div class="card"><div class="stat">1 orang</div><p>Kamu sendiri, dibantu AI untuk coding</p></div>
+      <div class="card"><div class="stat">6 fitur</div><p>Hanya yang paling penting untuk usaha sendiri</p></div>
+    </div>
+    <div class="callout green"><b>Prinsip utamanya</b>Bukan membuat aplikasi yang sempurna, tapi aplikasi yang <u>cukup bagus untuk dipakai sendiri setiap hari</u>. Semua yang tidak wajib, ditunda.</div>
+  </div>
+</section>
+
+<section id="cara">
+  <div class="wrap">
+    <h2><span class="num">2.</span>Cara Membangun dengan Rp5 Juta</h2>
+    <p class="lead">Dengan modal segini, kita tidak bisa membayar programmer (1 programmer freelance saja bisa Rp5–15 juta per bulan). Ada dua jalan yang realistis:</p>
+    <div class="vs">
+      <div class="card pick"><span class="ribbon">Disarankan</span><h4>🤖 Jalan A: Bangun aplikasi sendiri dengan bantuan AI</h4>
+        <p>Kamu cukup menjelaskan apa yang diinginkan dalam bahasa sehari-hari, AI coding (Claude Code) yang menulis kodenya. Kamu yang menguji dan memberi masukan.</p>
+        <ul><li>✅ Aplikasi milik sendiri, bisa langsung dikembangkan jadi UMKM Plus yang sebenarnya</li><li>✅ Fitur AI konten bisa dibuat sesuai keinginan</li><li>✅ Hosting gratis di awal</li><li>⚠️ Butuh waktu belajar & meluangkan ±1–2 jam per hari</li></ul></div>
+      <div class="card"><h4>📊 Jalan B: Tanpa coding (Google Sheets + AppSheet)</h4>
+        <p>Menyusun aplikasi dari spreadsheet dengan alat "no-code". Lebih cepat jadi, tapi terbatas.</p>
+        <ul><li>✅ Bisa jadi dalam 1–2 minggu</li><li>✅ Hampir gratis</li><li>⚠️ Tampilan & fitur AI terbatas</li><li>⚠️ Saat mau jadi produk berbayar, harus dibangun ulang dari nol</li></ul></div>
+    </div>
+    <div class="callout"><b>Kenapa Jalan A?</b>Karena tujuan akhirnya adalah menjual UMKM Plus. Dengan Jalan A, aplikasi uji coba ini menjadi <u>fondasi</u> produk sebenarnya — tidak terbuang. Repository GitHub "Malika" yang sudah ada bisa langsung dipakai sebagai tempat kodenya.</div>
+  </div>
+</section>
+
+<section id="fitur">
+  <div class="wrap">
+    <h2><span class="num">3.</span>Fitur Versi Pribadi</h2>
+    <p class="lead">Dari 9 modul di rencana besar, kita ambil yang inti saja. <span class="tag in">Dibuat</span> <span class="tag opt">Opsional</span> <span class="tag out">Ditunda</span></p>
+    <div class="grid g2">
+      <div class="card"><div class="icon">📦</div><h4>1. Produk & Stok <span class="tag in">Dibuat</span></h4><ul><li>Daftar produk: nama, foto, harga modal, harga jual, stok</li><li>Catat barang masuk</li><li>Tanda stok menipis (kuning/merah)</li></ul></div>
+      <div class="card"><div class="icon">🧾</div><h4>2. Kasir Sederhana <span class="tag in">Dibuat</span></h4><ul><li>Pilih produk → total otomatis → bayar tunai/QRIS/transfer</li><li>Stok berkurang otomatis</li><li>Kirim struk lewat WhatsApp (link wa.me, gratis)</li></ul></div>
+      <div class="card"><div class="icon">💰</div><h4>3. Keuangan <span class="tag in">Dibuat</span></h4><ul><li>Uang masuk otomatis dari kasir</li><li>Catat uang keluar (belanja bahan, sewa, gaji, iklan)</li><li>Laporan untung-rugi harian & bulanan</li></ul></div>
+      <div class="card"><div class="icon">🏠</div><h4>4. Beranda <span class="tag in">Dibuat</span></h4><ul><li>Omzet & untung hari ini</li><li>Produk terlaris minggu ini</li><li>Daftar stok menipis</li></ul></div>
+      <div class="card"><div class="icon">✨</div><h4>5. AI Konten <span class="tag in">Dibuat</span></h4><ul><li>Pilih produk → AI buatkan caption IG/TikTok + hashtag</li><li>Ide konten & naskah video pendek</li><li>Gambar promo dibuat di Canva gratis dulu <span class="tag opt">Opsional: AI gambar</span></li></ul></div>
+      <div class="card"><div class="icon">📣</div><h4>6. Catatan Iklan <span class="tag in">Dibuat</span></h4><ul><li>Iklan dijalankan manual lewat Instagram/Meta Ads</li><li>Di aplikasi: catat biaya iklan, chat masuk, pesanan</li><li>Otomatis hitung "biaya per pesanan" & untung dari iklan</li></ul></div>
+    </div>
+    <h3>Yang sengaja ditunda</h3>
+    <div class="card"><p><span class="tag out">Ditunda</span> Pasang iklan otomatis lewat API Meta/TikTok (perlu proses verifikasi & rumit) · <span class="tag out">Ditunda</span> Multi-karyawan & multi-cabang · <span class="tag out">Ditunda</span> Payment gateway & langganan berbayar · <span class="tag out">Ditunda</span> Sinkron marketplace · <span class="tag out">Ditunda</span> Aplikasi di Play Store · <span class="tag out">Ditunda</span> Asisten AI chat · <span class="tag out">Ditunda</span> Mode offline penuh</p></div>
+    <div class="callout amber"><b>Tidak perlu Play Store dulu</b>Aplikasi dibuat sebagai <u>web app (PWA)</u>: dibuka lewat browser HP, lalu "Tambahkan ke layar utama" sehingga muncul ikon seperti aplikasi biasa. Gratis, tanpa biaya developer Play Store/App Store.</div>
+  </div>
+</section>
+
+<section id="modal">
+  <div class="wrap">
+    <h2><span class="num">4.</span>Rincian Modal Rp5 Juta</h2>
+    <p class="lead">Untuk 6 bulan pertama (2 bulan membangun + 4 bulan uji coba). Harga adalah perkiraan dan bisa berubah; kurs dihitung ±Rp16.500/US$.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Pos</th><th>Keterangan</th><th class="num">Perkiraan biaya</th></tr></thead>
+      <tbody>
+        <tr><td>🤖 Langganan AI untuk coding</td><td>Claude Pro ±US$20/bulan selama 3 bulan masa membangun. <i>Kalau sudah berlangganan, pos ini Rp0.</i></td><td class="num">Rp1.000.000</td></tr>
+        <tr><td>🧠 Pemakaian AI di dalam aplikasi</td><td>Top-up kredit API AI untuk fitur caption & ide konten (pemakaian satu usaha biasanya kecil)</td><td class="num">Rp500.000</td></tr>
+        <tr><td>🌐 Nama domain</td><td>Misal umkmplus-namamu.com / .id, 1 tahun</td><td class="num">Rp250.000</td></tr>
+        <tr><td>☁️ Hosting & database</td><td>Vercel + Supabase paket gratis (cukup untuk 1 usaha)</td><td class="num">Rp0</td></tr>
+        <tr><td>🖨️ Printer struk Bluetooth 58mm</td><td>Opsional — struk bisa lewat WhatsApp saja</td><td class="num">Rp350.000</td></tr>
+        <tr><td>🎨 Desain & gambar</td><td>Canva versi gratis</td><td class="num">Rp0</td></tr>
+        <tr><td>📣 Uji coba iklan</td><td>Iklan Instagram/Facebook ±Rp50.000/hari × 30 hari, dibagi 2–3 kampanye kecil</td><td class="num">Rp1.500.000</td></tr>
+        <tr><td>📚 Belajar</td><td>Kelas/ebook singkat tentang iklan Meta atau pembukuan UMKM (banyak juga yang gratis)</td><td class="num">Rp400.000</td></tr>
+        <tr><td>🛟 Cadangan</td><td>Untuk biaya tak terduga atau tambahan kredit AI</td><td class="num">Rp1.000.000</td></tr>
+        <tr class="total"><td colspan="2">Total</td><td class="num">Rp5.000.000</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout"><b>Hampir setengahnya untuk menguji, bukan membangun</b>Biaya membangun aplikasinya sendiri hanya ±Rp1,75 juta (langganan AI + kredit AI + domain). Sisanya untuk uji iklan dan cadangan — karena yang ingin dibuktikan adalah <u>hasil nyata</u> di usaha, bukan sekadar aplikasinya jadi.</div>
+  </div>
+</section>
+
+<section id="alat">
+  <div class="wrap">
+    <h2><span class="num">5.</span>Alat & Teknologi</h2>
+    <p class="lead">Dipilih yang gratis atau murah, tapi sama dengan yang dipakai startup sungguhan — supaya nanti bisa langsung dikembangkan.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Kebutuhan</th><th>Alat</th><th>Penjelasan sederhana</th></tr></thead>
+      <tbody>
+        <tr><td>Penulis kode</td><td>Claude Code</td><td>AI yang menulis kode dari instruksi bahasa Indonesia</td></tr>
+        <tr><td>Penyimpanan kode</td><td>GitHub (repo "Malika")</td><td>"Brankas" kode, gratis, ada riwayat setiap perubahan</td></tr>
+        <tr><td>Tampilan aplikasi</td><td>Next.js (web app / PWA)</td><td>Bisa dibuka di HP & laptop, bisa dipasang di layar utama HP</td></tr>
+        <tr><td>Database & login</td><td>Supabase (gratis)</td><td>Tempat menyimpan data produk, transaksi, keuangan + login aman</td></tr>
+        <tr><td>Hosting</td><td>Vercel (gratis)</td><td>Membuat aplikasi bisa diakses dari internet</td></tr>
+        <tr><td>AI konten</td><td>API model AI (mis. Claude)</td><td>Membuat caption & ide konten, bayar sesuai pemakaian</td></tr>
+        <tr><td>Pembayaran</td><td>QRIS statis dari bank/e-wallet</td><td>Cukup tempel kode QR; di aplikasi dicatat sebagai "bayar QRIS"</td></tr>
+        <tr><td>Struk & pengingat</td><td>Link WhatsApp (wa.me)</td><td>Membuka WhatsApp dengan pesan siap kirim, gratis</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Cara data mengalir</h3>
+    <div class="flow"><span>🧾 Jual di kasir</span><i>→</i><span>📦 Stok berkurang</span><i>→</i><span>💰 Uang masuk tercatat</span><i>→</i><span>🏠 Beranda: produk terlaris</span><i>→</i><span>✨ AI buat caption promo</span><i>→</i><span>📣 Iklan manual & catat hasil</span><i>→</i><span>💰 Biaya iklan masuk laporan</span></div>
+  </div>
+</section>
+
+<section id="jadwal">
+  <div class="wrap">
+    <h2><span class="num">6.</span>Jadwal 8 Minggu Membangun</h2>
+    <p class="lead">Asumsi meluangkan ±1–2 jam per hari. Setiap minggu ada hasil yang bisa dicoba.</p>
+    <div class="timeline">
+      <div class="ph"><span class="when">Minggu 1 · Persiapan</span><h4>Siapkan akun & data</h4><p>Buat akun Supabase, Vercel, domain. Kumpulkan daftar produk (nama, harga modal, harga jual, stok, foto) di Excel/Google Sheets. Tentukan kategori uang keluar usaha sendiri.</p></div>
+      <div class="ph"><span class="when">Minggu 2 · Produk & Stok</span><h4>Daftar produk sudah bisa diisi</h4><p>Login, halaman produk, tambah/ubah produk, catat barang masuk, impor dari Excel.</p></div>
+      <div class="ph"><span class="when">Minggu 3 · Kasir</span><h4>Mulai bisa jualan pakai aplikasi</h4><p>Layar kasir, pilih produk, total, metode bayar, stok berkurang otomatis, struk via WhatsApp. <b>Mulai pakai di usaha.</b></p></div>
+      <div class="ph"><span class="when">Minggu 4 · Keuangan</span><h4>Tahu untung-rugi</h4><p>Catat uang keluar, laporan harian & bulanan, ekspor ke Excel.</p></div>
+      <div class="ph"><span class="when">Minggu 5 · Beranda</span><h4>Ringkasan dalam satu layar</h4><p>Omzet, untung, produk terlaris, peringatan stok. Pasang sebagai ikon di layar utama HP (PWA).</p></div>
+      <div class="ph"><span class="when">Minggu 6 · AI Konten</span><h4>Caption otomatis</h4><p>Pilih produk + gaya bahasa → AI buatkan caption, hashtag, ide konten & naskah video. Simpan konten favorit.</p></div>
+      <div class="ph"><span class="when">Minggu 7 · Catatan Iklan</span><h4>Ukur hasil iklan</h4><p>Form catat kampanye iklan (biaya, chat, pesanan) + hitung biaya per pesanan. Jalankan iklan uji pertama.</p></div>
+      <div class="ph"><span class="when">Minggu 8 · Rapikan</span><h4>Perbaiki & stabilkan</h4><p>Perbaiki bug yang ditemukan selama dipakai, rapikan tampilan, backup data.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="uji">
+  <div class="wrap">
+    <h2><span class="num">7.</span>Cara Menguji (Bulan 3–6)</h2>
+    <p class="lead">Selama uji coba, catat angka-angka ini setiap minggu di catatan sederhana. Inilah "bukti" untuk memutuskan langkah berikutnya.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Yang diukur</th><th>Cara mengukur</th><th>Target sukses</th></tr></thead>
+      <tbody>
+        <tr><td>Dipakai rutin?</td><td>Berapa hari dalam seminggu aplikasi dipakai</td><td>Setiap hari jualan, 8 minggu berturut-turut</td></tr>
+        <tr><td>Menghemat waktu?</td><td>Waktu urus catatan & laporan per minggu, sebelum vs sesudah</td><td>Hemat ≥ 3 jam/minggu</td></tr>
+        <tr><td>Stok lebih akurat?</td><td>Selisih stok di aplikasi vs hitungan fisik</td><td>Selisih &lt; 5%</td></tr>
+        <tr><td>Tahu untung?</td><td>Bisa menjawab "untung bulan lalu berapa?" dalam 10 detik</td><td>Ya</td></tr>
+        <tr><td>Konten lebih rutin?</td><td>Jumlah posting per minggu</td><td>Naik ≥ 2× dibanding sebelumnya</td></tr>
+        <tr><td>Iklan menguntungkan?</td><td>Biaya per pesanan & penjualan dari iklan</td><td>Penjualan dari iklan ≥ 3× biaya iklan</td></tr>
+        <tr><td>Omzet naik?</td><td>Omzet bulanan dibanding sebelum pakai aplikasi</td><td>Naik ≥ 10%</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Uji ke orang lain (bulan ke-5–6)</h3>
+    <div class="card"><ul>
+      <li>Tunjukkan aplikasi ke <b>5–10 teman pemilik UMKM</b>. Biarkan mereka mencoba memakai sendiri.</li>
+      <li>Tanyakan: "Kalau aplikasi ini Rp79 ribu per bulan, mau bayar?" — lebih bagus lagi jika ada yang mau bayar di muka.</li>
+      <li>Catat fitur yang paling mereka cari dan bagian yang membingungkan.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="lanjut">
+  <div class="wrap">
+    <h2><span class="num">8.</span>Kapan Naik Level?</h2>
+    <div class="grid g3">
+      <div class="card"><div class="icon">🚀</div><h4>Lanjut ke rencana "Ramping"</h4><p>Jika aplikasi dipakai rutin, hasil di usaha terlihat, dan <b>minimal 3 teman mau membayar</b>. Langkah berikutnya: modal ±Rp500–700 jt, rekrut 1–2 programmer, buka untuk 50–100 UMKM pilot.</p></div>
+      <div class="card"><div class="icon">🔧</div><h4>Perbaiki dulu</h4><p>Jika dipakai sendiri tapi teman belum tertarik. Cari tahu fitur apa yang kurang, perbaiki 1–2 bulan, lalu uji lagi.</p></div>
+      <div class="card"><div class="icon">🔄</div><h4>Ubah arah</h4><p>Jika kamu sendiri pun jarang memakainya. Itu tanda penting — evaluasi masalah mana yang sebenarnya paling menyakitkan bagi UMKM.</p></div>
+    </div>
+    <div class="callout green"><b>Bonus</b>Hasil uji coba ini (data usaha sendiri: sebelum vs sesudah, testimoni teman) menjadi bahan cerita yang sangat kuat saat nanti mencari investor atau pelanggan pertama.</div>
+  </div>
+</section>
+
+<section id="mulai">
+  <div class="wrap">
+    <h2><span class="num">9.</span>Daftar yang Bisa Dikerjakan Hari Ini</h2>
+    <div class="grid g2">
+      <div class="card"><h4>Persiapan data</h4><ul class="check">
+        <li>Tulis daftar semua produk + harga modal + harga jual + stok sekarang</li>
+        <li>Foto produk-produk utama</li>
+        <li>Tulis kategori pengeluaran rutin (bahan, sewa, listrik, gaji, iklan, dll.)</li>
+        <li>Catat omzet & untung 1–3 bulan terakhir (sebagai pembanding)</li>
+        <li>Catat berapa jam per minggu untuk urus catatan & konten sekarang</li>
+      </ul></div>
+      <div class="card"><h4>Persiapan akun</h4><ul class="check">
+        <li>Akun GitHub (sudah ada ✔)</li>
+        <li>Daftar Supabase (gratis)</li>
+        <li>Daftar Vercel (gratis, login pakai GitHub)</li>
+        <li>Daftar akun API AI untuk fitur caption</li>
+        <li>Pastikan punya Instagram Bisnis + akun Meta Business untuk iklan</li>
+        <li>Siapkan QRIS dari bank/e-wallet usaha</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">UMKM Plus · Rencana Kecil (Tahap 0) · Oktober 2026<br>Harga dan perkiraan biaya bersifat indikatif dan dapat berubah. Lihat juga: <a href="umkm-plus-master-plan.html">Master Plan (rencana besar)</a>.</div>
+</footer>
+
+</body>
+</html>
