@@ -60,6 +60,10 @@ PostgreSQL (Neon lewat Vercel, gratis untuk skala kecil)
 
 Tanpa `ANTHROPIC_API_KEY` semua fitur tetap jalan; tombol AI menawarkan "Salin perintah AI" untuk ditempel manual di aplikasi Claude.
 
+## Versi demo (tanpa server)
+
+`npm run build:demo` membuat `dist-demo/`: aplikasi yang sama, tapi server (`server/`) dijalankan di dalam browser dengan PostgreSQL WASM (PGlite), data contoh Dapur Bakar, serta Google Drive/Gemini/Claude tiruan (lihat `demo/`). Dipakai untuk mencoba aplikasi sebelum dipasang online. Akun demo: `dapurbakar` / `demo1234` (pemilik), `sari` / `demo1234` (staf).
+
 ## Untuk pengembang
 
 ```bash

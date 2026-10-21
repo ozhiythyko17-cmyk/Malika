@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useBlobUrl } from "../api";
 import { Field } from "./ui";
 
 interface Props {
-  imageUrl: string; // harus dari domain sendiri (/api/...) supaya kanvas bisa diunduh
+  imageUrl: string; // alamat API (/api/...), diambil lewat fetch supaya kanvas bisa diunduh
   aspectRatio: string;
   headline: string;
   subheadline: string;
@@ -39,12 +40,15 @@ export default function Poster(props: Props) {
     setSubheadline(props.subheadline);
   }, [props.headline, props.subheadline]);
 
+  const blob = useBlobUrl(props.imageUrl);
   useEffect(() => {
+    if (blob.failed) setError("Foto tidak bisa dimuat.");
+    if (!blob.url) return;
     const image = new Image();
     image.onload = () => setImg(image);
     image.onerror = () => setError("Foto tidak bisa dimuat.");
-    image.src = props.imageUrl;
-  }, [props.imageUrl]);
+    image.src = blob.url;
+  }, [blob.url, blob.failed]);
 
   useEffect(() => {
     const ctx = canvas.current?.getContext("2d");

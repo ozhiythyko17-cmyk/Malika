@@ -4,7 +4,7 @@ import { ASPECT, PLATFORMS, STYLES, type StudioResult } from "../../shared/promp
 import { api, ApiError, mutate, useApi } from "../api";
 import { useSession } from "../App";
 import Poster from "../components/Poster";
-import { Chips, Empty, Field, useRun } from "../components/ui";
+import { ApiImage, Chips, Empty, Field, useRun } from "../components/ui";
 
 type Source = "Dari prompt" | "Dari Google Drive";
 type ImageMode = "Poster dari foto asli" | "Foto dipercantik AI";
@@ -137,7 +137,7 @@ export default function Studio() {
               const n = selected.indexOf(f.id);
               return (
                 <button key={f.id} className={n >= 0 ? "material on" : "material"} onClick={() => toggleFile(f.id)} title={f.name}>
-                  <img src={`/api/drive/thumb/${f.id}?w=300`} alt={f.name} loading="lazy" />
+                  <ApiImage path={`/api/drive/thumb/${f.id}?w=300`} alt={f.name} />
                   {f.kind === "video" && <span className="tag-video">▶ {f.durationSec ? `${f.durationSec}s` : "video"}</span>}
                   {n >= 0 && <span className="tag-num">{n + 1}</span>}
                 </button>
@@ -217,7 +217,7 @@ export default function Studio() {
               )}
               {image && (
                 <>
-                  <img className="result-img" src={image.url} alt="Gambar promo buatan AI" />
+                  <ApiImage className="result-img" path={image.url} alt="Gambar promo buatan AI" />
                   <div className="row gap">
                     <a className="btn small" href={image.url} download={`gambar-promo-${image.mediaId}.png`}>⬇️ Unduh gambar</a>
                     <button className="btn small" onClick={() => makeImage(result, usedFiles)}>🔄 Buat ulang</button>

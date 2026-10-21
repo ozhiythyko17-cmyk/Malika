@@ -27,7 +27,10 @@ async function connect(): Promise<Driver> {
   }
   if (process.env.VERCEL) throw new Error("DATABASE_URL belum diatur di Vercel.");
   const { PGlite } = await import("@electric-sql/pglite");
-  const pg = new PGlite(process.env.PGLITE_DIR || ".data/pglite");
+  // relaxedDurability: di browser (IndexedDB) simpan ke disk tanpa menunggu tiap query — jauh lebih cepat.
+  // Versi demo di browser bisa menitipkan opsi tambahan (mis. fsBundle) lewat globalThis.__PGLITE_OPTIONS__.
+  const extra = (globalThis as { __PGLITE_OPTIONS__?: object }).__PGLITE_OPTIONS__ ?? {};
+  const pg = new PGlite(process.env.PGLITE_DIR || ".data/pglite", { relaxedDurability: true, ...extra });
   await pg.waitReady;
   type PgLike = Pick<typeof pg, "query">;
   const wrap = (p: PgLike): Query => async (text, params = []) => (await p.query(text, params)).rows as never[];

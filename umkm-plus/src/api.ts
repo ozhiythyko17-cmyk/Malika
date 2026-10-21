@@ -78,3 +78,32 @@ export function useApi<T>(path: string | null) {
 
   return { data, error, reload: load };
 }
+
+/**
+ * Gambar dari API (/api/media, /api/drive/thumb) diambil lewat fetch lalu ditampilkan sebagai blob URL.
+ * Dengan begitu gambar ikut sesi login dan bisa digambar ke kanvas poster.
+ */
+export function useBlobUrl(path: string | null) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setUrl(null);
+    setFailed(false);
+    if (!path) return;
+    let alive = true;
+    let objectUrl: string | null = null;
+    fetch(path, { credentials: "same-origin" })
+      .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
+      .then((blob) => {
+        if (!alive) return;
+        objectUrl = URL.createObjectURL(blob);
+        setUrl(objectUrl);
+      })
+      .catch(() => alive && setFailed(true));
+    return () => {
+      alive = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [path]);
+  return { url, failed };
+}

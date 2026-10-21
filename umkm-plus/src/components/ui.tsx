@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { useBlobUrl } from "../api";
 
 export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   useEffect(() => {
@@ -122,4 +123,12 @@ export function useRun() {
 
 export function LoadError({ error }: { error: string | null }) {
   return error ? <div className="alert warn">{error}</div> : null;
+}
+
+/** <img> untuk gambar dari API (lihat useBlobUrl). */
+export function ApiImage({ path, alt, className }: { path: string; alt: string; className?: string }) {
+  const { url, failed } = useBlobUrl(path);
+  if (failed) return <div className={`img-missing ${className ?? ""}`}>Gambar tidak bisa dimuat</div>;
+  if (!url) return <div className={`img-loading ${className ?? ""}`} aria-label="Memuat gambar" />;
+  return <img src={url} alt={alt} className={className} />;
 }

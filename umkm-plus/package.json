@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "build:demo": "node demo/make-pglite-data.mjs && vite build -c vite.demo.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.0.0",
@@ -22,6 +23,7 @@
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
+    "buffer": "^6.0.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.3.7"

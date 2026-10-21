@@ -5,3 +5,5 @@ dist
 .vercel
 *.tsbuildinfo
 .data
+dist-demo
+demo/generated

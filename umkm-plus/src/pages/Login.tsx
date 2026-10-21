@@ -2,6 +2,9 @@ import { useState, type FormEvent } from "react";
 import { api } from "../api";
 import { Field } from "../components/ui";
 
+// Diset oleh versi demo (demo/main.tsx).
+const isDemo = Boolean((globalThis as { __UMKM_DEMO__?: boolean }).__UMKM_DEMO__);
+
 export default function Login({ needsSetup, onDone }: { needsSetup: boolean; onDone: () => void }) {
   const [businessName, setBusinessName] = useState("Dapur Bakar");
   const [name, setName] = useState("");
@@ -30,10 +33,15 @@ export default function Login({ needsSetup, onDone }: { needsSetup: boolean; onD
   return (
     <div className="login">
       <div className="login-brand">
-        <img src="/icon-192.png" alt="" width={72} height={72} />
+        <img src="icon-192.png" alt="" width={72} height={72} />
         <h1>UMKM Plus</h1>
         <p>{needsSetup ? "Buat akun pemilik untuk mulai" : "Masuk untuk melanjutkan"}</p>
       </div>
+      {isDemo && !needsSetup && (
+        <div className="alert info demo-hint">
+          Akun demo — pemilik: <code>dapurbakar</code> / <code>demo1234</code> · staf: <code>sari</code> / <code>demo1234</code>
+        </div>
+      )}
       <form className="card stack" onSubmit={submit}>
         {needsSetup && (
           <>

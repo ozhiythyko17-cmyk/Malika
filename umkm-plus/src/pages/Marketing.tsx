@@ -3,7 +3,7 @@ import { AD_PLATFORMS, type AdCampaign, type AdInput, type Content, type Custome
 import Studio from "./Studio";
 import { mutate, useApi } from "../api";
 import { useSession } from "../App";
-import { Chips, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
+import { ApiImage, Chips, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
 import { dateStr, fromInputDate, num, rp, timeStr, toInputDate, waLink } from "../utils";
 
 type Tab = "AI Konten" | "Tersimpan" | "Pelanggan" | "Iklan";
@@ -40,7 +40,7 @@ function Tersimpan() {
           <div className="small muted">{timeStr(c.createdAt)} · {c.title} · {c.platform}</div>
           {c.mediaId && (
             <a href={`/api/media/${c.mediaId}`} download={`gambar-promo-${c.mediaId}.png`}>
-              <img className="result-img" src={`/api/media/${c.mediaId}`} alt="Gambar promo" loading="lazy" />
+              <ApiImage className="result-img" path={`/api/media/${c.mediaId}`} alt="Gambar promo" />
             </a>
           )}
           <pre>{c.text}</pre>
