@@ -42,11 +42,11 @@ export async function listDriveFiles(folderId: string): Promise<DriveFile[]> {
     files?: { id: string; name: string; mimeType: string; videoMediaMetadata?: { durationMillis?: string } }[];
   };
   return (data.files ?? [])
-    .filter((f) => f.mimeType.startsWith("image/") || f.mimeType.startsWith("video/"))
+    .filter((f) => /^(image|video|audio)\//.test(f.mimeType))
     .map((f) => ({
       id: f.id,
       name: f.name,
-      kind: f.mimeType.startsWith("video/") ? "video" : "image",
+      kind: f.mimeType.split("/")[0] as DriveFile["kind"],
       durationSec: f.videoMediaMetadata?.durationMillis ? Math.round(Number(f.videoMediaMetadata.durationMillis) / 1000) : null,
     }));
 }
@@ -80,6 +80,29 @@ export async function driveThumbnail(id: string, width: number): Promise<{ data:
     }
   }
   throw new HttpError(502, "Gambar dari Google Drive tidak bisa diambil. Pastikan file dibagikan lewat link.");
+}
+
+/** Ukuran potongan unduhan: di bawah batas 4,5 MB per respons Vercel Function. */
+export const CHUNK_BYTES = 4 * 1024 * 1024;
+
+/**
+ * Unduh satu potongan file asli dari Drive (untuk video & musik yang dirender di HP).
+ * Mengembalikan isi potongan, total ukuran file, dan jenis file.
+ */
+export async function driveFileChunk(id: string, part: number): Promise<{ data: Buffer; total: number; mime: string }> {
+  assertFileId(id);
+  const key = driveKey();
+  if (!key) throw new HttpError(503, "Kunci API Google belum dipasang (GOOGLE_API_KEY).");
+  const start = part * CHUNK_BYTES;
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${key}`, {
+    headers: { Range: `bytes=${start}-${start + CHUNK_BYTES - 1}` },
+  });
+  if (res.status === 416) throw new HttpError(416, "Bagian file di luar ukuran file.");
+  if (!res.ok) throw new HttpError(502, `File Google Drive tidak bisa diunduh (${res.status}).`);
+  const data = Buffer.from(await res.arrayBuffer());
+  const range = res.headers.get("content-range"); // "bytes 0-4194303/12345678"
+  const total = range ? Number(range.split("/")[1]) : data.length;
+  return { data, total, mime: res.headers.get("content-type")?.split(";")[0] ?? "application/octet-stream" };
 }
 
 /** Buat gambar dengan Gemini. `reference` = foto asli yang dijadikan dasar (opsional). */

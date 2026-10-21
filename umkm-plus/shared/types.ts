@@ -96,7 +96,7 @@ export interface Content {
 export interface DriveFile {
   id: string;
   name: string;
-  kind: "image" | "video";
+  kind: "image" | "video" | "audio";
   durationSec: number | null;
 }
 

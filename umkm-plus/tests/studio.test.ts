@@ -30,7 +30,19 @@ globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
         { id: PHOTO, name: "ayam-bakar.jpg", mimeType: "image/jpeg" },
         { id: VIDEO, name: "proses-bakar.mp4", mimeType: "video/mp4", videoMediaMetadata: { durationMillis: "21000" } },
         { id: "docFileId_0123456789", name: "catatan.pdf", mimeType: "application/pdf" },
+        { id: "musicFileId_012345678", name: "akustik.mp3", mimeType: "audio/mpeg" },
       ],
+    });
+  }
+  if (url.startsWith(`https://www.googleapis.com/drive/v3/files/${VIDEO}?alt=media`)) {
+    // File 10 MB palsu: kembalikan potongan sesuai header Range.
+    const [, a, b] = req.headers.get("range")!.match(/bytes=(\d+)-(\d+)/)!.map(Number);
+    const total = 10 * 1024 * 1024;
+    if (a >= total) return new Response(null, { status: 416 });
+    const end = Math.min(b, total - 1);
+    return new Response(new Uint8Array(end - a + 1).fill(7), {
+      status: 206,
+      headers: { "content-type": "video/mp4", "content-range": `bytes ${a}-${end}/${total}` },
     });
   }
   if (url.startsWith("https://drive.google.com/thumbnail")) {
@@ -90,7 +102,7 @@ describe("Studio Konten", () => {
   test("daftar bahan Drive: hanya foto & video, folder yang benar", async () => {
     const r = await call("GET", "/drive/files");
     assert.equal(r.status, 200);
-    assert.deepEqual(r.data.map((f: any) => [f.kind, f.durationSec]), [["image", null], ["video", 21]]);
+    assert.deepEqual(r.data.map((f: any) => [f.kind, f.durationSec]), [["image", null], ["video", 21], ["audio", null]]);
     assert.equal(new URL(lastCall("drive/v3").url).searchParams.get("q"), `'${FOLDER}' in parents and trashed = false`);
     const thumb = await call("GET", `/drive/thumb/${PHOTO}?w=400`);
     assert.equal(thumb.type, "image/jpeg");
@@ -122,15 +134,32 @@ describe("Studio Konten", () => {
     claudeJson = {
       materialNotes: ["Bahan 1: ayam bakar", "Bahan 2: proses membakar"],
       captions: ["a", "b", "c"], headline: "h", subheadline: "s", imagePrompt: "p",
-      video: { title: "t", durationSec: 20, music: "m", scenes: [{ time: "0-3", shot: "Bahan 2", overlayText: "x", voiceover: "y" }] },
+      video: { title: "t", music: "m", scenes: [{ seconds: 3, material: 2, shot: "asap", overlayText: "x", voiceover: "y", imagePrompt: "" }] },
     };
     const r = await call("POST", "/ai/generate", { source: "drive", fileIds: [PHOTO, VIDEO], brief: "", productId: null, platform: "TikTok", style: "Gaul", wantImage: true, wantVideo: true });
     assert.equal(r.status, 200, JSON.stringify(r.data));
-    assert.equal(r.data.video.scenes[0].shot, "Bahan 2");
+    assert.equal(r.data.video.scenes[0].material, 2);
+    const schema = lastCall("api.anthropic.com").body.output_config.format.schema;
+    assert.deepEqual(schema.properties.video.properties.scenes.items.required, ["seconds", "material", "shot", "overlayText", "voiceover", "imagePrompt"]);
     const blocks = lastCall("api.anthropic.com").body.messages[0].content;
     assert.deepEqual(blocks.map((b: any) => b.type), ["image", "image", "text"]);
     assert.equal(blocks[0].source.data, JPEG.toString("base64"));
     assert.match(blocks[2].text, /Bahan 2: video 21 detik/);
+  });
+
+  test("musik tidak bisa dipilih sebagai bahan foto/video", async () => {
+    const r = await call("POST", "/ai/generate", { source: "drive", fileIds: ["musicFileId_012345678"], platform: "TikTok", style: "Gaul", wantImage: false, wantVideo: true });
+    assert.equal(r.status, 400);
+  });
+
+  test("video dari Drive diunduh per potongan 4 MB", async () => {
+    const p0 = await call("GET", `/drive/file/${VIDEO}?part=0`);
+    assert.equal(p0.status, 200);
+    assert.equal((p0.data as Buffer).length, 4 * 1024 * 1024);
+    const p2 = await call("GET", `/drive/file/${VIDEO}?part=2`);
+    assert.equal((p2.data as Buffer).length, 2 * 1024 * 1024);
+    const outside = await call("GET", "/drive/file/someoneElseFile_123456?part=0");
+    assert.equal(outside.status, 404);
   });
 
   test("bahan di luar folder usaha ditolak", async () => {

@@ -6,17 +6,38 @@ import {
 } from "../../shared/prompt.js";
 import { getDb } from "../db.js";
 import type { DriveFile } from "../../shared/types.js";
-import { assertFileId, driveThumbnail, generateImage, listDriveFiles, parseFolderId } from "../google.js";
+import { assertFileId, driveFileChunk, driveThumbnail, generateImage, listDriveFiles, parseFolderId } from "../google.js";
 import { bool, HttpError, idParam, int, json, oneOf, str, type Ctx } from "../http.js";
 import { loadSettings } from "./settings.js";
 
 const MAX_MATERIALS = 4;
 
-async function folderFiles(): Promise<DriveFile[]> {
+// Daftar file disimpan sebentar supaya unduhan potongan video tidak selalu memanggil Drive API.
+let cache: { folderId: string; at: number; files: DriveFile[] } | null = null;
+
+async function folderFiles(fresh = true): Promise<DriveFile[]> {
   const s = await loadSettings();
   const folderId = parseFolderId(s.driveFolderUrl);
   if (!folderId) throw new HttpError(400, "Link folder Google Drive belum diisi di Pengaturan.");
-  return listDriveFiles(folderId);
+  if (!fresh && cache?.folderId === folderId && Date.now() - cache.at < 5 * 60_000) return cache.files;
+  const files = await listDriveFiles(folderId);
+  cache = { folderId, at: Date.now(), files };
+  return files;
+}
+
+/**
+ * Isi asli file Drive (video/musik), dipotong per 4 MB: ?part=0, 1, 2, …
+ * Header X-Total-Size memberi tahu ukuran total supaya HP tahu berapa potongan yang perlu diambil.
+ */
+export async function driveFile(ctx: Ctx) {
+  const id = ctx.params.id;
+  assertFileId(id);
+  if (!(await folderFiles(false)).some((f) => f.id === id)) throw new HttpError(404, "File tidak ada di folder Drive usaha.");
+  const part = int(ctx.url.searchParams.get("part") ?? "0", "Bagian", { max: 100 });
+  const chunk = await driveFileChunk(id, part);
+  return new Response(new Uint8Array(chunk.data), {
+    headers: { "Content-Type": chunk.mime, "X-Total-Size": String(chunk.total), "Cache-Control": "private, max-age=3600" },
+  });
 }
 
 export async function driveFiles() {
@@ -54,8 +75,8 @@ async function buildRequest(b: Record<string, unknown>) {
   if (source === "drive") {
     if (!Array.isArray(b.fileIds) || b.fileIds.length === 0) throw new HttpError(400, "Pilih minimal satu bahan dari Google Drive.");
     if (b.fileIds.length > MAX_MATERIALS) throw new HttpError(400, `Maksimal ${MAX_MATERIALS} bahan sekali buat.`);
-    // Hanya file yang memang ada di folder usaha yang boleh dipakai.
-    const files = await folderFiles();
+    // Hanya foto/video yang memang ada di folder usaha yang boleh dipakai.
+    const files = (await folderFiles()).filter((f) => f.kind !== "audio");
     materials = (b.fileIds as unknown[]).map((id) => {
       const f = files.find((x) => x.id === id);
       if (!f) throw new HttpError(400, "Ada bahan yang tidak ditemukan di folder Drive. Muat ulang daftar bahan.");
@@ -74,7 +95,7 @@ async function buildRequest(b: Record<string, unknown>) {
     product,
     platform: oneOf(b.platform, PLATFORMS, "Platform"),
     style: oneOf(b.style, STYLES, "Gaya bahasa"),
-    materials: materials.map((m, i) => ({ label: `Bahan ${i + 1}`, kind: m.kind, name: m.name, durationSec: m.durationSec })),
+    materials: materials.map((m, i) => ({ label: `Bahan ${i + 1}`, kind: m.kind as "image" | "video", name: m.name, durationSec: m.durationSec })),
     wantImage: bool(b.wantImage ?? true, "Gambar"),
     wantVideo: bool(b.wantVideo ?? false, "Video"),
   };
@@ -136,7 +157,7 @@ export async function image(ctx: Ctx) {
   let reference: Awaited<ReturnType<typeof driveThumbnail>> | undefined;
   if (b.referenceFileId != null) {
     const id = str(b.referenceFileId, "Bahan", { max: 100 });
-    if (!(await folderFiles()).some((f) => f.id === id)) throw new HttpError(400, "Bahan tidak ditemukan di folder Drive.");
+    if (!(await folderFiles(false)).some((f) => f.id === id && f.kind !== "audio")) throw new HttpError(400, "Bahan tidak ditemukan di folder Drive.");
     reference = await driveThumbnail(id, 1600);
   }
   const fullPrompt = reference

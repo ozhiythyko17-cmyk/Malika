@@ -20,13 +20,18 @@ Dua cara membuat konten:
 
 | Mode | Masukan | Hasil |
 |---|---|---|
-| ✍️ **Dari prompt** | Tulis saja konten yang diinginkan (mis. "promo paket keluarga akhir pekan"), opsional pilih menu | 3 caption + hashtag, **gambar promo buatan AI**, naskah video pendek per adegan |
-| 📁 **Dari Google Drive** | Pilih 1–4 foto/video dari folder Drive usaha | AI **melihat bahanmu** lalu menulis caption & naskah video yang sesuai; gambar promo berupa **poster dari foto asli** (gratis) atau **foto asli dipercantik AI** |
+| ✍️ **Dari prompt** | Tulis saja konten yang diinginkan (mis. "promo paket keluarga akhir pekan"), opsional pilih menu | 3 caption + hashtag, **gambar promo buatan AI**, **video pendek otomatis** dari gambar AI per adegan |
+| 📁 **Dari Google Drive** | Pilih 1–4 foto/video dari folder Drive usaha | AI **melihat bahanmu** lalu menulis caption yang sesuai; gambar promo berupa **poster dari foto asli** (gratis) atau **foto asli dipercantik AI**; **video pendek otomatis** dari potongan foto/video aslimu |
 
 - Caption & naskah: Claude (bisa melihat foto; untuk video yang dilihat satu cuplikan frame).
 - Gambar: Gemini (model bisa diganti lewat `GEMINI_IMAGE_MODEL`). Perkiraan biaya beberapa ratus rupiah per gambar — cek harga terbaru di Google.
 - Poster: digambar langsung di HP (judul + teks + nama usaha + WA), tanpa biaya.
-- Video belum dirender otomatis: AI membuat naskah per adegan yang menyebut bahan mana yang dipakai, lalu diedit di CapCut.
+- **Video otomatis** (`src/video/render.ts`): AI menyusun 4–6 adegan (lama, bahan yang dipakai, teks di layar). Aplikasi merender di HP: foto diberi gerak zoom pelan, video Drive diputar (berlanjut bila dipakai di beberapa adegan), teks besar ala Reels/TikTok, musik latar dari file MP3/WAV di folder Drive, dan penutup berisi nama usaha + WA. Hasilnya file MP4 720×1280 (9:16) atau 720×720 (1:1) yang bisa diunduh.
+  - Perekaman berjalan seperti memutar video (video 20 detik ≈ 20 detik); layar harus tetap menyala dan aplikasi tetap terbuka selama proses.
+  - Mode prompt membuat satu gambar AI per adegan (4–6 gambar per video).
+  - Narasi suara belum dibuat otomatis; teks narasi tetap ditampilkan per adegan.
+  - Chrome terbaru menyimpan MP4; browser yang belum bisa MP4 menyimpan WebM.
+  - File video Drive diambil lewat server per potongan 4 MB (batas Vercel), maksimal ±160 MB.
 - Folder Drive dibagikan "Siapa saja yang memiliki link" (hanya-lihat). Server hanya memakai file yang ada di folder itu.
 
 ## Arsitektur

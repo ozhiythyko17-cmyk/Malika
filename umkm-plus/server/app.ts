@@ -51,6 +51,7 @@ const routes: [method: string, path: string, access: Access, handler: Handler][]
   ["GET", "/media/:id", "masuk", studio.media],
   ["GET", "/drive/files", "masuk", studio.driveFiles],
   ["GET", "/drive/thumb/:id", "masuk", studio.driveThumb],
+  ["GET", "/drive/file/:id", "masuk", studio.driveFile],
   ["GET", "/contents", "masuk", marketing.listContents],
   ["POST", "/contents", "masuk", marketing.createContent],
   ["DELETE", "/contents/:id", "masuk", marketing.deleteContent],

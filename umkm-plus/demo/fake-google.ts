@@ -9,7 +9,35 @@ const FILES = [
   { id: "demoFile_cumiBakarSaus", name: "cumi-bakar.jpg", mimeType: "image/jpeg", emoji: "🦑", hue: 35 },
   { id: "demoFile_sambalMatah01", name: "sambal-matah.jpg", mimeType: "image/jpeg", emoji: "🌶️", hue: 2 },
   { id: "demoFile_jagungBakar01", name: "jagung-bakar.jpg", mimeType: "image/jpeg", emoji: "🌽", hue: 45 },
+  { id: "demoFile_musikAkustik1", name: "musik-latar-demo.wav", mimeType: "audio/wav", emoji: "🎵", hue: 0 },
 ];
+
+/** Musik contoh: progresi akor sederhana 8 detik (diulang saat dipakai), file WAV mono. */
+function demoMusic(): Uint8Array {
+  const rate = 22050;
+  const seconds = 8;
+  const n = rate * seconds;
+  const chords = [[261.6, 329.6, 392.0], [220.0, 261.6, 329.6], [174.6, 220.0, 261.6], [196.0, 246.9, 293.7]];
+  const pcm = new Int16Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = i / rate;
+    const beat = t % 0.5;
+    const chord = chords[Math.floor(t / 2) % chords.length];
+    const env = Math.exp(-beat * 5) * 0.6 + 0.15;
+    let v = 0;
+    for (const f of chord) v += Math.sin(2 * Math.PI * f * t) + 0.3 * Math.sin(4 * Math.PI * f * t);
+    pcm[i] = Math.max(-1, Math.min(1, (v / 4) * env)) * 12000;
+  }
+  const buf = new ArrayBuffer(44 + pcm.byteLength);
+  const dv = new DataView(buf);
+  const str = (o: number, s: string) => [...s].forEach((c, k) => dv.setUint8(o + k, c.charCodeAt(0)));
+  str(0, "RIFF"); dv.setUint32(4, 36 + pcm.byteLength, true); str(8, "WAVE");
+  str(12, "fmt "); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, rate, true); dv.setUint32(28, rate * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+  str(36, "data"); dv.setUint32(40, pcm.byteLength, true);
+  new Int16Array(buf, 44).set(pcm);
+  return new Uint8Array(buf);
+}
 
 async function canvasToBytes(canvas: HTMLCanvasElement): Promise<Uint8Array> {
   const blob = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), "image/png"));
@@ -85,6 +113,16 @@ export async function fakeGoogleFetch(url: string, init?: RequestInit): Promise<
   if (url.startsWith("https://www.googleapis.com/drive/v3/files?")) {
     return Response.json({
       files: FILES.map((f) => ({ id: f.id, name: f.name, mimeType: f.mimeType, videoMediaMetadata: f.durationMillis ? { durationMillis: f.durationMillis } : undefined })),
+    });
+  }
+  if (url.startsWith("https://www.googleapis.com/drive/v3/files/") && url.includes("alt=media")) {
+    // Hanya musik contoh yang punya isi; "video" contoh hanya punya gambar cuplikan,
+    // sehingga aplikasi memakai cuplikannya (seperti saat video tidak bisa diputar di HP).
+    if (!url.includes("demoFile_musikAkustik1")) return new Response("not found", { status: 404 });
+    const bytes = demoMusic();
+    return new Response(bytes, {
+      status: 206,
+      headers: { "content-type": "audio/wav", "content-range": `bytes 0-${bytes.length - 1}/${bytes.length}` },
     });
   }
   if (url.startsWith("https://drive.google.com/thumbnail")) {

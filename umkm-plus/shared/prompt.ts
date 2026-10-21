@@ -35,10 +35,18 @@ export interface StudioResult {
   video: VideoScript | null;
 }
 
+export interface VideoScene {
+  seconds: number; // lama adegan
+  material: number; // nomor bahan (1, 2, …) yang dipakai; 0 = tanpa bahan (pakai gambar AI)
+  shot: string; // apa yang terlihat
+  overlayText: string; // teks besar di layar
+  voiceover: string; // narasi (untuk direkam sendiri bila mau)
+  imagePrompt: string; // deskripsi gambar AI untuk adegan tanpa bahan (bahasa Inggris)
+}
+
 export interface VideoScript {
   title: string;
-  durationSec: number;
-  scenes: { time: string; shot: string; overlayText: string; voiceover: string }[];
+  scenes: VideoScene[];
   music: string;
 }
 
@@ -54,7 +62,15 @@ Isi setiap kolom:
 - headline: teks poster maksimal 6 kata, menggoda dan mudah dibaca.
 - subheadline: teks pendukung poster maksimal 10 kata (boleh berisi harga/promo jika diberikan).
 - imagePrompt: deskripsi gambar dalam bahasa Inggris untuk model pembuat gambar. Foto makanan yang realistis dan menggugah selera, pencahayaan dan komposisi jelas, gaya foto media sosial profesional. Jika ada foto asli sebagai acuan, jelaskan cara mempercantiknya (latar, cahaya, properti) tanpa mengubah bentuk makanannya. Jangan minta teks di dalam gambar.
-- video (jika diminta): naskah video pendek vertikal 15–30 detik: adegan berurutan dengan waktu, pengambilan gambar (jika ada bahan video/foto, sebut bahan yang dipakai), teks di layar, dan suara/narasi; adegan pertama harus hook kuat 3 detik.`;
+- video (jika diminta): rencana video pendek 15–25 detik yang akan DIRENDER OTOMATIS oleh aplikasi, 4–6 adegan berurutan. Adegan pertama harus hook kuat (2–3 detik). Untuk tiap adegan:
+  - seconds: lama adegan (2–6 detik). Untuk bahan video, jangan melebihi durasi videonya.
+  - material: nomor bahan yang ditampilkan (Bahan 1 = 1, dst.). Boleh memakai bahan yang sama lebih dari sekali. Jika tidak ada bahan, isi 0.
+  - shot: penjelasan singkat apa yang terlihat.
+  - overlayText: teks besar di layar, maksimal 7 kata, mudah dibaca sekilas.
+  - voiceover: kalimat narasi singkat.
+  - imagePrompt: jika material 0, deskripsi gambar dalam bahasa Inggris untuk adegan itu (foto makanan realistis, tanpa teks); jika memakai bahan, isi string kosong.
+  Jangan buat adegan penutup berisi nama usaha/kontak; aplikasi menambahkannya otomatis.
+  - music: suasana musik latar yang cocok (mis. "akustik santai").`;
 
 const rupiah = (n: number) => "Rp" + n.toLocaleString("id-ID");
 
@@ -87,18 +103,17 @@ export function studioSchema(wantVideo: boolean) {
   const video = {
     type: "object",
     additionalProperties: false,
-    required: ["title", "durationSec", "scenes", "music"],
+    required: ["title", "scenes", "music"],
     properties: {
       title: str,
-      durationSec: { type: "integer" },
       music: str,
       scenes: {
         type: "array",
         items: {
           type: "object",
           additionalProperties: false,
-          required: ["time", "shot", "overlayText", "voiceover"],
-          properties: { time: str, shot: str, overlayText: str, voiceover: str },
+          required: ["seconds", "material", "shot", "overlayText", "voiceover", "imagePrompt"],
+          properties: { seconds: { type: "integer" }, material: { type: "integer" }, shot: str, overlayText: str, voiceover: str, imagePrompt: str },
         },
       },
     },
@@ -122,7 +137,7 @@ export function studioSchema(wantVideo: boolean) {
 export function buildManualPrompt(r: StudioRequest) {
   return `${STUDIO_SYSTEM.split("\n\nIsi setiap kolom:")[0]}
 
-Buatkan 3 caption berbeda (masing-masing diakhiri ajakan bertindak dan 5–8 hashtag)${r.wantVideo ? ", lalu naskah video pendek 15–30 detik per adegan" : ""}.
+Buatkan 3 caption berbeda (masing-masing diakhiri ajakan bertindak dan 5–8 hashtag)${r.wantVideo ? ", lalu naskah video pendek 15–25 detik per adegan (lama, gambar, teks di layar, narasi)" : ""}.
 
 ${buildStudioPrompt({ ...r, wantVideo: true })}`;
 }

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.0.0",
+    "fix-webm-duration": "^1.0.6",
     "postgres": "^3.4.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"

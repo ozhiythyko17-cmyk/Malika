@@ -51,15 +51,17 @@ function generate(text: string, hasImages: number, wantVideo: boolean) {
     imagePrompt: `Appetizing ${product || "grilled chicken and fish"} on banana leaf, charcoal smoke, warm light, top view`,
   };
   if (wantVideo) {
+    const n = materials.length;
+    const mat = (k: number) => (n ? (k % n) + 1 : 0);
+    const name = product || "Menu bakar";
     result.video = {
-      title: `Dari Arang ke Piring: ${product || "Menu Bakar"}`,
-      durationSec: 20,
-      music: "Musik akustik santai yang sedang tren di TikTok",
+      title: `Dari Arang ke Piring: ${name}`,
+      music: "Musik akustik santai yang sedang tren",
       scenes: [
-        { time: "0–3 dtk", shot: `Close-up api & asap arang${materials[0] ? ` (${materials[0][1]})` : ""}`, overlayText: "Sabar… lagi dibakar 🔥", voiceover: "Ini rahasia rasanya." },
-        { time: "3–10 dtk", shot: `${product || "Menu"} dibalik dan diolesi bumbu`, overlayText: "Bumbu meresap sampai dalam", voiceover: "Diolesi bumbu berkali-kali." },
-        { time: "10–16 dtk", shot: `Hasil akhir di piring${materials[1] ? ` (${materials[1][1]})` : ""}`, overlayText: price ? `Cuma ${price}` : "Siap diantar", voiceover: "Hangat, wangi, siap diantar." },
-        { time: "16–20 dtk", shot: "Logo/nama usaha + nomor WA", overlayText: "Order via WA sekarang!", voiceover: `Pesan di ${business}.` },
+        { seconds: 3, material: mat(n > 1 ? 1 : 0), shot: "Close-up api & asap arang", overlayText: "Sabar… lagi dibakar 🔥", voiceover: "Ini rahasia rasanya.", imagePrompt: n ? "" : "Charcoal grill with flames and smoke, close-up, night" },
+        { seconds: 4, material: mat(0), shot: `${name} dibalik dan diolesi bumbu`, overlayText: "Bumbu meresap sampai dalam", voiceover: "Diolesi bumbu berkali-kali.", imagePrompt: n ? "" : `${name} being basted on a grill, close-up` },
+        { seconds: 4, material: mat(1), shot: "Hasil akhir di atas daun pisang", overlayText: price ? `Cuma ${price}!` : "Siap diantar hangat", voiceover: "Hangat, wangi, siap diantar.", imagePrompt: n ? "" : `${name} served on banana leaf, top view` },
+        { seconds: 3, material: mat(0), shot: "Porsi siap dibungkus", overlayText: "Order via WA sekarang!", voiceover: `Pesan di ${business}.`, imagePrompt: n ? "" : "Food packed in takeaway box, warm light" },
       ],
     };
   }

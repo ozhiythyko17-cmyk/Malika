@@ -4,6 +4,7 @@ import { ASPECT, PLATFORMS, STYLES, type StudioResult } from "../../shared/promp
 import { api, ApiError, mutate, useApi } from "../api";
 import { useSession } from "../App";
 import Poster from "../components/Poster";
+import VideoMaker from "../components/VideoMaker";
 import { ApiImage, Chips, Empty, Field, useRun } from "../components/ui";
 
 type Source = "Dari prompt" | "Dari Google Drive";
@@ -31,7 +32,10 @@ export default function Studio() {
   const [selected, setSelected] = useState<string[]>([]);
 
   const fromDrive = source === "Dari Google Drive";
-  const drive = useApi<DriveFile[]>(fromDrive && settings.driveFolderUrl ? "/drive/files" : null);
+  // Daftar file Drive juga dipakai di mode prompt untuk pilihan musik video.
+  const drive = useApi<DriveFile[]>(settings.driveFolderUrl ? "/drive/files" : null);
+  const materialFiles = drive.data?.filter((f) => f.kind !== "audio");
+  const musicFiles = drive.data?.filter((f) => f.kind === "audio") ?? [];
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
@@ -131,9 +135,9 @@ export default function Studio() {
           </div>
           {drive.error && <div className="alert warn">{drive.error}</div>}
           {!drive.data && !drive.error && <p className="muted small">Memuat bahan dari Google Drive…</p>}
-          {drive.data?.length === 0 && <Empty icon="📁">Folder kosong. Unggah foto/video menu ke folder Drive, lalu muat ulang.</Empty>}
+          {materialFiles?.length === 0 && <Empty icon="📁">Folder kosong. Unggah foto/video menu ke folder Drive, lalu muat ulang.</Empty>}
           <div className="material-grid">
-            {drive.data?.map((f) => {
+            {materialFiles?.map((f) => {
               const n = selected.indexOf(f.id);
               return (
                 <button key={f.id} className={n >= 0 ? "material on" : "material"} onClick={() => toggleFile(f.id)} title={f.name}>
@@ -176,7 +180,7 @@ export default function Studio() {
           <Chips options={["Poster dari foto asli", "Foto dipercantik AI"] as ImageMode[]} value={imageMode} onChange={setImageMode} />
         )}
         <label className="check">
-          <input type="checkbox" checked={wantVideo} onChange={(e) => setWantVideo(e.target.checked)} /> Naskah video pendek (Reels/TikTok)
+          <input type="checkbox" checked={wantVideo} onChange={(e) => setWantVideo(e.target.checked)} /> Video pendek otomatis (Reels/TikTok)
         </label>
       </div>
 
@@ -253,29 +257,13 @@ export default function Studio() {
           ))}
 
           {result.video && (
-            <div className="card stack">
-              <b>🎬 {result.video.title} · {result.video.durationSec} detik</b>
-              <table className="tbl scenes">
-                <tbody>
-                  {result.video.scenes.map((s, i) => (
-                    <tr key={i}>
-                      <td className="small nowrap"><b>{s.time}</b></td>
-                      <td className="small">
-                        <div>🎥 {s.shot}</div>
-                        {s.overlayText && <div>🔤 “{s.overlayText}”</div>}
-                        {s.voiceover && <div className="muted">🎙️ {s.voiceover}</div>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="small">🎵 Musik: {result.video.music}</div>
+            <>
+              <VideoMaker script={result.video} materials={usedFiles} aspectRatio={result.aspectRatio} musicFiles={musicFiles} />
               <div className="row gap">
-                <button className="btn small" onClick={() => copy(videoText(result.video!))}>📋 Salin naskah</button>
-                <button className="btn small" onClick={() => save(videoText(result.video!))}>⭐ Simpan</button>
+                <button className="btn small" onClick={() => copy(videoText(result.video!))}>📋 Salin naskah video</button>
+                <button className="btn small" onClick={() => save(videoText(result.video!))}>⭐ Simpan naskah</button>
               </div>
-              <p className="small muted">Edit videonya di CapCut mengikuti naskah ini{usedFiles.length ? " dan bahan yang dipilih" : ""}.</p>
-            </div>
+            </>
           )}
         </div>
       )}
@@ -284,9 +272,14 @@ export default function Studio() {
 }
 
 function videoText(v: NonNullable<StudioResult["video"]>) {
+  let at = 0;
   return [
-    `🎬 ${v.title} (${v.durationSec} detik)`,
-    ...v.scenes.map((s) => `\n[${s.time}]\nGambar: ${s.shot}\nTeks layar: ${s.overlayText}\nNarasi: ${s.voiceover}`),
+    `🎬 ${v.title}`,
+    ...v.scenes.map((s) => {
+      const line = `\n[${at}–${at + s.seconds} dtk]\nGambar: ${s.shot}\nTeks layar: ${s.overlayText}\nNarasi: ${s.voiceover}`;
+      at += s.seconds;
+      return line;
+    }),
     `\nMusik: ${v.music}`,
   ].join("\n");
 }
