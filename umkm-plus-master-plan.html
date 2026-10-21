@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UMKM Plus Master Plan</title>
+<meta name="description" content="Master plan lengkap platform berbayar UMKM Plus: aplikasi all-in-one untuk inventory, keuangan, kasir, dan marketing berbasis AI bagi UMKM Indonesia.">
+<style>
+:root{
+  --bg:#f6f7fb; --surface:#ffffff; --surface-2:#eef1f8; --text:#1b2033; --muted:#5d6580;
+  --line:#dde2ee; --brand:#1f6feb; --brand-2:#0f9d76; --accent:#f59e0b; --danger:#dc3545;
+  --brand-soft:#e6efff; --green-soft:#e3f6ef; --amber-soft:#fff3dc; --red-soft:#fde8ea;
+  --shadow:0 4px 18px rgba(20,30,60,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1320; --surface:#171c2c; --surface-2:#1f2539; --text:#e8ebf5; --muted:#9aa3bd;
+    --line:#2b3350; --brand:#5b9bff; --brand-2:#2fc79a; --accent:#fbbf24; --danger:#f17482;
+    --brand-soft:#1c2b4d; --green-soft:#143329; --amber-soft:#3a2d10; --red-soft:#3d1c22;
+    --shadow:0 4px 18px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1320; --surface:#171c2c; --surface-2:#1f2539; --text:#e8ebf5; --muted:#9aa3bd;
+  --line:#2b3350; --brand:#5b9bff; --brand-2:#2fc79a; --accent:#fbbf24; --danger:#f17482;
+  --brand-soft:#1c2b4d; --green-soft:#143329; --amber-soft:#3a2d10; --red-soft:#3d1c22;
+  --shadow:0 4px 18px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--brand)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header.hero{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;padding:56px 0 48px}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);margin:0 0 8px;line-height:1.15}
+.hero p{max-width:720px;font-size:1.1rem;opacity:.95;margin:0 0 20px}
+.pill{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:999px;font-size:.85rem;margin:0 6px 6px 0}
+nav.toc{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:thin}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--muted);font-size:.88rem;padding:6px 10px;border-radius:8px}
+nav.toc a:hover{background:var(--surface-2);color:var(--text)}
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+section h2{font-size:1.75rem;margin:0 0 6px;line-height:1.25}
+section h2 .num{color:var(--brand);margin-right:8px}
+.lead{color:var(--muted);margin:0 0 24px;max-width:780px}
+h3{margin:28px 0 10px;font-size:1.2rem}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.card h4{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:.93rem}
+.icon{font-size:1.6rem;line-height:1;margin-bottom:8px}
+.callout{background:var(--brand-soft);border-left:4px solid var(--brand);padding:14px 16px;border-radius:10px;margin:18px 0}
+.callout.green{background:var(--green-soft);border-color:var(--brand-2)}
+.callout.amber{background:var(--amber-soft);border-color:var(--accent)}
+.callout.red{background:var(--red-soft);border-color:var(--danger)}
+.callout b{display:block;margin-bottom:2px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--surface-2);font-weight:600}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted);margin:2px 4px 2px 0}
+.tag.b{background:var(--brand-soft);color:var(--brand)}
+.tag.g{background:var(--green-soft);color:var(--brand-2)}
+.tag.a{background:var(--amber-soft);color:var(--accent)}
+.stat{font-size:1.9rem;font-weight:700;color:var(--brand);line-height:1.1}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 18px 48px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.9rem}
+.steps li b{display:block}
+.steps li span{color:var(--muted);font-size:.95rem}
+
+/* ---------- Pricing ---------- */
+.price{position:relative}
+.price .amt{font-size:1.7rem;font-weight:700;margin:6px 0 2px}
+.price .amt small{font-size:.9rem;font-weight:400;color:var(--muted)}
+.price.best{border:2px solid var(--brand)}
+.price .ribbon{position:absolute;top:-12px;right:14px;background:var(--brand);color:#fff;font-size:.75rem;padding:3px 10px;border-radius:999px}
+.price ul{list-style:none;padding:0}
+.price li{padding:3px 0}
+.price li::before{content:"✓ ";color:var(--brand-2);font-weight:700}
+
+/* ---------- Architecture diagram ---------- */
+.arch{display:grid;gap:10px}
+.arch .row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.arch .box{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;text-align:center;font-size:.88rem}
+.arch .lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:6px 0 2px}
+.arch .l1 .box{background:var(--brand-soft)}
+.arch .l2 .box{background:var(--green-soft)}
+.arch .l3 .box{background:var(--amber-soft)}
+
+/* ---------- Roadmap ---------- */
+.timeline{position:relative;padding-left:22px;border-left:3px solid var(--line)}
+.timeline .ph{position:relative;margin-bottom:22px}
+.timeline .ph::before{content:"";position:absolute;left:-31px;top:6px;width:15px;height:15px;border-radius:50%;background:var(--brand);border:3px solid var(--bg)}
+.timeline .ph h4{margin:0}
+.timeline .ph .when{color:var(--brand);font-weight:600;font-size:.88rem}
+
+/* ---------- App mockups ---------- */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+.tabs button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:7px 14px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.mock-area{display:grid;gap:24px;grid-template-columns:minmax(0,320px) minmax(0,1fr);align-items:start}
+@media (max-width:760px){.mock-area{grid-template-columns:1fr}}
+.phone{width:100%;max-width:320px;margin:0 auto;background:#111;border-radius:36px;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.screen{background:#f4f6fb;color:#1b2033;border-radius:26px;overflow:hidden;min-height:560px;font-size:13px;line-height:1.4;display:flex;flex-direction:column}
+.screen .sb{display:flex;justify-content:space-between;padding:8px 18px 4px;font-size:11px;font-weight:600}
+.screen .top{background:#1f6feb;color:#fff;padding:12px 14px 14px}
+.screen .top.g{background:#0f9d76}
+.screen .top.p{background:#7c3aed}
+.screen .top.o{background:#ea7a0c}
+.screen .top small{opacity:.85;display:block}
+.screen .top b{font-size:16px}
+.screen .body{padding:12px;flex:1;display:flex;flex-direction:column;gap:10px}
+.m-card{background:#fff;border-radius:12px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.m-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.m-kpis .m-card b{display:block;font-size:15px}
+.m-kpis .m-card span{font-size:11px;color:#667}
+.up{color:#0f9d76;font-weight:600;font-size:11px}
+.down{color:#dc3545;font-weight:600;font-size:11px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:70px;margin-top:6px}
+.bars i{flex:1;background:#1f6feb;border-radius:4px 4px 0 0;opacity:.85}
+.bars i.lo{background:#9dbcf5}
+.m-btn{background:#1f6feb;color:#fff;text-align:center;border-radius:10px;padding:9px;font-weight:600}
+.m-btn.g{background:#0f9d76}.m-btn.p{background:#7c3aed}.m-btn.o{background:#ea7a0c}
+.m-chip{display:inline-block;background:#eef1f8;border-radius:999px;padding:3px 9px;font-size:11px;margin:2px 3px 2px 0}
+.m-chip.on{background:#7c3aed;color:#fff}
+.m-warn{background:#fff3dc;border-left:3px solid #f59e0b;padding:8px;border-radius:8px;font-size:12px}
+.m-ai{background:#f3edff;border-left:3px solid #7c3aed;padding:8px;border-radius:8px;font-size:12px}
+.m-img{height:110px;border-radius:10px;background:linear-gradient(135deg,#ffb36b,#ff6b6b 60%,#7c3aed);display:grid;place-items:center;color:#fff;font-weight:700;text-align:center;font-size:14px;padding:8px}
+.m-list .m-row{padding:7px 0;border-bottom:1px solid #eef1f8}
+.m-list .m-row:last-child{border-bottom:none}
+.m-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.tabbar{display:flex;justify-content:space-around;border-top:1px solid #e3e7f0;background:#fff;padding:8px 0 10px;font-size:10px;color:#889}
+.tabbar span{text-align:center}
+.tabbar span.on{color:#1f6feb;font-weight:700}
+.prog{height:6px;background:#eef1f8;border-radius:6px;overflow:hidden}
+.prog i{display:block;height:100%;background:#0f9d76}
+.mock-desc h3{margin-top:0}
+.mock-panel[hidden]{display:none}
+
+footer{padding:32px 0 48px;color:var(--muted);font-size:.9rem;text-align:center}
+.toplink{position:fixed;right:16px;bottom:16px;background:var(--brand);color:#fff;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;text-decoration:none;box-shadow:var(--shadow);font-weight:700}
+@media print{nav.toc,.toplink,.tabs{display:none}.mock-panel[hidden]{display:block}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">Master Plan v1.0</span><span class="pill">Oktober 2026</span><span class="pill">Rahasia – Internal</span>
+    <h1>UMKM Plus</h1>
+    <p><b>Satu aplikasi untuk menjalankan dan membesarkan usaha.</b> Stok barang, kasir, keuangan, pelanggan, sampai bikin konten iklan dan menjalankan iklan dengan bantuan AI — semua dari HP, dengan bahasa yang gampang dipahami.</p>
+    <span class="pill">📦 Inventory</span><span class="pill">💰 Keuangan</span><span class="pill">🧾 Kasir</span><span class="pill">👥 Pelanggan</span><span class="pill">✨ AI Konten</span><span class="pill">📣 Iklan Otomatis</span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Daftar isi">
+  <div class="wrap">
+    <a href="#ringkasan">1. Ringkasan</a>
+    <a href="#masalah">2. Masalah</a>
+    <a href="#solusi">3. Solusi</a>
+    <a href="#pasar">4. Pasar</a>
+    <a href="#fitur">5. Fitur</a>
+    <a href="#aplikasi">6. Gambaran Aplikasi</a>
+    <a href="#journey">7. Alur Pengguna</a>
+    <a href="#harga">8. Paket Harga</a>
+    <a href="#bisnis">9. Model Bisnis</a>
+    <a href="#teknologi">10. Teknologi</a>
+    <a href="#roadmap">11. Roadmap</a>
+    <a href="#gtm">12. Pemasaran</a>
+    <a href="#tim">13. Tim & Biaya</a>
+    <a href="#proyeksi">14. Proyeksi</a>
+    <a href="#kpi">15. KPI</a>
+    <a href="#risiko">16. Risiko</a>
+    <a href="#legal">17. Legal</a>
+    <a href="#langkah">18. Langkah Awal</a>
+    <a href="#glosarium">19. Glosarium</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 1 -->
+<section id="ringkasan">
+  <div class="wrap">
+    <h2><span class="num">1.</span>Ringkasan Eksekutif</h2>
+    <p class="lead">Kalau hanya sempat baca satu bagian, baca bagian ini.</p>
+    <div class="grid g2">
+      <div class="card"><div class="icon">🎯</div><h4>Apa itu UMKM Plus?</h4><p>Aplikasi berlangganan (bayar bulanan/tahunan) yang menggabungkan semua alat penting untuk usaha kecil: catat stok, jualan lewat kasir, catat uang masuk-keluar, kelola pelanggan, dan pemasaran digital — dengan "asisten AI" yang membantu membuat konten dan menjalankan iklan.</p></div>
+      <div class="card"><div class="icon">👩‍🍳</div><h4>Untuk siapa?</h4><p>Pemilik usaha mikro & kecil (omzet Rp5 juta – Rp1 miliar per bulan): warung makan, kafe, toko fashion, toko kosmetik, frozen food, toko oleh-oleh, reseller online, bengkel, laundry, dan sejenisnya.</p></div>
+      <div class="card"><div class="icon">💡</div><h4>Kenapa berbeda?</h4><p>Aplikasi lain biasanya hanya kasir <i>atau</i> hanya pembukuan <i>atau</i> hanya alat desain. UMKM Plus menyambungkan semuanya: data penjualan dipakai AI untuk tahu produk mana yang laris, lalu otomatis dibuatkan konten dan iklannya.</p></div>
+      <div class="card"><div class="icon">💵</div><h4>Bagaimana menghasilkan uang?</h4><p>Langganan bulanan mulai Rp79 ribu, ditambah kredit AI, biaya jasa kelola iklan, dan biaya transaksi pembayaran digital. Target: 20.000 pelanggan berbayar di akhir tahun ke-3.</p></div>
+    </div>
+    <h3>Angka kunci rencana (asumsi, perlu divalidasi)</h3>
+    <div class="grid g4">
+      <div class="card"><div class="stat">9 bulan</div><p>Dari mulai bangun sampai versi resmi diluncurkan</p></div>
+      <div class="card"><div class="stat">Rp3,5 M</div><p>Perkiraan modal awal untuk 18 bulan pertama</p></div>
+      <div class="card"><div class="stat">20.000</div><p>Target pelanggan berbayar di akhir tahun ke-3</p></div>
+      <div class="card"><div class="stat">Bulan 26–30</div><p>Perkiraan titik impas (balik modal operasional bulanan)</p></div>
+    </div>
+    <div class="callout amber"><b>Catatan penting</b>Semua angka keuangan di dokumen ini adalah <u>perkiraan awal</u> untuk perencanaan. Angka harus diuji ulang setelah ada data nyata dari uji coba (pilot) dengan UMKM sungguhan.</div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="masalah">
+  <div class="wrap">
+    <h2><span class="num">2.</span>Masalah yang Dihadapi UMKM</h2>
+    <p class="lead">Kenapa aplikasi ini dibutuhkan? Karena pemilik UMKM umumnya mengerjakan semuanya sendiri — jualan, belanja stok, hitung uang, sampai promosi.</p>
+    <div class="grid g3">
+      <div class="card"><div class="icon">📦</div><h4>Stok berantakan</h4><p>Barang habis tanpa sadar, atau malah menumpuk sampai kedaluwarsa. Catatan stok masih di buku atau ingatan.</p></div>
+      <div class="card"><div class="icon">💸</div><h4>Uang usaha & pribadi tercampur</h4><p>Tidak tahu sebenarnya untung atau rugi. Sulit mengajukan pinjaman ke bank karena tidak punya laporan keuangan.</p></div>
+      <div class="card"><div class="icon">📱</div><h4>Bingung promosi online</h4><p>Tidak sempat bikin konten, tidak bisa desain, dan takut "bakar uang" saat pasang iklan di Instagram/TikTok/Facebook.</p></div>
+      <div class="card"><div class="icon">🧩</div><h4>Terlalu banyak aplikasi</h4><p>Kasir pakai satu aplikasi, desain pakai aplikasi lain, catatan di Excel, chat pelanggan di WhatsApp. Data tidak nyambung.</p></div>
+      <div class="card"><div class="icon">🤯</div><h4>Aplikasi terlalu rumit</h4><p>Banyak software bisnis memakai istilah akuntansi yang membingungkan dan dirancang untuk perusahaan besar.</p></div>
+      <div class="card"><div class="icon">👥</div><h4>Pelanggan tidak kembali</h4><p>Tidak punya daftar pelanggan, tidak tahu siapa yang sering beli, tidak ada program promo/loyalitas.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="solusi">
+  <div class="wrap">
+    <h2><span class="num">3.</span>Solusi: Visi, Misi & Nilai Jual</h2>
+    <div class="grid g2">
+      <div class="card"><h4>🌟 Visi</h4><p>Menjadi "asisten bisnis digital" nomor satu bagi UMKM Indonesia, sehingga setiap pemilik usaha kecil bisa mengelola dan mengembangkan bisnis seperti perusahaan profesional.</p></div>
+      <div class="card"><h4>🚀 Misi</h4><ul><li>Membuat pengelolaan usaha semudah memakai WhatsApp.</li><li>Memberi akses teknologi AI & iklan digital dengan harga terjangkau.</li><li>Membantu UMKM punya laporan rapi agar layak dapat modal.</li></ul></div>
+    </div>
+    <h3>Nilai jual utama (kenapa orang mau bayar)</h3>
+    <div class="grid g3">
+      <div class="card"><h4>1. Semua dalam satu tempat</h4><p>Stok, kasir, keuangan, pelanggan, dan marketing saling terhubung. Jual 1 barang di kasir → stok berkurang → uang tercatat → laporan otomatis.</p></div>
+      <div class="card"><h4>2. AI yang "ngerti usaha kita"</h4><p>AI membaca data penjualan sendiri, lalu menyarankan: "Kopi Susu Aren paling laris minggu ini, ayo promosikan" — sekaligus membuatkan caption, gambar, dan iklannya.</p></div>
+      <div class="card"><h4>3. Bahasa awam & mobile-first</h4><p>Tidak ada istilah ribet. "Uang Masuk" bukan "Debit". Bisa dipakai penuh dari HP Android murah, juga ada versi web untuk laptop.</p></div>
+      <div class="card"><h4>4. Iklan tanpa takut rugi</h4><p>Batas anggaran harian, saran target pembeli, dan laporan sederhana: "Rp100 ribu iklan menghasilkan 14 pesanan".</p></div>
+      <div class="card"><h4>5. Terjangkau</h4><p>Mulai Rp79 ribu/bulan — lebih murah dari gaji admin sehari, menggantikan 4–5 aplikasi berbeda.</p></div>
+      <div class="card"><h4>6. Didampingi</h4><p>Video tutorial, chat bantuan via WhatsApp, komunitas, dan kelas online gratis tiap bulan.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="pasar">
+  <div class="wrap">
+    <h2><span class="num">4.</span>Target Pasar & Kompetitor</h2>
+    <p class="lead">Indonesia memiliki sekitar 64–65 juta UMKM (data Kementerian Koperasi & UKM), namun baru sebagian yang terhubung ke ekosistem digital. Kita tidak mengejar semuanya — kita mulai dari yang paling siap.</p>
+    <h3>Ukuran pasar (pendekatan bertahap)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Lapisan</th><th>Penjelasan sederhana</th><th class="num">Perkiraan jumlah usaha</th></tr></thead>
+      <tbody>
+        <tr><td><b>Pasar total</b></td><td>Seluruh UMKM di Indonesia</td><td class="num">± 64 juta</td></tr>
+        <tr><td><b>Pasar yang bisa dilayani</b></td><td>UMKM yang sudah pakai smartphone & jualan online/punya toko tetap</td><td class="num">± 5–8 juta</td></tr>
+        <tr><td><b>Pasar sasaran 3 tahun</b></td><td>Usaha kecil di kota besar & menengah, omzet ≥ Rp5 juta/bulan, sektor kuliner, fashion, kecantikan, retail</td><td class="num">± 500 ribu</td></tr>
+        <tr><td><b>Target pelanggan berbayar</b></td><td>4% dari pasar sasaran</td><td class="num">20.000</td></tr>
+      </tbody>
+    </table></div>
+    <p style="color:var(--muted);font-size:.85rem">Angka lapisan 2–3 adalah estimasi kasar untuk perencanaan; perlu riset lanjutan.</p>
+
+    <h3>Profil pengguna (persona)</h3>
+    <div class="grid g3">
+      <div class="card"><div class="icon">👩‍🍳</div><h4>Bu Sari – Warung & Katering</h4><p>45 tahun, jualan nasi kotak & katering kantor. Omzet ±Rp30 juta/bulan. Kesulitan menghitung modal bahan & untung bersih. <b>Butuh:</b> kasir sederhana, catat belanja bahan, laporan untung.</p></div>
+      <div class="card"><div class="icon">🧕</div><h4>Dina – Brand Hijab Online</h4><p>27 tahun, jualan via Instagram, TikTok Shop & Shopee. Omzet ±Rp80 juta/bulan. Stok sering selisih antar marketplace. <b>Butuh:</b> sinkron stok, konten rutin, iklan TikTok/Meta.</p></div>
+      <div class="card"><div class="icon">☕</div><h4>Raka – Kedai Kopi</h4><p>31 tahun, 2 cabang kedai kopi. Omzet ±Rp150 juta/bulan. Ingin buka cabang ketiga. <b>Butuh:</b> multi-cabang, karyawan & shift, program member, laporan untuk investor/bank.</p></div>
+    </div>
+
+    <h3>Peta kompetitor</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Jenis pemain</th><th>Contoh</th><th>Kekuatan mereka</th><th>Celah untuk UMKM Plus</th></tr></thead>
+      <tbody>
+        <tr><td>Aplikasi kasir (POS)</td><td>Moka, Majoo, Pawoon, Qasir, Olsera</td><td>Kasir kuat, banyak pengguna F&B</td><td>Marketing & AI konten/iklan minim atau tidak ada</td></tr>
+        <tr><td>Pembukuan / akuntansi</td><td>BukuWarung, BukuKas, Jurnal, Accurate</td><td>Laporan keuangan, sebagian gratis</td><td>Tidak mengurus promosi & pertumbuhan penjualan</td></tr>
+        <tr><td>Alat desain & konten</td><td>Canva, CapCut</td><td>Desain mudah, template banyak</td><td>Tidak tahu data penjualan, tidak menjalankan iklan</td></tr>
+        <tr><td>Platform iklan langsung</td><td>Meta Ads Manager, TikTok Ads, Google Ads</td><td>Jangkauan luas</td><td>Terlalu rumit untuk pemula, mudah boros</td></tr>
+        <tr><td>Marketplace</td><td>Shopee, Tokopedia/TikTok Shop</td><td>Pembeli sudah ada</td><td>Data terkunci di masing-masing marketplace</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout green"><b>Posisi UMKM Plus</b>"Kasir + pembukuan + tim marketing AI" dalam satu langganan. Kita tidak harus menang di semua fitur kasir — kita menang karena <u>menghubungkan operasional dengan pertumbuhan penjualan</u>.</div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="fitur">
+  <div class="wrap">
+    <h2><span class="num">5.</span>Fitur Lengkap (Modul-Modul)</h2>
+    <p class="lead">Aplikasi dibagi menjadi 9 modul. Label <span class="tag b">MVP</span> = ada di versi pertama, <span class="tag g">V2</span> = tahap kedua, <span class="tag a">V3</span> = tahap lanjutan.</p>
+
+    <div class="grid g2">
+      <div class="card"><div class="icon">🏠</div><h4>1. Beranda (Dashboard)</h4>
+        <p>Ringkasan usaha hari ini dalam satu layar.</p>
+        <ul><li>Omzet hari ini, untung kotor, jumlah transaksi <span class="tag b">MVP</span></li><li>Peringatan stok menipis & tagihan jatuh tempo <span class="tag b">MVP</span></li><li>"Saran AI hari ini" — 3 tindakan prioritas <span class="tag g">V2</span></li><li>Perbandingan dengan minggu/bulan lalu <span class="tag b">MVP</span></li></ul></div>
+
+      <div class="card"><div class="icon">📦</div><h4>2. Inventory (Stok Barang)</h4>
+        <p>Tahu persis ada barang apa, berapa, dan kapan harus belanja lagi.</p>
+        <ul><li>Daftar produk + foto, harga modal, harga jual, varian (ukuran/warna) <span class="tag b">MVP</span></li><li>Stok masuk/keluar otomatis dari kasir <span class="tag b">MVP</span></li><li>Scan barcode pakai kamera HP <span class="tag b">MVP</span></li><li>Notifikasi stok menipis <span class="tag b">MVP</span></li><li>Resep/bahan baku (1 kopi = 18g biji kopi + 150ml susu) <span class="tag g">V2</span></li><li>Stok opname (hitung ulang) & tanggal kedaluwarsa <span class="tag g">V2</span></li><li>Data pemasok & pesanan pembelian (PO) <span class="tag g">V2</span></li><li>Multi-gudang/cabang & transfer stok <span class="tag a">V3</span></li><li>Prediksi kebutuhan stok oleh AI <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">🧾</div><h4>3. Kasir (POS) & Penjualan</h4>
+        <p>Mencatat setiap penjualan dengan cepat, online maupun offline.</p>
+        <ul><li>Kasir di HP/tablet, bisa jalan tanpa internet <span class="tag b">MVP</span></li><li>Pembayaran tunai, QRIS, transfer, e-wallet <span class="tag b">MVP</span></li><li>Struk via printer Bluetooth atau WhatsApp <span class="tag b">MVP</span></li><li>Diskon, promo, pajak, biaya layanan <span class="tag b">MVP</span></li><li>Penjualan tempo/hutang pelanggan <span class="tag b">MVP</span></li><li>Akun karyawan & hak akses, shift kasir <span class="tag g">V2</span></li><li>Pesanan dari WhatsApp/link katalog online <span class="tag g">V2</span></li><li>Sinkron pesanan & stok marketplace (Shopee, TikTok Shop, Tokopedia) <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">💰</div><h4>4. Keuangan</h4>
+        <p>Tahu untung-rugi tanpa perlu paham akuntansi.</p>
+        <ul><li>Catat uang masuk & keluar dengan kategori sederhana <span class="tag b">MVP</span></li><li>Foto nota belanja → AI baca & catat otomatis (OCR) <span class="tag g">V2</span></li><li>Laporan Untung-Rugi, Arus Kas, Neraca sederhana <span class="tag b">MVP</span></li><li>Pemisahan dompet usaha & pribadi <span class="tag b">MVP</span></li><li>Hutang-piutang + pengingat tagihan via WhatsApp <span class="tag b">MVP</span></li><li>Invoice/faktur profesional <span class="tag g">V2</span></li><li>Gaji karyawan sederhana <span class="tag g">V2</span></li><li>Bantuan hitung pajak UMKM (PPh Final 0,5%) <span class="tag g">V2</span></li><li>Laporan siap ajukan pinjaman (KUR/fintech) <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">👥</div><h4>5. Pelanggan (CRM) & Loyalitas</h4>
+        <p>Kenali pelanggan dan buat mereka kembali belanja.</p>
+        <ul><li>Daftar pelanggan otomatis dari transaksi <span class="tag b">MVP</span></li><li>Riwayat belanja & pelanggan terbaik <span class="tag b">MVP</span></li><li>Kirim promo massal via WhatsApp (resmi, WhatsApp Business API) <span class="tag g">V2</span></li><li>Poin member & voucher ulang tahun <span class="tag g">V2</span></li><li>Pengelompokan otomatis: "pelanggan setia", "lama tidak belanja" <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">✨</div><h4>6. AI Studio Konten</h4>
+        <p>"Tim kreatif" dalam saku — membuat konten promosi dalam hitungan detik.</p>
+        <ul><li>Profil merek: warna, logo, gaya bahasa (santai/formal/gaul) <span class="tag b">MVP</span></li><li>Generate caption Instagram/TikTok/Facebook + hashtag <span class="tag b">MVP</span></li><li>Generate gambar promo & poster dari foto produk <span class="tag b">MVP</span></li><li>Hapus/ganti latar foto produk jadi foto studio <span class="tag b">MVP</span></li><li>Naskah video pendek (hook, isi, ajakan beli) <span class="tag b">MVP</span></li><li>Video pendek otomatis dari foto + musik + teks <span class="tag g">V2</span></li><li>Kalender konten 30 hari otomatis <span class="tag g">V2</span></li><li>Jadwal & posting otomatis ke Instagram/Facebook/TikTok <span class="tag g">V2</span></li><li>Balas komentar & DM dengan bantuan AI <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">📣</div><h4>7. Iklan (Ads Manager Pintar)</h4>
+        <p>Menjalankan iklan berbayar dengan panduan langkah demi langkah.</p>
+        <ul><li>Hubungkan akun Meta (Facebook & Instagram) Ads <span class="tag b">MVP</span></li><li>Wizard iklan 4 langkah: tujuan → produk → budget → target <span class="tag b">MVP</span></li><li>AI membuatkan 3–5 variasi materi iklan <span class="tag b">MVP</span></li><li>Batas belanja harian & pengaman anti-boros <span class="tag b">MVP</span></li><li>Laporan bahasa awam: biaya per pesanan, untung dari iklan <span class="tag b">MVP</span></li><li>TikTok Ads & Google Ads <span class="tag g">V2</span></li><li>Iklan "Klik ke WhatsApp" dengan pelacakan pesanan <span class="tag g">V2</span></li><li>Optimasi otomatis: matikan iklan buruk, tambah budget iklan bagus (dengan persetujuan) <span class="tag g">V2</span></li><li>Jasa kelola iklan oleh tim ahli (layanan premium) <span class="tag g">V2</span></li></ul></div>
+
+      <div class="card"><div class="icon">🛍️</div><h4>8. Toko Online & Katalog</h4>
+        <p>Etalase digital tanpa harus bikin website sendiri.</p>
+        <ul><li>Link katalog produk (umkmplus.id/namatoko) <span class="tag g">V2</span></li><li>Pesan langsung masuk ke kasir & stok <span class="tag g">V2</span></li><li>Pembayaran online & ongkir kurir otomatis <span class="tag a">V3</span></li><li>Pakai domain sendiri <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">🤖</div><h4>9. Asisten AI "Mas/Mbak Plus"</h4>
+        <p>Tanya apa saja tentang usaha dengan bahasa sehari-hari, lewat chat atau suara.</p>
+        <ul><li>"Berapa untungku bulan ini?" "Produk apa yang paling laku?" <span class="tag g">V2</span></li><li>"Tolong buatkan promo akhir pekan untuk es kopi" <span class="tag g">V2</span></li><li>Laporan mingguan otomatis dikirim ke WhatsApp pemilik <span class="tag g">V2</span></li><li>Konsultasi strategi: harga, menu baru, buka cabang <span class="tag a">V3</span></li></ul></div>
+
+      <div class="card"><div class="icon">⚙️</div><h4>Fitur pendukung</h4>
+        <ul><li>Multi-perangkat: Android, iOS, Web <span class="tag b">MVP</span></li><li>Mode offline + sinkron otomatis <span class="tag b">MVP</span></li><li>Backup data otomatis harian <span class="tag b">MVP</span></li><li>Pusat bantuan, video tutorial, chat CS <span class="tag b">MVP</span></li><li>Ekspor laporan ke Excel/PDF <span class="tag b">MVP</span></li><li>Multi-cabang & multi-user <span class="tag g">V2</span></li><li>Akademi UMKM Plus (kelas online) <span class="tag g">V2</span></li></ul></div>
+    </div>
+
+    <h3>Bagaimana modul saling terhubung</h3>
+    <div class="callout"><b>Contoh alur otomatis</b>Pelanggan beli 2 Kopi Susu Aren di kasir → stok susu & gula aren berkurang → uang masuk tercatat di keuangan → nama pelanggan tersimpan di CRM → AI melihat kopi aren naik 40% minggu ini → AI menyarankan "Promosikan Kopi Susu Aren" → satu klik: caption + gambar + iklan Instagram Rp50 ribu/hari siap tayang → hasil iklan dilaporkan kembali dalam bentuk "jumlah pesanan & untung".</div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section id="aplikasi">
+  <div class="wrap">
+    <h2><span class="num">6.</span>Gambaran Aplikasi (Mockup)</h2>
+    <p class="lead">Ilustrasi tampilan layar utama di HP. Klik tombol di bawah untuk melihat layar lainnya. (Desain final akan dibuat oleh UI/UX designer; ini adalah gambaran konsep.)</p>
+
+    <div class="tabs" role="tablist" aria-label="Layar aplikasi">
+      <button role="tab" aria-selected="true" data-t="m1">🏠 Beranda</button>
+      <button role="tab" aria-selected="false" data-t="m2">📦 Stok</button>
+      <button role="tab" aria-selected="false" data-t="m3">🧾 Kasir</button>
+      <button role="tab" aria-selected="false" data-t="m4">💰 Keuangan</button>
+      <button role="tab" aria-selected="false" data-t="m5">✨ AI Konten</button>
+      <button role="tab" aria-selected="false" data-t="m6">📣 Iklan</button>
+      <button role="tab" aria-selected="false" data-t="m7">🤖 Asisten</button>
+    </div>
+
+    <!-- Beranda -->
+    <div class="mock-panel" id="m1">
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>09:41</span><span>📶 🔋</span></div>
+          <div class="top"><small>Selamat pagi, Bu Sari 👋</small><b>Dapur Bu Sari</b></div>
+          <div class="body">
+            <div class="m-kpis">
+              <div class="m-card"><span>Omzet hari ini</span><b>Rp2.450.000</b><span class="up">▲ 12%</span></div>
+              <div class="m-card"><span>Untung kotor</span><b>Rp980.000</b><span class="up">▲ 8%</span></div>
+              <div class="m-card"><span>Transaksi</span><b>63</b><span class="up">▲ 5</span></div>
+              <div class="m-card"><span>Saldo kas</span><b>Rp7,2 jt</b><span class="down">▼ 3%</span></div>
+            </div>
+            <div class="m-card"><div class="m-row"><b>Penjualan 7 hari</b><span style="font-size:11px;color:#667">Rp14,8 jt</span></div>
+              <div class="bars"><i class="lo" style="height:45%"></i><i class="lo" style="height:60%"></i><i class="lo" style="height:52%"></i><i class="lo" style="height:70%"></i><i class="lo" style="height:66%"></i><i class="lo" style="height:88%"></i><i style="height:100%"></i></div></div>
+            <div class="m-warn">⚠️ <b>Stok menipis:</b> Beras (4 kg), Telur (1 tray). <u>Pesan ke pemasok</u></div>
+            <div class="m-ai">✨ <b>Saran AI:</b> Nasi Ayam Geprek naik 35% minggu ini. Buat promo "Paket Makan Siang"? <u>Buat sekarang</u></div>
+          </div>
+          <div class="tabbar"><span class="on">🏠<br>Beranda</span><span>🧾<br>Kasir</span><span>📦<br>Stok</span><span>✨<br>Marketing</span><span>☰<br>Lainnya</span></div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar Beranda</h3>
+          <p>Layar pertama yang dilihat setiap membuka aplikasi. Tujuannya: dalam 5 detik pemilik tahu kondisi usahanya hari ini.</p>
+          <ul><li><b>4 angka penting:</b> omzet, untung, jumlah transaksi, uang di kas — dengan tanda naik/turun.</li><li><b>Grafik 7 hari:</b> melihat tren tanpa membuka laporan.</li><li><b>Peringatan:</b> stok menipis, hutang jatuh tempo, iklan yang boros.</li><li><b>Saran AI:</b> tindakan konkret yang bisa langsung dieksekusi dengan satu klik.</li><li><b>Menu bawah:</b> 5 tombol besar, mudah dijangkau jempol.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stok -->
+    <div class="mock-panel" id="m2" hidden>
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>09:41</span><span>📶 🔋</span></div>
+          <div class="top g"><small>Inventory</small><b>Stok Barang</b></div>
+          <div class="body">
+            <div class="m-card" style="color:#889">🔍 Cari produk atau scan barcode 📷</div>
+            <div><span class="m-chip on" style="background:#0f9d76">Semua (48)</span><span class="m-chip">Menipis (5)</span><span class="m-chip">Habis (1)</span><span class="m-chip">Bahan baku</span></div>
+            <div class="m-card m-list">
+              <div class="m-row"><span><span class="m-dot" style="background:#0f9d76"></span><b>Ayam Potong</b><br><small style="color:#889">Modal Rp38rb/kg</small></span><b>24 kg</b></div>
+              <div class="m-row"><span><span class="m-dot" style="background:#f59e0b"></span><b>Beras Premium</b><br><small style="color:#889">Modal Rp15rb/kg</small></span><b style="color:#d97706">4 kg</b></div>
+              <div class="m-row"><span><span class="m-dot" style="background:#f59e0b"></span><b>Telur Ayam</b><br><small style="color:#889">Modal Rp55rb/tray</small></span><b style="color:#d97706">1 tray</b></div>
+              <div class="m-row"><span><span class="m-dot" style="background:#dc3545"></span><b>Sambal Botol</b><br><small style="color:#889">Modal Rp12rb</small></span><b style="color:#dc3545">Habis</b></div>
+              <div class="m-row"><span><span class="m-dot" style="background:#0f9d76"></span><b>Kotak Nasi</b><br><small style="color:#889">Modal Rp800</small></span><b>320 pcs</b></div>
+            </div>
+            <div class="m-card"><div class="m-row"><span>Nilai total stok</span><b>Rp6.840.000</b></div></div>
+            <div class="m-btn g">+ Tambah Produk / Stok Masuk</div>
+          </div>
+          <div class="tabbar"><span>🏠<br>Beranda</span><span>🧾<br>Kasir</span><span class="on">📦<br>Stok</span><span>✨<br>Marketing</span><span>☰<br>Lainnya</span></div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar Stok Barang</h3>
+          <p>Semua produk dan bahan baku terlihat dalam satu daftar dengan warna lampu lalu lintas:</p>
+          <ul><li>🟢 <b>Hijau</b> = aman, 🟡 <b>Kuning</b> = menipis, 🔴 <b>Merah</b> = habis.</li><li>Cari cepat atau scan barcode memakai kamera HP.</li><li>Filter "Menipis" untuk daftar belanja.</li><li>Nilai total stok — berapa uang yang "tertahan" di gudang.</li><li>Tombol besar untuk tambah produk atau catat barang masuk dari pemasok.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kasir -->
+    <div class="mock-panel" id="m3" hidden>
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>12:15</span><span>📶 🔋</span></div>
+          <div class="top"><small>Kasir · Shift Siang</small><b>Pesanan Baru</b></div>
+          <div class="body">
+            <div><span class="m-chip on" style="background:#1f6feb">Makanan</span><span class="m-chip">Minuman</span><span class="m-chip">Paket</span></div>
+            <div class="m-kpis">
+              <div class="m-card"><b>🍗 Geprek</b><span>Rp20.000</span></div>
+              <div class="m-card"><b>🍛 Nasi Rames</b><span>Rp18.000</span></div>
+              <div class="m-card"><b>🥤 Es Teh</b><span>Rp5.000</span></div>
+              <div class="m-card"><b>🍱 Paket Siang</b><span>Rp25.000</span></div>
+            </div>
+            <div class="m-card m-list">
+              <div class="m-row"><span>2× Ayam Geprek</span><b>Rp40.000</b></div>
+              <div class="m-row"><span>2× Es Teh Manis</span><b>Rp10.000</b></div>
+              <div class="m-row"><span style="color:#0f9d76">Promo Makan Siang</span><b style="color:#0f9d76">−Rp5.000</b></div>
+              <div class="m-row"><b>TOTAL</b><b style="font-size:16px">Rp45.000</b></div>
+            </div>
+            <div class="m-kpis"><div class="m-btn" style="background:#eef1f8;color:#1b2033">💵 Tunai</div><div class="m-btn">📱 QRIS</div></div>
+          </div>
+          <div class="tabbar"><span>🏠<br>Beranda</span><span class="on">🧾<br>Kasir</span><span>📦<br>Stok</span><span>✨<br>Marketing</span><span>☰<br>Lainnya</span></div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar Kasir</h3>
+          <p>Dirancang supaya karyawan baru bisa langsung pakai tanpa pelatihan panjang.</p>
+          <ul><li>Tombol produk besar dengan foto/ikon, dikelompokkan per kategori.</li><li>Promo otomatis diterapkan sesuai aturan yang dibuat pemilik.</li><li>Bayar tunai (hitung kembalian otomatis) atau QRIS (langsung terverifikasi).</li><li>Struk dicetak via printer Bluetooth atau dikirim ke WhatsApp pelanggan — sekaligus menyimpan nomor pelanggan ke CRM.</li><li>Tetap berjalan saat internet mati, data disinkronkan saat online.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keuangan -->
+    <div class="mock-panel" id="m4" hidden>
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>20:03</span><span>📶 🔋</span></div>
+          <div class="top g"><small>Keuangan · Oktober 2026</small><b>Untung Bersih: Rp11.650.000</b></div>
+          <div class="body">
+            <div class="m-kpis">
+              <div class="m-card"><span>Uang masuk</span><b style="color:#0f9d76">Rp58,2 jt</b></div>
+              <div class="m-card"><span>Uang keluar</span><b style="color:#dc3545">Rp46,6 jt</b></div>
+            </div>
+            <div class="m-card"><b>Ke mana uang keluar?</b>
+              <div style="margin-top:8px;font-size:12px">Bahan baku <span style="float:right">58%</span></div><div class="prog"><i style="width:58%"></i></div>
+              <div style="margin-top:6px;font-size:12px">Gaji karyawan <span style="float:right">22%</span></div><div class="prog"><i style="width:22%;background:#1f6feb"></i></div>
+              <div style="margin-top:6px;font-size:12px">Sewa & listrik <span style="float:right">12%</span></div><div class="prog"><i style="width:12%;background:#f59e0b"></i></div>
+              <div style="margin-top:6px;font-size:12px">Iklan & promosi <span style="float:right">8%</span></div><div class="prog"><i style="width:8%;background:#7c3aed"></i></div>
+            </div>
+            <div class="m-card m-list">
+              <div class="m-row"><span>🧾 Piutang Kantor ABC</span><b>Rp3,4 jt</b></div>
+              <div class="m-row"><span style="font-size:11px;color:#dc3545">Jatuh tempo 2 hari lagi</span><span class="m-chip">Ingatkan via WA</span></div>
+            </div>
+            <div class="m-kpis"><div class="m-btn g">📷 Foto Nota</div><div class="m-btn" style="background:#eef1f8;color:#1b2033">📄 Laporan PDF</div></div>
+          </div>
+          <div class="tabbar"><span>🏠<br>Beranda</span><span>🧾<br>Kasir</span><span>📦<br>Stok</span><span>✨<br>Marketing</span><span class="on">☰<br>Lainnya</span></div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar Keuangan</h3>
+          <p>Menjawab pertanyaan paling penting: <b>"Bulan ini saya untung berapa?"</b></p>
+          <ul><li>Untung bersih ditampilkan paling atas, besar dan jelas.</li><li>Uang masuk vs uang keluar, dengan rincian ke mana uang keluar.</li><li>Pengingat piutang + tombol kirim pengingat tagihan via WhatsApp.</li><li><b>Foto Nota:</b> foto struk belanja di pasar → AI membaca total & kategori → tercatat otomatis.</li><li>Unduh laporan PDF rapi untuk bank, investor, atau pengajuan KUR.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Konten -->
+    <div class="mock-panel" id="m5" hidden>
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>14:20</span><span>📶 🔋</span></div>
+          <div class="top p"><small>AI Studio</small><b>Buat Konten Promosi</b></div>
+          <div class="body">
+            <div class="m-card"><small style="color:#889">Produk</small><br><b>🍗 Ayam Geprek Level 5</b></div>
+            <div><small style="color:#889">Untuk:</small><br><span class="m-chip on">Instagram Feed</span><span class="m-chip">Story</span><span class="m-chip">TikTok</span><span class="m-chip">WA Status</span></div>
+            <div><small style="color:#889">Gaya bahasa:</small><br><span class="m-chip">Formal</span><span class="m-chip on">Santai</span><span class="m-chip">Gaul</span><span class="m-chip">Lucu</span></div>
+            <div class="m-img">🔥 PEDASNYA NAGIH!<br>Geprek Level 5 – Rp20rb</div>
+            <div class="m-ai">"Siang-siang enaknya yang pedes-pedes nampol! 🔥 Ayam Geprek Level 5 Dapur Bu Sari cuma 20 ribu, udah sama nasi & es teh. Berani coba? 😎 #GeprekJakarta #MakanSiang"</div>
+            <div class="m-kpis"><div class="m-btn" style="background:#eef1f8;color:#1b2033">🔄 Variasi lain</div><div class="m-btn p">📅 Jadwalkan</div></div>
+          </div>
+          <div class="tabbar"><span>🏠<br>Beranda</span><span>🧾<br>Kasir</span><span>📦<br>Stok</span><span class="on" style="color:#7c3aed">✨<br>Marketing</span><span>☰<br>Lainnya</span></div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar AI Studio Konten</h3>
+          <p>Membuat konten siap posting dalam 3 langkah: <b>pilih produk → pilih platform & gaya → klik "Buat"</b>.</p>
+          <ul><li>AI otomatis memakai foto produk, harga, dan warna merek dari data yang sudah ada.</li><li>Hasil: gambar/poster, caption, hashtag, dan (untuk video) naskah per detik.</li><li>Tombol "Variasi lain" jika belum cocok — bisa diedit manual juga.</li><li>Jadwalkan langsung ke Instagram/Facebook/TikTok atau unduh.</li><li>Pemakaian dihitung dengan <b>Kredit AI</b> (kuota bulanan sesuai paket).</li></ul>
+          <div class="callout amber"><b>Pengaman</b>Konten AI selalu ditinjau pemilik sebelum terbit. Sistem memfilter klaim yang dilarang (misal "menyembuhkan penyakit") agar tidak melanggar aturan iklan & BPOM.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Iklan -->
+    <div class="mock-panel" id="m6" hidden>
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>16:45</span><span>📶 🔋</span></div>
+          <div class="top o"><small>Iklan · Meta (FB & IG)</small><b>Promo Paket Siang</b></div>
+          <div class="body">
+            <div class="m-card"><div class="m-row"><span>Status</span><b style="color:#0f9d76">● Berjalan</b></div><div class="m-row"><span>Budget</span><b>Rp50.000/hari</b></div><div class="m-row"><span>Sisa periode</span><b>4 dari 7 hari</b></div></div>
+            <div class="m-kpis">
+              <div class="m-card"><span>Uang terpakai</span><b>Rp150.000</b></div>
+              <div class="m-card"><span>Orang melihat</span><b>18.420</b></div>
+              <div class="m-card"><span>Chat WA masuk</span><b>41</b></div>
+              <div class="m-card"><span>Pesanan</span><b style="color:#0f9d76">19</b></div>
+            </div>
+            <div class="m-card" style="background:#e3f6ef"><b>Hasil iklan: BAGUS 👍</b><br><span style="font-size:12px">Biaya per pesanan Rp7.900 · Penjualan dari iklan Rp612.000 (4× modal iklan)</span></div>
+            <div class="m-ai">✨ Variasi gambar B paling banyak menghasilkan chat. Pindahkan semua budget ke B & naikkan ke Rp75rb/hari?</div>
+            <div class="m-kpis"><div class="m-btn" style="background:#eef1f8;color:#1b2033">⏸ Jeda</div><div class="m-btn o">✓ Setujui saran</div></div>
+          </div>
+          <div class="tabbar"><span>🏠<br>Beranda</span><span>🧾<br>Kasir</span><span>📦<br>Stok</span><span class="on" style="color:#ea7a0c">✨<br>Marketing</span><span>☰<br>Lainnya</span></div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar Iklan</h3>
+          <p>Iklan dibuat lewat <b>wizard 4 langkah</b>, lalu dipantau dengan bahasa yang mudah:</p>
+          <ol><li><b>Tujuan:</b> tambah pesanan WhatsApp / kunjungan toko / followers.</li><li><b>Produk & materi:</b> pilih dari konten AI Studio.</li><li><b>Budget:</b> misal Rp50 ribu/hari selama 7 hari, dengan batas maksimal.</li><li><b>Target:</b> AI menyarankan lokasi (radius 5 km), usia, minat.</li></ol>
+          <p>Laporan tidak memakai istilah "CTR/CPM", tapi "Orang melihat", "Chat masuk", "Biaya per pesanan", dan rapor <b>BAGUS / CUKUP / PERLU DIPERBAIKI</b>. AI memberi saran optimasi yang dijalankan hanya setelah pemilik setuju.</p>
+          <div class="callout"><b>Soal uang iklan</b>Biaya iklan dibayar pengguna langsung ke Meta/TikTok/Google (kartu, saldo, atau top-up melalui UMKM Plus). UMKM Plus tidak mengambil keuntungan tersembunyi dari budget iklan — transparan.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Asisten -->
+    <div class="mock-panel" id="m7" hidden>
+      <div class="mock-area">
+        <div class="phone"><div class="screen">
+          <div class="sb"><span>21:10</span><span>📶 🔋</span></div>
+          <div class="top p"><small>Asisten AI</small><b>Mbak Plus 🤖</b></div>
+          <div class="body">
+            <div class="m-card" style="align-self:flex-end;background:#1f6feb;color:#fff;max-width:85%">Bulan ini untungku berapa? Lebih baik dari bulan lalu?</div>
+            <div class="m-card" style="max-width:90%">Untung bersih Oktober sampai hari ini <b>Rp11,65 jt</b>, naik <b>18%</b> dari September 📈<br><br>Penyebab utama: Paket Makan Siang laku 210 porsi (+65%). Tapi biaya bahan naik 9% karena harga ayam naik.</div>
+            <div class="m-card" style="align-self:flex-end;background:#1f6feb;color:#fff;max-width:85%">Terus sebaiknya aku ngapain?</div>
+            <div class="m-card" style="max-width:90%">3 saran:<br>1️⃣ Naikkan harga Paket Siang Rp2.000 (masih di bawah pesaing).<br>2️⃣ Belanja ayam ke pemasok B, lebih murah Rp3rb/kg.<br>3️⃣ Iklan katering kantor radius 3 km, Rp40rb/hari.<br><u>Jalankan saran 3?</u></div>
+            <div class="m-card" style="color:#889;margin-top:auto">Ketik atau 🎤 tekan untuk bicara…</div>
+          </div>
+        </div></div>
+        <div class="mock-desc">
+          <h3>Layar Asisten AI</h3>
+          <p>Seperti punya konsultan bisnis pribadi yang hafal semua data usaha kita, bisa diajak ngobrol 24 jam.</p>
+          <ul><li>Bertanya dengan bahasa sehari-hari, ketik atau suara (termasuk campuran bahasa daerah ringan).</li><li>Jawaban berdasarkan data usaha sendiri, bukan jawaban umum.</li><li>Bisa langsung menjalankan tindakan: buat promo, buat konten, siapkan iklan, kirim pengingat tagihan.</li><li>Laporan mingguan dikirim otomatis ke WhatsApp pemilik setiap Senin pagi.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>Peta menu aplikasi</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Menu bawah</th><th>Isi di dalamnya</th></tr></thead>
+      <tbody>
+        <tr><td>🏠 Beranda</td><td>Ringkasan hari ini, peringatan, saran AI, akses cepat</td></tr>
+        <tr><td>🧾 Kasir</td><td>Transaksi baru, riwayat transaksi, pesanan online, shift</td></tr>
+        <tr><td>📦 Stok</td><td>Produk, bahan baku, stok masuk, stok opname, pemasok, pembelian</td></tr>
+        <tr><td>✨ Marketing</td><td>AI Studio, kalender konten, iklan, promo & voucher, pelanggan & broadcast WA, katalog online</td></tr>
+        <tr><td>☰ Lainnya</td><td>Keuangan & laporan, asisten AI, karyawan, cabang, pengaturan, langganan, bantuan, akademi</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="journey">
+  <div class="wrap">
+    <h2><span class="num">7.</span>Alur Pengguna (User Journey)</h2>
+    <p class="lead">Dari pertama kali kenal sampai menjadi pelanggan setia.</p>
+    <div class="grid g2">
+      <div class="card"><h4>Hari pertama: daftar & siap dalam 10 menit</h4>
+        <ol class="steps" style="margin-top:12px">
+          <li><b>Daftar pakai nomor WhatsApp</b><span>Kode OTP, tanpa email ribet.</span></li>
+          <li><b>Pilih jenis usaha</b><span>Kuliner, fashion, kecantikan, retail, jasa → aplikasi menyesuaikan menu & kategori.</span></li>
+          <li><b>Masukkan produk</b><span>Foto produk/daftar menu → AI mengisi nama & harga, atau impor dari Excel/marketplace.</span></li>
+          <li><b>Atur profil merek</b><span>Unggah logo, AI menebak warna & gaya bahasa merek.</span></li>
+          <li><b>Transaksi pertama</b><span>Panduan interaktif mencoba kasir; perayaan kecil 🎉 saat berhasil.</span></li>
+        </ol></div>
+      <div class="card"><h4>Siklus mingguan pemilik usaha</h4>
+        <ol class="steps" style="margin-top:12px">
+          <li><b>Senin pagi</b><span>Terima laporan mingguan + 3 saran AI via WhatsApp.</span></li>
+          <li><b>Setiap hari</b><span>Jualan di kasir, catat belanja (foto nota), cek beranda.</span></li>
+          <li><b>2–3× seminggu</b><span>Posting konten yang sudah dijadwalkan AI.</span></li>
+          <li><b>Saat ada promo</b><span>Luncurkan iklan lewat wizard, pantau hasil.</span></li>
+          <li><b>Akhir bulan</b><span>Unduh laporan untung-rugi, cek pajak, rencanakan bulan depan.</span></li>
+        </ol></div>
+    </div>
+    <h3>Perjalanan pelanggan (funnel)</h3>
+    <div class="grid g4">
+      <div class="card"><b>1. Kenal</b><p>Konten TikTok/IG, komunitas UMKM, rekomendasi teman, event</p></div>
+      <div class="card"><b>2. Coba</b><p>Gratis 14 hari semua fitur Pro + paket Gratis selamanya (terbatas)</p></div>
+      <div class="card"><b>3. Bayar</b><p>Pilih paket bulanan/tahunan; diskon tahunan 2 bulan</p></div>
+      <div class="card"><b>4. Setia & ajak</b><p>Program referral: ajak teman, dapat gratis 1 bulan</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="harga">
+  <div class="wrap">
+    <h2><span class="num">8.</span>Paket Harga</h2>
+    <p class="lead">Model "freemium": ada paket gratis terbatas untuk menarik pengguna, lalu paket berbayar sesuai ukuran usaha. Harga bulanan; bayar tahunan hemat ±17% (bayar 10 bulan).</p>
+    <div class="grid g4">
+      <div class="card price"><h4>Gratis</h4><div class="amt">Rp0</div><p>Untuk coba-coba</p>
+        <ul><li>1 pengguna</li><li>Kasir & stok (maks. 50 produk)</li><li>Catat uang masuk/keluar</li><li>10 kredit AI/bulan</li><li>Laporan dasar</li></ul></div>
+      <div class="card price"><h4>Basic</h4><div class="amt">Rp79rb <small>/bulan</small></div><p>Usaha mikro, 1 toko</p>
+        <ul><li>2 pengguna</li><li>Produk tanpa batas</li><li>Laporan keuangan lengkap</li><li>Hutang-piutang + pengingat WA</li><li>CRM pelanggan</li><li>100 kredit AI/bulan</li></ul></div>
+      <div class="card price best"><span class="ribbon">Paling populer</span><h4>Pro</h4><div class="amt">Rp199rb <small>/bulan</small></div><p>Usaha yang ingin tumbuh</p>
+        <ul><li>5 pengguna</li><li>Semua fitur Basic</li><li>AI Studio konten lengkap</li><li>Ads Manager (Meta, TikTok)</li><li>Jadwal posting otomatis</li><li>Asisten AI</li><li>500 kredit AI/bulan</li></ul></div>
+      <div class="card price"><h4>Bisnis</h4><div class="amt">Rp449rb <small>/bulan</small></div><p>Multi-cabang</p>
+        <ul><li>Hingga 3 cabang, 15 pengguna</li><li>Semua fitur Pro</li><li>Transfer stok antar cabang</li><li>Sinkron marketplace</li><li>Broadcast WhatsApp resmi</li><li>1.500 kredit AI/bulan</li><li>Prioritas bantuan</li></ul></div>
+    </div>
+    <h3>Pendapatan tambahan (add-on)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Layanan</th><th>Harga perkiraan</th><th>Keterangan</th></tr></thead>
+      <tbody>
+        <tr><td>Kredit AI tambahan</td><td>Rp50rb / 200 kredit</td><td>1 caption ≈ 1 kredit, 1 gambar ≈ 5 kredit, 1 video pendek ≈ 20 kredit</td></tr>
+        <tr><td>Cabang tambahan</td><td>Rp99rb / cabang / bulan</td><td>Untuk paket Bisnis</td></tr>
+        <tr><td>Jasa Kelola Iklan (Done-for-you)</td><td>Rp750rb – Rp2,5 jt / bulan</td><td>Tim ahli iklan mengelola, di luar budget iklan</td></tr>
+        <tr><td>Pesan WhatsApp broadcast</td><td>Sesuai tarif Meta + margin kecil</td><td>Per pesan terkirim</td></tr>
+        <tr><td>Biaya transaksi QRIS/pembayaran online</td><td>Sesuai tarif payment gateway (MDR) + margin kecil</td><td>Contoh: QRIS ±0,7%</td></tr>
+        <tr><td>Perangkat keras</td><td>Paket printer struk, laci uang, scanner</td><td>Kerja sama dengan vendor</td></tr>
+        <tr><td>Setup & pelatihan langsung</td><td>Rp250rb – Rp1 jt sekali bayar</td><td>Input data & training karyawan di lokasi</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section id="bisnis">
+  <div class="wrap">
+    <h2><span class="num">9.</span>Model Bisnis (Business Model Canvas)</h2>
+    <p class="lead">Gambaran satu halaman bagaimana bisnis UMKM Plus bekerja.</p>
+    <div class="grid g3">
+      <div class="card"><h4>🤝 Mitra kunci</h4><ul><li>Meta, TikTok, Google (iklan & API)</li><li>Penyedia AI (model bahasa & gambar)</li><li>Payment gateway (Xendit/Midtrans/DOKU)</li><li>Bank & fintech (KUR, pembiayaan)</li><li>Dinas Koperasi, asosiasi UMKM, inkubator</li><li>Vendor printer & hardware kasir</li></ul></div>
+      <div class="card"><h4>⚙️ Aktivitas kunci</h4><ul><li>Pengembangan aplikasi & AI</li><li>Edukasi & pendampingan UMKM</li><li>Pemasaran digital & komunitas</li><li>Layanan pelanggan</li><li>Kelola kemitraan</li></ul></div>
+      <div class="card"><h4>💎 Nilai yang ditawarkan</h4><ul><li>Semua alat usaha dalam 1 aplikasi</li><li>Marketing AI yang terhubung data penjualan</li><li>Iklan aman untuk pemula</li><li>Mudah, murah, berbahasa awam</li></ul></div>
+      <div class="card"><h4>❤️ Hubungan pelanggan</h4><ul><li>Onboarding mandiri + video</li><li>CS via WhatsApp & chat in-app</li><li>Komunitas & kelas bulanan</li><li>Account manager untuk paket Bisnis</li></ul></div>
+      <div class="card"><h4>📢 Saluran</h4><ul><li>Play Store & App Store</li><li>Media sosial (TikTok, IG, YouTube)</li><li>Tim lapangan & agen/reseller</li><li>Kemitraan pemerintah & bank</li><li>Program referral</li></ul></div>
+      <div class="card"><h4>👥 Segmen pelanggan</h4><ul><li>Kuliner (warung, kafe, katering, frozen food)</li><li>Fashion & kecantikan online</li><li>Toko retail & grosir kecil</li><li>Jasa (laundry, salon, bengkel)</li></ul></div>
+      <div class="card"><h4>🏗️ Sumber daya kunci</h4><ul><li>Tim produk & engineering</li><li>Data & model AI</li><li>Merek & komunitas</li><li>Infrastruktur cloud</li></ul></div>
+      <div class="card"><h4>💸 Struktur biaya</h4><ul><li>Gaji tim (terbesar)</li><li>Server cloud & biaya API AI</li><li>Pemasaran & akuisisi pelanggan</li><li>Komisi agen/reseller</li><li>Legal, kantor, operasional</li></ul></div>
+      <div class="card"><h4>💰 Sumber pendapatan</h4><ul><li>Langganan bulanan/tahunan</li><li>Kredit AI tambahan</li><li>Jasa kelola iklan</li><li>Biaya transaksi pembayaran & WA</li><li>Hardware & setup</li><li>Komisi rujukan pinjaman (tahap lanjut)</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="teknologi">
+  <div class="wrap">
+    <h2><span class="num">10.</span>Teknologi & Arsitektur</h2>
+    <p class="lead">Penjelasan sederhana: aplikasi di HP berbicara dengan "otak" di server (cloud), yang terhubung ke layanan AI, iklan, dan pembayaran.</p>
+    <div class="arch">
+      <div class="lbl">Lapisan pengguna (yang dilihat)</div>
+      <div class="row l1"><div class="box">📱 Aplikasi Android & iOS<br><small>Flutter / React Native</small></div><div class="box">💻 Web Dashboard<br><small>Next.js (React)</small></div><div class="box">💬 WhatsApp Bot<br><small>Laporan & notifikasi</small></div><div class="box">🛍️ Katalog Online<br><small>Halaman toko publik</small></div></div>
+      <div class="lbl">Lapisan otak (server / backend)</div>
+      <div class="row l2"><div class="box">🔐 Login & Akun</div><div class="box">📦 Layanan Stok & Kasir</div><div class="box">💰 Layanan Keuangan</div><div class="box">👥 Layanan CRM</div><div class="box">✨ Layanan AI (orkestrasi)</div><div class="box">📣 Layanan Iklan</div><div class="box">💳 Langganan & Tagihan</div></div>
+      <div class="lbl">Lapisan data & layanan luar</div>
+      <div class="row l3"><div class="box">🗄️ Database PostgreSQL</div><div class="box">⚡ Redis (cache & antrian)</div><div class="box">🖼️ Penyimpanan file (foto)</div><div class="box">🤖 API Model AI (teks, gambar, video)</div><div class="box">📢 Meta / TikTok / Google Ads API</div><div class="box">💳 Payment Gateway & QRIS</div><div class="box">💬 WhatsApp Business API</div></div>
+    </div>
+    <h3>Pilihan teknologi yang disarankan</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Bagian</th><th>Pilihan</th><th>Alasan sederhana</th></tr></thead>
+      <tbody>
+        <tr><td>Aplikasi HP</td><td>Flutter</td><td>Satu kode untuk Android & iOS, ringan di HP murah, mendukung mode offline</td></tr>
+        <tr><td>Web</td><td>Next.js + TypeScript</td><td>Cepat, populer, mudah cari programmer</td></tr>
+        <tr><td>Backend</td><td>Node.js (NestJS) atau Go</td><td>Stabil, skalabel, banyak talenta lokal</td></tr>
+        <tr><td>Database</td><td>PostgreSQL + SQLite di HP (offline)</td><td>Andal untuk data keuangan, bisa sinkron</td></tr>
+        <tr><td>Cloud</td><td>GCP / AWS region Jakarta</td><td>Cepat untuk pengguna Indonesia & memenuhi aturan data lokal</td></tr>
+        <tr><td>AI teks & asisten</td><td>Model bahasa besar via API (mis. Claude) + fallback model lebih murah</td><td>Kualitas bahasa Indonesia baik; biaya dikontrol dengan pembagian tugas</td></tr>
+        <tr><td>AI gambar/video</td><td>API generasi gambar & video + penghapus latar</td><td>Tidak perlu melatih model sendiri di awal</td></tr>
+        <tr><td>OCR nota</td><td>AI vision (membaca foto)</td><td>Membaca struk tulisan tangan maupun cetak</td></tr>
+        <tr><td>Analitik produk</td><td>Mixpanel/PostHog</td><td>Tahu fitur mana yang dipakai/tidak</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Keamanan & privasi data</h3>
+    <div class="grid g3">
+      <div class="card"><h4>🔒 Enkripsi</h4><p>Data terenkripsi saat dikirim (HTTPS) dan saat disimpan. Token akun iklan disimpan terenkripsi terpisah.</p></div>
+      <div class="card"><h4>💾 Backup</h4><p>Backup otomatis harian, data bisa dipulihkan. Pengguna bisa ekspor seluruh datanya kapan saja.</p></div>
+      <div class="card"><h4>👤 Hak akses</h4><p>Karyawan hanya melihat yang perlu (kasir tidak bisa lihat laporan untung). Login 2 langkah untuk pemilik.</p></div>
+      <div class="card"><h4>📜 Patuh UU PDP</h4><p>Sesuai UU No. 27/2022 tentang Pelindungan Data Pribadi: persetujuan, hak hapus data, petugas pelindungan data.</p></div>
+      <div class="card"><h4>🤖 AI bertanggung jawab</h4><p>Data usaha pengguna tidak dipakai melatih model untuk pengguna lain. Konten AI selalu disetujui manusia sebelum terbit/tayang.</p></div>
+      <div class="card"><h4>💸 Pengaman iklan</h4><p>Batas belanja harian & total, notifikasi tiap pengeluaran besar, tidak ada perubahan budget tanpa persetujuan.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section id="roadmap">
+  <div class="wrap">
+    <h2><span class="num">11.</span>Roadmap Pengembangan</h2>
+    <p class="lead">Dibangun bertahap: mulai dari yang paling dibutuhkan, uji ke pengguna nyata, baru ditambah.</p>
+    <div class="timeline">
+      <div class="ph"><span class="when">Bulan 0 – 2 · Fase 0: Riset & Desain</span><h4>Memastikan masalahnya nyata</h4><p>Wawancara 50–100 pemilik UMKM, survei kesediaan membayar, desain UI/UX & prototipe yang bisa diklik, uji prototipe ke 20 UMKM, legalitas perusahaan, rekrut tim inti.</p></div>
+      <div class="ph"><span class="when">Bulan 3 – 6 · Fase 1: MVP (Versi Awal)</span><h4>Kasir, stok, keuangan + AI konten dasar</h4><p>Bangun fitur bertanda MVP. Beta tertutup dengan 100–200 UMKM pilot (gratis, ditukar masukan). Perbaiki berdasarkan data pemakaian.</p></div>
+      <div class="ph"><span class="when">Bulan 7 – 9 · Fase 2: Peluncuran Resmi</span><h4>Mulai berbayar + Ads Manager Meta</h4><p>Integrasi pembayaran langganan, wizard iklan Meta, peluncuran di Play Store & App Store, kampanye peluncuran. Target: 1.000 pengguna berbayar di bulan ke-12.</p></div>
+      <div class="ph"><span class="when">Bulan 10 – 15 · Fase 3: Pertumbuhan (V2)</span><h4>Asisten AI, TikTok Ads, posting otomatis, multi-cabang</h4><p>Asisten AI, video otomatis, kalender konten, TikTok & Google Ads, broadcast WA, katalog online, resep/bahan baku, program referral & agen.</p></div>
+      <div class="ph"><span class="when">Bulan 16 – 24 · Fase 4: Ekspansi (V3)</span><h4>Marketplace, pembiayaan, jasa kelola iklan</h4><p>Sinkron Shopee/TikTok Shop/Tokopedia, prediksi stok AI, rujukan pinjaman ke bank/fintech, jasa kelola iklan, versi khusus per industri (kuliner, fashion, salon).</p></div>
+      <div class="ph"><span class="when">Tahun 3+ · Fase 5: Skala</span><h4>Jadi ekosistem</h4><p>Marketplace pemasok bahan baku, pembiayaan modal kerja, ekspansi ke kota tier 2–3, kemungkinan ekspansi Asia Tenggara (Malaysia, Filipina).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section id="gtm">
+  <div class="wrap">
+    <h2><span class="num">12.</span>Strategi Pemasaran (Go-To-Market)</h2>
+    <p class="lead">Bagaimana mendapatkan pelanggan pertama hingga puluhan ribu. Prinsip: "pakai produk sendiri" — UMKM Plus mempromosikan dirinya dengan fitur AI dan iklan yang sama.</p>
+    <div class="grid g2">
+      <div class="card"><h4>Tahap 1 – 100 pengguna pertama (pilot)</h4><ul><li>Datangi langsung UMKM di 1–2 kota (mis. Jakarta Selatan & Bandung).</li><li>Kerja sama dengan komunitas UMKM, pasar, food court, inkubator kampus.</li><li>Gratis selama pilot, dengan pendampingan intensif.</li><li>Kumpulkan testimoni & studi kasus (sebelum vs sesudah).</li></ul></div>
+      <div class="card"><h4>Tahap 2 – 1.000 pelanggan berbayar</h4><ul><li>Konten edukasi harian di TikTok/IG/YouTube: "Cara hitung HPP", "Iklan Rp20rb/hari".</li><li>Webinar & kelas gratis tiap minggu.</li><li>Iklan Meta/TikTok yang menargetkan pemilik usaha.</li><li>Program referral: ajak teman → gratis 1 bulan.</li></ul></div>
+      <div class="card"><h4>Tahap 3 – 10.000+ pelanggan</h4><ul><li>Jaringan agen/reseller di kota-kota (komisi 20–30% tahun pertama).</li><li>Kemitraan Dinas Koperasi, BUMN (Rumah BUMN), bank penyalur KUR.</li><li>Kemitraan merek besar (distributor kopi, pemasok bahan) untuk bundling.</li><li>Kehadiran di pameran & bazar UMKM.</li></ul></div>
+      <div class="card"><h4>Pesan utama (positioning)</h4><ul><li>"Jualan lebih laku, hitung untung lebih gampang."</li><li>"Tim marketing AI cuma Rp199 ribu sebulan."</li><li>"Ganti 5 aplikasi jadi 1."</li></ul></div>
+    </div>
+    <h3>Strategi agar pelanggan tidak berhenti (retensi)</h3>
+    <div class="grid g3">
+      <div class="card"><h4>Cepat merasakan hasil</h4><p>Target: pengguna baru mencatat 10 transaksi dan membuat 1 konten AI di minggu pertama.</p></div>
+      <div class="card"><h4>Laporan nilai</h4><p>Setiap bulan: "UMKM Plus menghemat 22 jam kerja Anda & menghasilkan 58 pesanan dari iklan".</p></div>
+      <div class="card"><h4>Sukses pelanggan</h4><p>Tim yang menghubungi pengguna yang mulai jarang membuka aplikasi.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section id="tim">
+  <div class="wrap">
+    <h2><span class="num">13.</span>Tim & Kebutuhan Modal</h2>
+    <h3>Struktur tim awal (± 14 orang di 6 bulan pertama)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Peran</th><th class="num">Jumlah</th><th>Tugas</th></tr></thead>
+      <tbody>
+        <tr><td>CEO / Founder</td><td class="num">1</td><td>Visi, pendanaan, kemitraan, keputusan besar</td></tr>
+        <tr><td>CTO / Kepala Teknologi</td><td class="num">1</td><td>Arsitektur, memimpin tim engineering</td></tr>
+        <tr><td>Product Manager</td><td class="num">1</td><td>Menentukan fitur & prioritas berdasarkan kebutuhan UMKM</td></tr>
+        <tr><td>UI/UX Designer</td><td class="num">1</td><td>Desain tampilan agar mudah dipakai awam</td></tr>
+        <tr><td>Mobile Developer (Flutter)</td><td class="num">2</td><td>Membangun aplikasi Android & iOS</td></tr>
+        <tr><td>Backend Developer</td><td class="num">2</td><td>Membangun server, database, integrasi</td></tr>
+        <tr><td>AI / ML Engineer</td><td class="num">1</td><td>Fitur AI konten, asisten, OCR, rekomendasi</td></tr>
+        <tr><td>QA (penguji)</td><td class="num">1</td><td>Memastikan aplikasi minim bug</td></tr>
+        <tr><td>Growth / Digital Marketer</td><td class="num">1</td><td>Iklan, konten, akuisisi pengguna</td></tr>
+        <tr><td>Ads Specialist</td><td class="num">1</td><td>Merancang logika iklan & nanti jasa kelola iklan</td></tr>
+        <tr><td>Customer Success & Onboarding</td><td class="num">2</td><td>Mendampingi pengguna, menjawab pertanyaan</td></tr>
+      </tbody>
+    </table></div>
+    <p style="color:var(--muted);font-size:.9rem">Opsi hemat: gunakan software house/freelancer untuk MVP, lalu rekrut tim inti setelah ada traksi.</p>
+
+    <h3>Perkiraan modal 18 bulan pertama</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Pos biaya</th><th class="num">Perkiraan</th><th class="num">Porsi</th></tr></thead>
+      <tbody>
+        <tr><td>Gaji tim (rata-rata 14–20 orang)</td><td class="num">Rp2.000.000.000</td><td class="num">57%</td></tr>
+        <tr><td>Pemasaran & akuisisi pelanggan</td><td class="num">Rp650.000.000</td><td class="num">19%</td></tr>
+        <tr><td>Server cloud, API AI, tools</td><td class="num">Rp350.000.000</td><td class="num">10%</td></tr>
+        <tr><td>Legal, perizinan, sertifikasi keamanan</td><td class="num">Rp100.000.000</td><td class="num">3%</td></tr>
+        <tr><td>Kantor & operasional</td><td class="num">Rp150.000.000</td><td class="num">4%</td></tr>
+        <tr><td>Dana cadangan</td><td class="num">Rp250.000.000</td><td class="num">7%</td></tr>
+        <tr><th>Total</th><th class="num">Rp3.500.000.000</th><th class="num">100%</th></tr>
+      </tbody>
+    </table></div>
+    <div class="callout"><b>Sumber dana yang bisa dipertimbangkan</b>Modal pribadi/bootstrapping → angel investor → program inkubator/akselerator (mis. program BUMN, kampus, atau global) → venture capital tahap pre-seed/seed (umumnya Rp3–15 miliar) → hibah/kompetisi startup pemerintah.</div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section id="proyeksi">
+  <div class="wrap">
+    <h2><span class="num">14.</span>Proyeksi Keuangan Sederhana</h2>
+    <p class="lead">Asumsi: rata-rata pendapatan per pelanggan (ARPU) termasuk add-on ±Rp210 ribu/bulan; pelanggan yang berhenti per bulan (churn) turun dari 6% ke 3%.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Indikator</th><th class="num">Akhir Tahun 1</th><th class="num">Akhir Tahun 2</th><th class="num">Akhir Tahun 3</th></tr></thead>
+      <tbody>
+        <tr><td>Pengguna gratis aktif</td><td class="num">8.000</td><td class="num">40.000</td><td class="num">120.000</td></tr>
+        <tr><td>Pelanggan berbayar</td><td class="num">1.000</td><td class="num">6.500</td><td class="num">20.000</td></tr>
+        <tr><td>Pendapatan bulanan berulang (MRR)</td><td class="num">Rp210 jt</td><td class="num">Rp1,37 M</td><td class="num">Rp4,2 M</td></tr>
+        <tr><td>Pendapatan setahun (ARR, run-rate)</td><td class="num">Rp2,5 M</td><td class="num">Rp16,4 M</td><td class="num">Rp50,4 M</td></tr>
+        <tr><td>Biaya operasional bulanan</td><td class="num">Rp250 jt</td><td class="num">Rp1,1 M</td><td class="num">Rp2,9 M</td></tr>
+        <tr><td>Kondisi</td><td>Masih rugi</td><td>Mendekati impas</td><td>Untung operasional</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Ekonomi per pelanggan (unit economics)</h3>
+    <div class="grid g4">
+      <div class="card"><div class="stat">Rp350rb</div><p><b>CAC</b> – biaya mendapatkan 1 pelanggan berbayar (target)</p></div>
+      <div class="card"><div class="stat">70%</div><p><b>Margin kotor</b> setelah biaya server, AI, dan pembayaran</p></div>
+      <div class="card"><div class="stat">Rp4,9 jt</div><p><b>LTV</b> – keuntungan kotor dari 1 pelanggan selama berlangganan (±33 bulan)</p></div>
+      <div class="card"><div class="stat">&gt; 10×</div><p><b>LTV : CAC</b> – sehat jika di atas 3×</p></div>
+    </div>
+    <div class="callout red"><b>Risiko terbesar di angka</b>Biaya AI (terutama gambar & video) bisa memakan margin jika tidak dikontrol. Karena itu ada sistem kredit AI per paket, cache hasil, dan pemakaian model yang lebih murah untuk tugas sederhana.</div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section id="kpi">
+  <div class="wrap">
+    <h2><span class="num">15.</span>Ukuran Keberhasilan (KPI)</h2>
+    <p class="lead">Angka yang dipantau setiap minggu untuk tahu apakah bisnis berjalan ke arah yang benar.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Kategori</th><th>KPI</th><th>Arti sederhana</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td>Pertumbuhan</td><td>Pelanggan berbayar baru</td><td>Berapa yang mulai bayar bulan ini</td><td>Naik 15–20%/bulan di tahun 1</td></tr>
+        <tr><td>Pertumbuhan</td><td>Konversi gratis → berbayar</td><td>Dari 100 pengguna gratis, berapa yang bayar</td><td>≥ 8%</td></tr>
+        <tr><td>Keterlibatan</td><td>Pengguna aktif mingguan</td><td>Persentase pelanggan yang membuka aplikasi tiap minggu</td><td>≥ 70%</td></tr>
+        <tr><td>Keterlibatan</td><td>Aktivasi minggu pertama</td><td>Mencatat 10 transaksi + 1 konten AI</td><td>≥ 50%</td></tr>
+        <tr><td>Retensi</td><td>Churn bulanan</td><td>Persentase pelanggan berhenti per bulan</td><td>&lt; 4%</td></tr>
+        <tr><td>Keuangan</td><td>MRR</td><td>Pendapatan langganan per bulan</td><td>Lihat proyeksi</td></tr>
+        <tr><td>Nilai bagi UMKM</td><td>Kenaikan omzet pengguna</td><td>Rata-rata kenaikan penjualan setelah 6 bulan</td><td>≥ 20%</td></tr>
+        <tr><td>Nilai bagi UMKM</td><td>ROAS iklan pengguna</td><td>Rp penjualan per Rp1 biaya iklan</td><td>≥ 3×</td></tr>
+        <tr><td>Kepuasan</td><td>NPS</td><td>Seberapa mau merekomendasikan ke teman (−100 s/d 100)</td><td>≥ 45</td></tr>
+        <tr><td>Kualitas</td><td>Waktu respons CS</td><td>Lama menunggu jawaban bantuan</td><td>&lt; 15 menit (jam kerja)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 16 -->
+<section id="risiko">
+  <div class="wrap">
+    <h2><span class="num">16.</span>Risiko & Cara Mengatasinya</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Risiko</th><th>Dampak</th><th>Cara mengatasi</th></tr></thead>
+      <tbody>
+        <tr><td>UMKM enggan membayar langganan</td><td>Tinggi</td><td>Paket gratis, harga mulai Rp79rb, tunjukkan hasil nyata (laporan nilai), opsi bayar harian/mingguan via e-wallet</td></tr>
+        <tr><td>Aplikasi dianggap rumit</td><td>Tinggi</td><td>Uji desain ke pengguna awam, bahasa sederhana, onboarding didampingi, video tutorial singkat</td></tr>
+        <tr><td>Biaya AI membengkak</td><td>Tinggi</td><td>Sistem kredit, batas pemakaian, pilih model sesuai tugas, cache, negosiasi harga volume</td></tr>
+        <tr><td>Perubahan kebijakan API Meta/TikTok/Google</td><td>Sedang</td><td>Jadi mitra resmi (Meta Business Partner/TikTok Marketing Partner), multi-platform, fitur tetap bernilai tanpa iklan</td></tr>
+        <tr><td>Iklan pengguna rugi → menyalahkan aplikasi</td><td>Sedang</td><td>Batas budget, ekspektasi realistis, edukasi, rapor iklan jujur, saran otomatis matikan iklan buruk</td></tr>
+        <tr><td>Kompetitor besar meniru</td><td>Sedang</td><td>Fokus kedalaman integrasi data + AI, komunitas kuat, kecepatan inovasi, spesialisasi per industri</td></tr>
+        <tr><td>Kebocoran data</td><td>Tinggi</td><td>Standar keamanan, audit & uji penetrasi berkala, enkripsi, asuransi siber, kepatuhan UU PDP</td></tr>
+        <tr><td>Konten AI melanggar aturan/hak cipta</td><td>Sedang</td><td>Filter klaim terlarang, persetujuan manusia sebelum terbit, aset berlisensi, panduan konten</td></tr>
+        <tr><td>Internet tidak stabil di daerah</td><td>Sedang</td><td>Mode offline penuh untuk kasir & stok, aplikasi ringan</td></tr>
+        <tr><td>Kehabisan modal sebelum impas</td><td>Tinggi</td><td>Rilis bertahap, pantau burn rate bulanan, galang dana saat traksi terbukti, cadangan 3–6 bulan</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 17 -->
+<section id="legal">
+  <div class="wrap">
+    <h2><span class="num">17.</span>Legalitas & Kepatuhan</h2>
+    <div class="grid g3">
+      <div class="card"><h4>🏢 Badan usaha</h4><p>Bentuk PT (Perseroan Terbatas) agar siap menerima investor. Urus NIB melalui OSS dengan KBLI terkait aktivitas pemrograman komputer & portal web/platform digital (konfirmasi kode KBLI yang tepat dengan konsultan).</p></div>
+      <div class="card"><h4>🌐 PSE Kominfo/Komdigi</h4><p>Pendaftaran sebagai Penyelenggara Sistem Elektronik (PSE) Lingkup Privat.</p></div>
+      <div class="card"><h4>🔐 Pelindungan data</h4><p>Kepatuhan UU PDP No. 27/2022: kebijakan privasi, persetujuan pengguna, penunjukan petugas pelindungan data. Target sertifikasi ISO 27001 di tahun ke-2/3.</p></div>
+      <div class="card"><h4>💳 Pembayaran</h4><p>Gunakan payment gateway berizin Bank Indonesia. UMKM Plus tidak menyimpan dana pengguna sendiri (bukan e-wallet) agar tidak perlu izin uang elektronik.</p></div>
+      <div class="card"><h4>™️ Merek dagang</h4><p>Daftarkan merek "UMKM Plus" (logo & nama) ke DJKI. Cek ketersediaan nama dan domain sedini mungkin.</p></div>
+      <div class="card"><h4>📄 Dokumen pengguna</h4><p>Syarat & Ketentuan, Kebijakan Privasi, Kebijakan Penggunaan AI, Kebijakan Pengembalian Dana, perjanjian dengan agen/reseller.</p></div>
+      <div class="card"><h4>📢 Aturan iklan</h4><p>Patuhi kebijakan iklan Meta/TikTok/Google, aturan BPOM untuk makanan/kosmetik, dan etika pariwara Indonesia.</p></div>
+      <div class="card"><h4>🧾 Pajak perusahaan</h4><p>NPWP badan, PPN atas layanan digital, pembukuan sesuai standar akuntansi.</p></div>
+      <div class="card"><h4>👥 Ketenagakerjaan</h4><p>Kontrak kerja, BPJS Kesehatan & Ketenagakerjaan, perjanjian kerahasiaan & kepemilikan kode (IP).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 -->
+<section id="langkah">
+  <div class="wrap">
+    <h2><span class="num">18.</span>Langkah Awal: 90 Hari Pertama</h2>
+    <p class="lead">Daftar tugas konkret untuk mulai dari nol.</p>
+    <div class="grid g3">
+      <div class="card"><h4>Bulan 1 – Validasi</h4><ul><li>Wawancara 50 pemilik UMKM (3 sektor)</li><li>Survei harga: berapa yang mau dibayar?</li><li>Analisis 5 kompetitor terdekat</li><li>Tetapkan 10 fitur MVP paling penting</li><li>Amankan nama, domain, akun media sosial</li><li>Mulai rekrut CTO/co-founder teknis</li></ul></div>
+      <div class="card"><h4>Bulan 2 – Desain</h4><ul><li>Buat alur & wireframe semua layar MVP</li><li>Prototipe klik (Figma)</li><li>Uji prototipe ke 20 UMKM, perbaiki</li><li>Pendirian PT & NIB</li><li>Siapkan akun developer Meta, TikTok, payment gateway</li><li>Bangun waiting list (daftar tunggu) di website</li></ul></div>
+      <div class="card"><h4>Bulan 3 – Mulai bangun</h4><ul><li>Bentuk tim pengembang (internal/vendor)</li><li>Siapkan infrastruktur cloud & CI/CD</li><li>Sprint 2 mingguan: kasir & stok dulu</li><li>Rekrut 100 UMKM pilot dari waiting list</li><li>Mulai konten edukasi di TikTok/IG</li><li>Siapkan pitch deck untuk investor</li></ul></div>
+    </div>
+    <div class="callout green"><b>Kunci sukses</b>Jangan membangun semua fitur sekaligus. Buktikan dulu bahwa UMKM mau <u>membayar</u> untuk kasir + keuangan + AI konten. Setelah itu baru tambahkan iklan otomatis, asisten AI, dan marketplace.</div>
+  </div>
+</section>
+
+<!-- 19 -->
+<section id="glosarium">
+  <div class="wrap">
+    <h2><span class="num">19.</span>Glosarium (Kamus Istilah)</h2>
+    <div class="grid g3">
+      <div class="card"><h4>MVP</h4><p>Minimum Viable Product — versi paling sederhana yang sudah bisa dipakai dan memberi manfaat.</p></div>
+      <div class="card"><h4>SaaS</h4><p>Software as a Service — aplikasi yang dipakai dengan berlangganan, bukan dibeli putus.</p></div>
+      <div class="card"><h4>Freemium</h4><p>Ada versi gratis terbatas; fitur lengkap berbayar.</p></div>
+      <div class="card"><h4>POS</h4><p>Point of Sale — sistem kasir.</p></div>
+      <div class="card"><h4>Inventory</h4><p>Pengelolaan stok barang & bahan baku.</p></div>
+      <div class="card"><h4>HPP</h4><p>Harga Pokok Penjualan — modal untuk membuat/membeli 1 produk.</p></div>
+      <div class="card"><h4>CRM</h4><p>Customer Relationship Management — pengelolaan data & hubungan pelanggan.</p></div>
+      <div class="card"><h4>OCR</h4><p>Teknologi membaca tulisan dari foto (misal foto nota).</p></div>
+      <div class="card"><h4>API</h4><p>"Jembatan" agar aplikasi kita bisa terhubung dengan layanan lain (Meta, bank, AI).</p></div>
+      <div class="card"><h4>MRR / ARR</h4><p>Pendapatan langganan per bulan / per tahun.</p></div>
+      <div class="card"><h4>ARPU</h4><p>Rata-rata pendapatan dari satu pelanggan.</p></div>
+      <div class="card"><h4>Churn</h4><p>Persentase pelanggan yang berhenti berlangganan.</p></div>
+      <div class="card"><h4>CAC</h4><p>Biaya untuk mendapatkan satu pelanggan baru.</p></div>
+      <div class="card"><h4>LTV</h4><p>Total keuntungan dari satu pelanggan selama ia berlangganan.</p></div>
+      <div class="card"><h4>ROAS</h4><p>Return on Ad Spend — hasil penjualan dibanding biaya iklan.</p></div>
+      <div class="card"><h4>NPS</h4><p>Net Promoter Score — ukuran kepuasan & kemauan merekomendasikan.</p></div>
+      <div class="card"><h4>Burn rate</h4><p>Berapa banyak uang perusahaan habis per bulan sebelum untung.</p></div>
+      <div class="card"><h4>Kredit AI</h4><p>Kuota pemakaian fitur AI; tiap pembuatan konten memakai sejumlah kredit.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">UMKM Plus · Master Plan v1.0 · Oktober 2026<br>Dokumen perencanaan internal. Angka pasar, harga, dan proyeksi adalah asumsi awal yang perlu divalidasi dengan riset & data pilot.</div>
+</footer>
+<a class="toplink" href="#" aria-label="Kembali ke atas">↑</a>
+
+<script>
+(function(){
+  var tabs=document.querySelectorAll('.tabs button');
+  tabs.forEach(function(b){
+    b.addEventListener('click',function(){
+      tabs.forEach(function(x){
+        x.setAttribute('aria-selected',x===b?'true':'false');
+        document.getElementById(x.dataset.t).hidden = x!==b;
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
