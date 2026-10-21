@@ -1,10 +1,9 @@
-// Dipakai bersama oleh halaman Marketing dan api/konten.ts.
+// Prompt AI caption. Dipakai oleh server (server/routes/marketing.ts); daftar pilihan juga dipakai frontend.
 
 export interface ContentRequest {
   businessName: string;
   city: string;
   brandDescription: string;
-  brandVoice: string;
   productName: string;
   productDescription: string;
   price: number;
@@ -43,9 +42,4 @@ export function buildUserPrompt(r: ContentRequest) {
   ]
     .filter(Boolean)
     .join("\n");
-}
-
-/** Prompt lengkap untuk ditempel manual di aplikasi Claude jika API belum disiapkan. */
-export function buildManualPrompt(r: ContentRequest) {
-  return `${SYSTEM_PROMPT}\n\n${buildUserPrompt(r)}`;
 }

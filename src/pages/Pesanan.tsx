@@ -1,31 +1,19 @@
 import { useState } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
-import {
-  createOrder, db, DEFAULT_SETTINGS, ORDER_STATUSES, orderRevenue, orderSubtotal,
-  PAYMENT_METHODS, setOrderStatus, type Order, type OrderItem, type Settings,
-} from "../db";
-import { Chips, Empty, Field, MoneyInput, Sheet, Stepper } from "../components/ui";
+import { ORDER_STATUSES, PAYMENT_METHODS, type Order, type OrderStatus, type Product, type Settings } from "../../shared/types";
+import { mutate, useApi } from "../api";
+import { useSession } from "../App";
+import { Chips, Empty, Field, LoadError, MoneyInput, Sheet, Stepper, useRun } from "../components/ui";
 import { rp, timeStr, waLink } from "../utils";
 
 type Filter = "Aktif" | "Selesai" | "Batal" | "Semua";
+
+const revenue = (o: Order) => o.items.reduce((s, i) => s + i.price * i.qty, 0) - o.discount;
 
 export default function Pesanan() {
   const [filter, setFilter] = useState<Filter>("Aktif");
   const [creating, setCreating] = useState(false);
   const [openId, setOpenId] = useState<number | null>(null);
-  const settings = useLiveQuery(() => db.settings.get("main")) ?? DEFAULT_SETTINGS;
-
-  const orders = useLiveQuery(async () => {
-    const all = await db.orders.orderBy("createdAt").reverse().limit(300).toArray();
-    return all.filter((o) => {
-      if (filter === "Aktif") return ["baru", "diproses", "dikirim"].includes(o.status) || (!o.paid && o.status !== "batal");
-      if (filter === "Selesai") return o.status === "selesai";
-      if (filter === "Batal") return o.status === "batal";
-      return true;
-    });
-  }, [filter]);
-
-  const open = useLiveQuery(() => (openId ? db.orders.get(openId) : undefined), [openId]);
+  const { data: orders, error } = useApi<Order[]>(`/orders?filter=${filter.toLowerCase()}`);
 
   return (
     <div className="stack">
@@ -36,16 +24,17 @@ export default function Pesanan() {
         </button>
       </div>
       <Chips options={["Aktif", "Selesai", "Batal", "Semua"] as Filter[]} value={filter} onChange={setFilter} />
+      <LoadError error={error} />
 
       {orders?.length === 0 && <Empty icon="🧾">Belum ada pesanan di sini.</Empty>}
       <div className="list">
         {orders?.map((o) => (
-          <button key={o.id} className="card order-row" onClick={() => setOpenId(o.id!)}>
+          <button key={o.id} className="card order-row" onClick={() => setOpenId(o.id)}>
             <div className="row between">
               <b>
                 #{o.id} · {o.customerName || "Pelanggan"}
               </b>
-              <b>{rp(orderRevenue(o) + o.shippingFee)}</b>
+              <b>{rp(revenue(o) + o.shippingFee)}</b>
             </div>
             <div className="muted small">{o.items.map((i) => `${i.qty}× ${i.name}`).join(", ")}</div>
             <div className="row between small">
@@ -61,14 +50,16 @@ export default function Pesanan() {
         ))}
       </div>
 
-      {creating && <OrderForm settings={settings} onClose={() => setCreating(false)} />}
-      {open && <OrderDetail order={open} settings={settings} onClose={() => setOpenId(null)} />}
+      {creating && <OrderForm onClose={() => setCreating(false)} />}
+      {openId && <OrderDetail id={openId} onClose={() => setOpenId(null)} />}
     </div>
   );
 }
 
-function OrderForm({ settings, onClose }: { settings: Settings; onClose: () => void }) {
-  const products = useLiveQuery(() => db.products.filter((p) => p.active).toArray());
+function OrderForm({ onClose }: { onClose: () => void }) {
+  const { settings } = useSession();
+  const { data: all } = useApi<Product[]>("/products");
+  const products = all?.filter((p) => p.active);
   const [qty, setQty] = useState<Record<number, number>>({});
   const [channel, setChannel] = useState(settings.channels[0]?.name ?? "WhatsApp");
   const [customerName, setCustomerName] = useState("");
@@ -80,43 +71,39 @@ function OrderForm({ settings, onClose }: { settings: Settings; onClose: () => v
   const [paid, setPaid] = useState(true);
   const [note, setNote] = useState("");
   const [feeOverride, setFeeOverride] = useState<number | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [busy, run] = useRun();
 
-  const items: OrderItem[] = (products ?? [])
-    .filter((p) => qty[p.id!] > 0)
-    .map((p) => ({ productId: p.id!, name: p.name, price: p.price, cost: p.cost, qty: qty[p.id!] }));
-  const subtotal = orderSubtotal({ items });
+  const items = (products ?? []).filter((p) => qty[p.id] > 0);
+  const subtotal = items.reduce((s, p) => s + p.price * qty[p.id], 0);
   const feePct = settings.channels.find((c) => c.name === channel)?.feePct ?? 0;
   const platformFee = feeOverride ?? Math.round(((subtotal - discount) * feePct) / 100);
   const total = subtotal - discount + shippingFee;
 
-  async function save() {
-    if (!items.length || saving) return;
-    setSaving(true);
-    await createOrder({
-      createdAt: Date.now(),
-      channel, customerName, customerWa, address, items, discount, shippingFee,
-      platformFee, payment, paid, note, status: "baru",
+  const save = () =>
+    run(async () => {
+      await mutate("POST", "/orders", {
+        channel, customerName, customerWa, address, discount, shippingFee, payment, paid, note,
+        platformFee: feeOverride,
+        items: items.map((p) => ({ productId: p.id, qty: qty[p.id] })),
+      });
+      onClose();
     });
-    onClose();
-  }
 
   return (
     <Sheet title="Pesanan baru" onClose={onClose}>
-      {products?.length === 0 && <Empty icon="🍱">Tambahkan produk dulu di menu Produk.</Empty>}
+      {products?.length === 0 && <Empty icon="🍱">Belum ada produk yang dijual. Tambahkan di menu Produk.</Empty>}
       <div className="product-pick">
         {products?.map((p) => {
-          const q = qty[p.id!] ?? 0;
-          const out = p.trackStock && p.stock <= 0;
+          const q = qty[p.id] ?? 0;
           return (
             <div key={p.id} className={q > 0 ? "pick on" : "pick"}>
-              <button type="button" className="pick-main" onClick={() => setQty({ ...qty, [p.id!]: q + 1 })}>
+              <button type="button" className="pick-main" onClick={() => setQty({ ...qty, [p.id]: q + 1 })}>
                 <span className="emoji">{p.emoji}</span>
                 <b>{p.name}</b>
                 <small>{rp(p.price)}</small>
-                {p.trackStock && <small className={out ? "neg" : "muted"}>Stok {p.stock}</small>}
+                {p.trackStock && <small className={p.stock <= 0 ? "neg" : "muted"}>Stok {p.stock}</small>}
               </button>
-              {q > 0 && <Stepper value={q} onChange={(n) => setQty({ ...qty, [p.id!]: n })} />}
+              {q > 0 && <Stepper value={q} onChange={(n) => setQty({ ...qty, [p.id]: n })} />}
             </div>
           );
         })}
@@ -156,7 +143,7 @@ function OrderForm({ settings, onClose }: { settings: Settings; onClose: () => v
         <input type="checkbox" checked={paid} onChange={(e) => setPaid(e.target.checked)} /> Sudah dibayar
       </label>
       <Field label="Catatan">
-        <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mis. level pedas 3, tanpa sambal" />
+        <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mis. tingkat pedas 3, tanpa sambal" />
       </Field>
 
       <div className="sticky-total">
@@ -164,8 +151,8 @@ function OrderForm({ settings, onClose }: { settings: Settings; onClose: () => v
           <small className="muted">Total ditagih</small>
           <b>{rp(total)}</b>
         </div>
-        <button className="btn primary" disabled={!items.length || saving} onClick={save}>
-          Simpan pesanan
+        <button className="btn primary" disabled={!items.length || busy} onClick={save}>
+          {busy ? "Menyimpan…" : "Simpan pesanan"}
         </button>
       </div>
     </Sheet>
@@ -182,28 +169,42 @@ function receiptText(o: Order, s: Settings) {
   ];
   if (o.discount) lines.push(`Diskon: -${rp(o.discount)}`);
   if (o.shippingFee) lines.push(`Ongkir: ${rp(o.shippingFee)}`);
-  lines.push(`*Total: ${rp(orderRevenue(o) + o.shippingFee)}*`);
+  lines.push(`*Total: ${rp(revenue(o) + o.shippingFee)}*`);
   lines.push(`Pembayaran: ${o.payment} (${o.paid ? "Lunas" : "Belum dibayar"})`);
   if (o.address) lines.push(`Alamat: ${o.address}`);
   lines.push("", "Terima kasih sudah memesan! 🙏");
   return lines.join("\n");
 }
 
-function OrderDetail({ order: o, settings, onClose }: { order: Order; settings: Settings; onClose: () => void }) {
-  const profit = orderRevenue(o) - o.items.reduce((s, i) => s + i.cost * i.qty, 0) - o.platformFee;
+function OrderDetail({ id, onClose }: { id: number; onClose: () => void }) {
+  const { settings, isOwner } = useSession();
+  const { data: o, error } = useApi<Order>(`/orders/${id}`);
+  const [busy, run] = useRun();
 
-  async function remove() {
-    if (!confirm(`Hapus pesanan #${o.id}? Stok akan dikembalikan.`)) return;
-    if (o.status !== "batal") await setOrderStatus(o, "batal");
-    await db.orders.delete(o.id!);
-    onClose();
+  if (!o) {
+    return (
+      <Sheet title={`Pesanan #${id}`} onClose={onClose}>
+        {error ? <LoadError error={error} /> : <p className="muted">Memuat…</p>}
+      </Sheet>
+    );
   }
+
+  const profit = revenue(o) - o.items.reduce((s, i) => s + i.cost * i.qty, 0) - o.platformFee;
+  const setStatus = (status: OrderStatus) => run(() => mutate("PATCH", `/orders/${o.id}`, { status }));
+  const setPaid = (paid: boolean) => run(() => mutate("PATCH", `/orders/${o.id}`, { paid }));
+  const remove = () =>
+    confirm(`Hapus pesanan #${o.id}? Stok akan dikembalikan.`) &&
+    run(async () => {
+      await mutate("DELETE", `/orders/${o.id}`);
+      onClose();
+    });
 
   return (
     <Sheet title={`Pesanan #${o.id}`} onClose={onClose}>
       <div className="card flat">
         <div className="muted small">
           {timeStr(o.createdAt)} · {o.channel} · {o.payment}
+          {o.createdBy && ` · dicatat ${o.createdBy}`}
         </div>
         <b>{o.customerName || "Pelanggan"}</b> {o.customerWa && <span className="muted">· {o.customerWa}</span>}
         {o.address && <div className="small">{o.address}</div>}
@@ -212,22 +213,16 @@ function OrderDetail({ order: o, settings, onClose }: { order: Order; settings: 
       <table className="tbl">
         <tbody>
           {o.items.map((i) => (
-            <tr key={i.productId}>
+            <tr key={i.productId + i.name}>
               <td>{i.qty}× {i.name}</td>
               <td className="r">{rp(i.qty * i.price)}</td>
             </tr>
           ))}
-          {o.discount > 0 && (
-            <tr><td>Diskon</td><td className="r">-{rp(o.discount)}</td></tr>
-          )}
-          {o.shippingFee > 0 && (
-            <tr><td>Ongkir</td><td className="r">{rp(o.shippingFee)}</td></tr>
-          )}
-          <tr className="strong"><td>Total</td><td className="r">{rp(orderRevenue(o) + o.shippingFee)}</td></tr>
-          {o.platformFee > 0 && (
-            <tr className="muted"><td>Potongan {o.channel}</td><td className="r">-{rp(o.platformFee)}</td></tr>
-          )}
-          <tr className="muted"><td>Untung kotor pesanan ini</td><td className="r pos">{rp(profit)}</td></tr>
+          {o.discount > 0 && <tr><td>Diskon</td><td className="r">-{rp(o.discount)}</td></tr>}
+          {o.shippingFee > 0 && <tr><td>Ongkir</td><td className="r">{rp(o.shippingFee)}</td></tr>}
+          <tr className="strong"><td>Total</td><td className="r">{rp(revenue(o) + o.shippingFee)}</td></tr>
+          {o.platformFee > 0 && <tr className="muted"><td>Potongan {o.channel}</td><td className="r">-{rp(o.platformFee)}</td></tr>}
+          {isOwner && <tr className="muted"><td>Untung kotor pesanan ini</td><td className="r pos">{rp(profit)}</td></tr>}
         </tbody>
       </table>
 
@@ -235,11 +230,11 @@ function OrderDetail({ order: o, settings, onClose }: { order: Order; settings: 
         <Chips
           options={ORDER_STATUSES.map((s) => s.label)}
           value={ORDER_STATUSES.find((s) => s.value === o.status)!.label}
-          onChange={(label) => setOrderStatus(o, ORDER_STATUSES.find((s) => s.label === label)!.value)}
+          onChange={(label) => setStatus(ORDER_STATUSES.find((s) => s.label === label)!.value)}
         />
       </Field>
       <label className="check">
-        <input type="checkbox" checked={o.paid} onChange={(e) => db.orders.update(o.id!, { paid: e.target.checked })} /> Sudah dibayar
+        <input type="checkbox" checked={o.paid} disabled={busy} onChange={(e) => setPaid(e.target.checked)} /> Sudah dibayar
       </label>
 
       <div className="stack">
@@ -252,9 +247,11 @@ function OrderDetail({ order: o, settings, onClose }: { order: Order; settings: 
             📋 Salin struk
           </button>
         )}
-        <button className="btn ghost danger" onClick={remove}>
-          Hapus pesanan
-        </button>
+        {isOwner && (
+          <button className="btn ghost danger" disabled={busy} onClick={remove}>
+            Hapus pesanan
+          </button>
+        )}
       </div>
     </Sheet>
   );

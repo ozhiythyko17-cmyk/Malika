@@ -102,3 +102,24 @@ export function Chips<T extends string>({ options, value, onChange }: { options:
     </div>
   );
 }
+
+/** Jalankan aksi (mis. simpan) dengan status sibuk; pesan error ditampilkan ke pengguna. */
+export function useRun() {
+  const [busy, setBusy] = useState(false);
+  const run = async (fn: () => Promise<unknown>) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await fn();
+    } catch (e) {
+      alert((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return [busy, run] as const;
+}
+
+export function LoadError({ error }: { error: string | null }) {
+  return error ? <div className="alert warn">{error}</div> : null;
+}

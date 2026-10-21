@@ -1,20 +1,24 @@
 import { useState } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
-import { db, DEFAULT_SETTINGS, type AdCampaign } from "../db";
-import { Chips, Empty, Field, MoneyInput, NumberInput, Sheet } from "../components/ui";
-import { buildManualPrompt, GOALS, PLATFORMS, STYLES, type ContentRequest } from "../prompt";
-import { dateStr, fromInputDate, num, rp, timeStr, toInputDate } from "../utils";
+import { AD_PLATFORMS, type AdCampaign, type AdInput, type Content, type Customer, type Product } from "../../shared/types";
+import { GOALS, PLATFORMS, STYLES } from "../../shared/prompt";
+import { api, ApiError, mutate, useApi } from "../api";
+import { useSession } from "../App";
+import { Chips, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
+import { dateStr, fromInputDate, num, rp, timeStr, toInputDate, waLink } from "../utils";
 
-type Tab = "AI Konten" | "Tersimpan" | "Iklan";
+type Tab = "AI Konten" | "Tersimpan" | "Pelanggan" | "Iklan";
 
 export default function Marketing() {
+  const { isOwner } = useSession();
   const [tab, setTab] = useState<Tab>("AI Konten");
+  const tabs: Tab[] = isOwner ? ["AI Konten", "Tersimpan", "Pelanggan", "Iklan"] : ["AI Konten", "Tersimpan", "Pelanggan"];
   return (
     <div className="stack">
       <h2>Marketing</h2>
-      <Chips options={["AI Konten", "Tersimpan", "Iklan"] as Tab[]} value={tab} onChange={setTab} />
+      <Chips options={tabs} value={tab} onChange={setTab} />
       {tab === "AI Konten" && <AiKonten />}
       {tab === "Tersimpan" && <Tersimpan />}
+      {tab === "Pelanggan" && <Pelanggan />}
       {tab === "Iklan" && <Iklan />}
     </div>
   );
@@ -25,59 +29,42 @@ function copy(text: string) {
 }
 
 function AiKonten() {
-  const products = useLiveQuery(() => db.products.filter((p) => p.active).toArray());
-  const settings = useLiveQuery(() => db.settings.get("main")) ?? DEFAULT_SETTINGS;
+  const { settings } = useSession();
+  const { data: all } = useApi<Product[]>("/products");
+  const products = all?.filter((p) => p.active);
   const [productId, setProductId] = useState<number | null>(null);
   const [platform, setPlatform] = useState(PLATFORMS[0]);
-  const [style, setStyle] = useState(settings.brandVoice || STYLES[0]);
+  const [style, setStyle] = useState(STYLES.includes(settings.brandVoice) ? settings.brandVoice : STYLES[0]);
   const [goal, setGoal] = useState(GOALS[0]);
   const [promo, setPromo] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [parts, setParts] = useState<string[]>([]);
+  const [, run] = useRun();
 
   const product = products?.find((p) => p.id === productId) ?? products?.[0];
-
-  const request = (): ContentRequest | null =>
-    product
-      ? {
-          businessName: settings.businessName,
-          city: settings.city,
-          brandDescription: settings.brandDescription,
-          brandVoice: settings.brandVoice,
-          productName: product.name,
-          productDescription: product.description ?? "",
-          price: product.price,
-          platform, style, goal, promo,
-        }
-      : null;
+  const request = () => ({ productId: product!.id, platform, style, goal, promo });
 
   async function generate() {
-    const body = request();
-    if (!body) return;
     setLoading(true);
     setError("");
     setParts([]);
     try {
-      const res = await fetch("/api/konten", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Gagal membuat konten.");
-      setParts((json.text as string).split(/^\s*---\s*$/m).map((s) => s.trim()).filter(Boolean));
+      const { text } = await api<{ text: string }>("POST", "/ai/caption", request());
+      setParts(text.split(/^\s*---\s*$/m).map((s) => s.trim()).filter(Boolean));
     } catch (e) {
-      setError(navigator.onLine ? (e as Error).message : "Tidak ada internet. Fitur AI butuh koneksi.");
+      setError((e as ApiError).message);
     } finally {
       setLoading(false);
     }
   }
 
-  async function save(text: string) {
-    await db.contents.add({ createdAt: Date.now(), productName: product!.name, platform, text });
-    alert("Disimpan di tab Tersimpan.");
-  }
+  const copyPrompt = () => run(async () => copy((await api<{ text: string }>("POST", "/ai/prompt", request())).text));
+  const save = (text: string) =>
+    run(async () => {
+      await mutate("POST", "/contents", { productName: product!.name, platform, text });
+      alert("Disimpan di tab Tersimpan.");
+    });
 
   if (!products) return null;
   if (products.length === 0) return <Empty icon="✨">Tambahkan produk dulu, lalu AI bisa membuatkan caption.</Empty>;
@@ -86,7 +73,7 @@ function AiKonten() {
     <div className="stack">
       <Field label="Produk">
         <select value={product?.id ?? ""} onChange={(e) => setProductId(Number(e.target.value))}>
-          {products?.map((p) => (
+          {products.map((p) => (
             <option key={p.id} value={p.id}>{p.emoji} {p.name}</option>
           ))}
         </select>
@@ -110,10 +97,8 @@ function AiKonten() {
       {error && (
         <div className="alert warn">
           {error}
-          <div className="small">
-            Sementara bisa pakai cara manual: salin perintah di bawah lalu tempel di aplikasi Claude.
-          </div>
-          <button className="btn small" onClick={() => copy(buildManualPrompt(request()!))}>📋 Salin perintah AI</button>
+          <div className="small">Sementara bisa pakai cara manual: salin perintah di bawah lalu tempel di aplikasi Claude.</div>
+          <button className="btn small" onClick={copyPrompt}>📋 Salin perintah AI</button>
         </div>
       )}
 
@@ -134,17 +119,21 @@ function AiKonten() {
 }
 
 function Tersimpan() {
-  const contents = useLiveQuery(() => db.contents.orderBy("createdAt").reverse().toArray());
+  const { data: contents, error } = useApi<Content[]>("/contents");
+  const [, run] = useRun();
   if (contents?.length === 0) return <Empty icon="⭐">Belum ada konten tersimpan.</Empty>;
   return (
     <div className="list">
+      <LoadError error={error} />
       {contents?.map((c) => (
         <div key={c.id} className="card result">
           <div className="small muted">{timeStr(c.createdAt)} · {c.productName} · {c.platform}</div>
           <pre>{c.text}</pre>
           <div className="row gap">
             <button className="btn small" onClick={() => copy(c.text)}>📋 Salin</button>
-            <button className="btn small ghost danger" onClick={() => confirm("Hapus konten ini?") && db.contents.delete(c.id!)}>Hapus</button>
+            <button className="btn small ghost danger" onClick={() => confirm("Hapus konten ini?") && run(() => mutate("DELETE", `/contents/${c.id}`))}>
+              Hapus
+            </button>
           </div>
         </div>
       ))}
@@ -152,7 +141,46 @@ function Tersimpan() {
   );
 }
 
-const AD_PLATFORMS = ["Instagram/Facebook", "TikTok", "GoFood", "GrabFood", "ShopeeFood", "Lainnya"];
+function Pelanggan() {
+  const { settings } = useSession();
+  const { data: customers, error } = useApi<Customer[]>("/customers");
+  const [q, setQ] = useState("");
+  const DAY = 86_400_000;
+
+  if (customers?.length === 0) {
+    return <Empty icon="👥">Pelanggan muncul otomatis dari pesanan yang ada nomor WhatsApp-nya.</Empty>;
+  }
+  const shown = customers?.filter((c) => !q || c.name.toLowerCase().includes(q.toLowerCase()) || c.wa.includes(q));
+  const greeting = (c: Customer) =>
+    `Halo ${c.name || "Kak"}! 👋 Terima kasih sudah langganan di ${settings.businessName}. `;
+
+  return (
+    <div className="stack">
+      <LoadError error={error} />
+      <input placeholder="Cari nama atau nomor…" value={q} onChange={(e) => setQ(e.target.value)} />
+      <p className="small muted">{customers?.length ?? 0} pelanggan. "Lama tidak order" = lebih dari 30 hari — cocok dikirimi promo.</p>
+      <div className="list">
+        {shown?.map((c) => {
+          const idle = Date.now() - c.lastOrder > 30 * DAY;
+          return (
+            <div key={c.wa} className="card">
+              <div className="row between">
+                <b>{c.name || c.wa}</b>
+                {idle ? <span className="badge neg">Lama tidak order</span> : c.orders >= 3 && <span className="badge st-selesai">Setia</span>}
+              </div>
+              <div className="small muted">
+                {c.orders}× order · total {rp(c.spent)} · terakhir {dateStr(c.lastOrder)}
+              </div>
+              <a className="btn small" href={waLink(c.wa, greeting(c))} target="_blank" rel="noreferrer">
+                💬 Chat WhatsApp
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function verdict(a: AdCampaign) {
   if (!a.spend) return { label: "Belum ada biaya", cls: "" };
@@ -163,11 +191,11 @@ function verdict(a: AdCampaign) {
 }
 
 function Iklan() {
-  const ads = useLiveQuery(() => db.ads.orderBy("startDate").reverse().toArray());
-  const products = useLiveQuery(() => db.products.filter((p) => p.active && p.price > 0).toArray());
-  const [editing, setEditing] = useState<AdCampaign | null>(null);
+  const { data: ads, error } = useApi<AdCampaign[]>("/ads");
+  const { data: products } = useApi<Product[]>("/products");
+  const [editing, setEditing] = useState<AdInput & { id?: number } | null>(null);
 
-  const margins = (products ?? []).map((p) => (p.price - p.cost) / p.price);
+  const margins = (products ?? []).filter((p) => p.active && p.price > 0).map((p) => (p.price - p.cost) / p.price);
   const avgMargin = margins.length ? margins.reduce((s, m) => s + m, 0) / margins.length : 0;
 
   return (
@@ -183,6 +211,7 @@ function Iklan() {
       >
         + Catat iklan
       </button>
+      <LoadError error={error} />
       {ads?.length === 0 && <Empty icon="📣">Belum ada iklan yang dicatat.</Empty>}
       {ads?.map((a) => {
         const v = verdict(a);
@@ -190,7 +219,7 @@ function Iklan() {
         return (
           <button key={a.id} className="card left" onClick={() => setEditing(a)}>
             <div className="row between">
-              <b>{a.name || "Iklan"}</b>
+              <b>{a.name}</b>
               <b className={v.cls}>{v.label}</b>
             </div>
             <div className="small muted">{a.platform} · {dateStr(a.startDate)} – {dateStr(a.endDate)}</div>
@@ -207,7 +236,7 @@ function Iklan() {
       })}
       {ads && ads.length > 0 && (
         <p className="small muted">
-          Untung perkiraan = penjualan × rata-rata margin produk ({Math.round(avgMargin * 100)}%) − biaya iklan. BAGUS jika penjualan ≥ 3× biaya iklan.
+          Untung perkiraan = penjualan × rata-rata margin menu ({Math.round(avgMargin * 100)}%) − biaya iklan. BAGUS jika penjualan ≥ 3× biaya iklan.
         </p>
       )}
       {editing && <AdForm ad={editing} onClose={() => setEditing(null)} />}
@@ -215,19 +244,29 @@ function Iklan() {
   );
 }
 
-function AdForm({ ad, onClose }: { ad: AdCampaign; onClose: () => void }) {
+function AdForm({ ad, onClose }: { ad: AdInput & { id?: number }; onClose: () => void }) {
   const [a, setA] = useState(ad);
-  const set = <K extends keyof AdCampaign>(k: K, v: AdCampaign[K]) => setA({ ...a, [k]: v });
+  const [busy, run] = useRun();
+  const set = <K extends keyof AdInput>(k: K, v: AdInput[K]) => setA({ ...a, [k]: v });
 
-  async function save() {
-    await db.ads.put({ ...a, name: a.name.trim() || "Iklan" });
-    onClose();
-  }
+  const save = () =>
+    run(async () => {
+      const { id, ...body } = a;
+      if (id) await mutate("PUT", `/ads/${id}`, body);
+      else await mutate("POST", "/ads", body);
+      onClose();
+    });
+  const remove = () =>
+    confirm("Hapus catatan iklan ini?") &&
+    run(async () => {
+      await mutate("DELETE", `/ads/${a.id}`);
+      onClose();
+    });
 
   return (
     <Sheet title={a.id ? "Ubah catatan iklan" : "Catat iklan"} onClose={onClose}>
       <Field label="Nama iklan">
-        <input value={a.name} onChange={(e) => set("name", e.target.value)} placeholder="Mis. Promo Geprek Jumat" />
+        <input value={a.name} onChange={(e) => set("name", e.target.value)} placeholder="Mis. Promo Ayam Bakar Jumat" />
       </Field>
       <Field label="Platform">
         <Chips options={AD_PLATFORMS} value={a.platform} onChange={(v) => set("platform", v)} />
@@ -261,12 +300,8 @@ function AdForm({ ad, onClose }: { ad: AdCampaign; onClose: () => void }) {
         <textarea rows={2} value={a.note} onChange={(e) => set("note", e.target.value)} />
       </Field>
       <div className="stack">
-        <button className="btn primary" onClick={save}>Simpan</button>
-        {a.id && (
-          <button className="btn ghost danger" onClick={async () => { if (confirm("Hapus catatan iklan ini?")) { await db.ads.delete(a.id!); onClose(); } }}>
-            Hapus
-          </button>
-        )}
+        <button className="btn primary" disabled={busy} onClick={save}>Simpan</button>
+        {a.id && <button className="btn ghost danger" disabled={busy} onClick={remove}>Hapus</button>}
       </div>
     </Sheet>
   );

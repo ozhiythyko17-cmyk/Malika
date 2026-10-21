@@ -1,3 +1,5 @@
+import { normalizeWa } from "../shared/format";
+
 const rupiahFmt = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
 
 export const rp = (n: number) => rupiahFmt.format(Math.round(n || 0));
@@ -29,16 +31,8 @@ export const fromInputDate = (s: string) => {
   return new Date(y, m - 1, d, 12).getTime();
 };
 
-/** 0812xxxx / +62812xxxx / 62812xxxx -> 62812xxxx */
-export function normalizeWa(raw: string) {
-  const digits = raw.replace(/\D/g, "");
-  if (digits.startsWith("0")) return "62" + digits.slice(1);
-  return digits;
-}
-
 export function waLink(phone: string, text: string) {
-  const p = normalizeWa(phone);
-  return `https://wa.me/${p}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${normalizeWa(phone)}?text=${encodeURIComponent(text)}`;
 }
 
 export function downloadFile(name: string, content: string, type: string) {
@@ -51,9 +45,7 @@ export function downloadFile(name: string, content: string, type: string) {
 }
 
 export function toCsv(rows: (string | number)[][]) {
-  return rows
-    .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
-    .join("\n");
+  return rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
 }
 
 export const MONTHS = [
