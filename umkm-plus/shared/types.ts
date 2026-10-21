@@ -87,9 +87,17 @@ export interface StockMove {
 export interface Content {
   id: number;
   createdAt: number;
-  productName: string;
+  title: string;
   platform: string;
   text: string;
+  mediaId: number | null;
+}
+
+export interface DriveFile {
+  id: string;
+  name: string;
+  kind: "image" | "video";
+  durationSec: number | null;
 }
 
 export interface AdCampaign {
@@ -121,6 +129,7 @@ export interface Settings {
   brandDescription: string;
   brandVoice: string;
   channels: Channel[];
+  driveFolderUrl: string; // folder Google Drive berisi foto/video bahan konten
 }
 
 export interface Customer {
@@ -185,6 +194,7 @@ export const DEFAULT_SETTINGS: Settings = {
   city: "",
   brandDescription: "",
   brandVoice: "Santai",
+  driveFolderUrl: "",
   channels: [
     { name: "WhatsApp", feePct: 0 },
     { name: "Instagram", feePct: 0 },

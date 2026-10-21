@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AD_PLATFORMS, type AdCampaign, type AdInput, type Content, type Customer, type Product } from "../../shared/types";
-import { GOALS, PLATFORMS, STYLES } from "../../shared/prompt";
-import { api, ApiError, mutate, useApi } from "../api";
+import Studio from "./Studio";
+import { mutate, useApi } from "../api";
 import { useSession } from "../App";
 import { Chips, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
 import { dateStr, fromInputDate, num, rp, timeStr, toInputDate, waLink } from "../utils";
@@ -16,7 +16,7 @@ export default function Marketing() {
     <div className="stack">
       <h2>Marketing</h2>
       <Chips options={tabs} value={tab} onChange={setTab} />
-      {tab === "AI Konten" && <AiKonten />}
+      {tab === "AI Konten" && <Studio />}
       {tab === "Tersimpan" && <Tersimpan />}
       {tab === "Pelanggan" && <Pelanggan />}
       {tab === "Iklan" && <Iklan />}
@@ -28,96 +28,6 @@ function copy(text: string) {
   navigator.clipboard.writeText(text).then(() => alert("Tersalin! Tinggal tempel di Instagram/TikTok/WA."));
 }
 
-function AiKonten() {
-  const { settings } = useSession();
-  const { data: all } = useApi<Product[]>("/products");
-  const products = all?.filter((p) => p.active);
-  const [productId, setProductId] = useState<number | null>(null);
-  const [platform, setPlatform] = useState(PLATFORMS[0]);
-  const [style, setStyle] = useState(STYLES.includes(settings.brandVoice) ? settings.brandVoice : STYLES[0]);
-  const [goal, setGoal] = useState(GOALS[0]);
-  const [promo, setPromo] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [parts, setParts] = useState<string[]>([]);
-  const [, run] = useRun();
-
-  const product = products?.find((p) => p.id === productId) ?? products?.[0];
-  const request = () => ({ productId: product!.id, platform, style, goal, promo });
-
-  async function generate() {
-    setLoading(true);
-    setError("");
-    setParts([]);
-    try {
-      const { text } = await api<{ text: string }>("POST", "/ai/caption", request());
-      setParts(text.split(/^\s*---\s*$/m).map((s) => s.trim()).filter(Boolean));
-    } catch (e) {
-      setError((e as ApiError).message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const copyPrompt = () => run(async () => copy((await api<{ text: string }>("POST", "/ai/prompt", request())).text));
-  const save = (text: string) =>
-    run(async () => {
-      await mutate("POST", "/contents", { productName: product!.name, platform, text });
-      alert("Disimpan di tab Tersimpan.");
-    });
-
-  if (!products) return null;
-  if (products.length === 0) return <Empty icon="✨">Tambahkan produk dulu, lalu AI bisa membuatkan caption.</Empty>;
-
-  return (
-    <div className="stack">
-      <Field label="Produk">
-        <select value={product?.id ?? ""} onChange={(e) => setProductId(Number(e.target.value))}>
-          {products.map((p) => (
-            <option key={p.id} value={p.id}>{p.emoji} {p.name}</option>
-          ))}
-        </select>
-      </Field>
-      <Field label="Untuk">
-        <Chips options={PLATFORMS} value={platform} onChange={setPlatform} />
-      </Field>
-      <Field label="Gaya bahasa">
-        <Chips options={STYLES} value={style} onChange={setStyle} />
-      </Field>
-      <Field label="Tujuan">
-        <Chips options={GOALS} value={goal} onChange={setGoal} />
-      </Field>
-      <Field label="Detail promo (opsional)" hint="Mis. beli 2 gratis es teh, khusus Jumat">
-        <input value={promo} onChange={(e) => setPromo(e.target.value)} />
-      </Field>
-      <button className="btn primary big" disabled={loading} onClick={generate}>
-        {loading ? "⏳ AI sedang menulis…" : "✨ Buatkan caption"}
-      </button>
-
-      {error && (
-        <div className="alert warn">
-          {error}
-          <div className="small">Sementara bisa pakai cara manual: salin perintah di bawah lalu tempel di aplikasi Claude.</div>
-          <button className="btn small" onClick={copyPrompt}>📋 Salin perintah AI</button>
-        </div>
-      )}
-
-      {parts.map((text, i) => (
-        <div key={i} className="card result">
-          <pre>{text}</pre>
-          <div className="row gap">
-            <button className="btn small" onClick={() => copy(text)}>📋 Salin</button>
-            <button className="btn small" onClick={() => save(text)}>⭐ Simpan</button>
-          </div>
-        </div>
-      ))}
-      {parts.length > 0 && (
-        <p className="small muted">Baca dulu sebelum diposting — pastikan harga & promo sudah benar. Gambar promo bisa dibuat di Canva.</p>
-      )}
-    </div>
-  );
-}
-
 function Tersimpan() {
   const { data: contents, error } = useApi<Content[]>("/contents");
   const [, run] = useRun();
@@ -127,7 +37,12 @@ function Tersimpan() {
       <LoadError error={error} />
       {contents?.map((c) => (
         <div key={c.id} className="card result">
-          <div className="small muted">{timeStr(c.createdAt)} · {c.productName} · {c.platform}</div>
+          <div className="small muted">{timeStr(c.createdAt)} · {c.title} · {c.platform}</div>
+          {c.mediaId && (
+            <a href={`/api/media/${c.mediaId}`} download={`gambar-promo-${c.mediaId}.png`}>
+              <img className="result-img" src={`/api/media/${c.mediaId}`} alt="Gambar promo" loading="lazy" />
+            </a>
+          )}
           <pre>{c.text}</pre>
           <div className="row gap">
             <button className="btn small" onClick={() => copy(c.text)}>📋 Salin</button>

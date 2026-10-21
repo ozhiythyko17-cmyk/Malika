@@ -1,89 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { AD_PLATFORMS, type AdInput } from "../../shared/types.js";
-import { buildUserPrompt, GOALS, PLATFORMS, STYLES, SYSTEM_PROMPT } from "../../shared/prompt.js";
 import { getDb, ms, ts } from "../db.js";
 import { HttpError, idParam, int, json, oneOf, str, time, type Ctx } from "../http.js";
-import { loadSettings } from "./settings.js";
-
-// ---- AI caption ----
-
-export async function caption(ctx: Ctx) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new HttpError(503, "Kunci API AI belum dipasang. Tambahkan ANTHROPIC_API_KEY di pengaturan Vercel.");
-  }
-  const b = await ctx.body();
-  const productId = int(b.productId, "Produk", { min: 1, max: 2_147_483_647 });
-  const { query } = await getDb();
-  const [product] = await query<{ name: string; description: string; price: number }>(
-    "select name, description, price from products where id = $1",
-    [productId]
-  );
-  if (!product) throw new HttpError(404, "Produk tidak ditemukan.");
-  const s = await loadSettings();
-
-  const prompt = buildUserPrompt({
-    businessName: s.businessName,
-    city: s.city,
-    brandDescription: s.brandDescription,
-    productName: product.name,
-    productDescription: product.description,
-    price: product.price,
-    platform: oneOf(b.platform, PLATFORMS, "Platform"),
-    style: oneOf(b.style, STYLES, "Gaya bahasa"),
-    goal: oneOf(b.goal, GOALS, "Tujuan"),
-    promo: str(b.promo, "Detail promo", { max: 300 }),
-  });
-
-  const client = new Anthropic();
-  try {
-    const response = await client.beta.messages.create({
-      model: "claude-opus-5-5",
-      max_tokens: 8000,
-      output_config: { effort: "low" },
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: prompt }],
-    });
-    if (response.stop_reason === "refusal") {
-      throw new HttpError(422, "AI menolak permintaan ini. Coba ubah keterangan produk atau promonya.");
-    }
-    const text = response.content
-      .map((block) => (block.type === "text" ? block.text : ""))
-      .join("")
-      .trim();
-    return json({ text });
-  } catch (error) {
-    if (error instanceof HttpError) throw error;
-    if (error instanceof Anthropic.AuthenticationError) throw new HttpError(502, "Kunci API AI salah atau sudah tidak aktif.");
-    if (error instanceof Anthropic.RateLimitError) throw new HttpError(429, "AI sedang sibuk atau kredit habis. Coba lagi sebentar.");
-    if (error instanceof Anthropic.APIError) throw new HttpError(502, `Layanan AI error (${error.status}).`);
-    throw new HttpError(502, "Tidak bisa terhubung ke layanan AI.");
-  }
-}
-
-/** Perintah lengkap untuk ditempel manual di aplikasi Claude bila API belum dipasang. */
-export async function manualPrompt(ctx: Ctx) {
-  const b = await ctx.body();
-  const { query } = await getDb();
-  const [product] = await query<{ name: string; description: string; price: number }>(
-    "select name, description, price from products where id = $1",
-    [int(b.productId, "Produk", { min: 1, max: 2_147_483_647 })]
-  );
-  if (!product) throw new HttpError(404, "Produk tidak ditemukan.");
-  const s = await loadSettings();
-  const prompt = buildUserPrompt({
-    businessName: s.businessName, city: s.city, brandDescription: s.brandDescription,
-    productName: product.name, productDescription: product.description, price: product.price,
-    platform: oneOf(b.platform, PLATFORMS, "Platform"), style: oneOf(b.style, STYLES, "Gaya bahasa"),
-    goal: oneOf(b.goal, GOALS, "Tujuan"), promo: str(b.promo, "Detail promo", { max: 300 }),
-  });
-  return json({ text: `${SYSTEM_PROMPT}\n\n${prompt}` });
-}
 
 // ---- Konten tersimpan ----
 
-const CONTENT_COLUMNS = `id, ${ms("created_at")} as "createdAt", product_name as "productName", platform, text`;
+const CONTENT_COLUMNS = `id, ${ms("created_at")} as "createdAt", product_name as "title", platform, text, media_id as "mediaId"`;
 
 export async function listContents() {
   const { query } = await getDb();
@@ -93,9 +14,10 @@ export async function listContents() {
 export async function createContent(ctx: Ctx) {
   const b = await ctx.body();
   const { query } = await getDb();
+  const mediaId = b.mediaId == null ? null : int(b.mediaId, "Gambar", { min: 1, max: 2_147_483_647 });
   const [row] = await query(
-    `insert into contents (product_name, platform, text) values ($1, $2, $3) returning ${CONTENT_COLUMNS}`,
-    [str(b.productName, "Produk", { max: 100, required: true }), str(b.platform, "Platform", { max: 40 }), str(b.text, "Teks", { max: 6000, required: true })]
+    `insert into contents (product_name, platform, text, media_id) values ($1, $2, $3, $4) returning ${CONTENT_COLUMNS}`,
+    [str(b.title, "Judul", { max: 100 }) || "Konten", str(b.platform, "Platform", { max: 40 }), str(b.text, "Teks", { max: 8000 }), mediaId]
   );
   return json(row, 201);
 }

@@ -9,6 +9,7 @@ import * as marketing from "./routes/marketing.js";
 import * as orders from "./routes/orders.js";
 import * as products from "./routes/products.js";
 import * as settings from "./routes/settings.js";
+import * as studio from "./routes/studio.js";
 
 type Access = "masuk" | "pemilik"; // masuk = semua akun yang login; pemilik = khusus pemilik
 type Handler = (ctx: Ctx) => Promise<Response> | Response;
@@ -44,8 +45,12 @@ const routes: [method: string, path: string, access: Access, handler: Handler][]
   ["PUT", "/expenses/:id", "pemilik", finance.updateExpense],
   ["DELETE", "/expenses/:id", "pemilik", finance.deleteExpense],
 
-  ["POST", "/ai/caption", "masuk", marketing.caption],
-  ["POST", "/ai/prompt", "masuk", marketing.manualPrompt],
+  ["POST", "/ai/generate", "masuk", studio.generate],
+  ["POST", "/ai/image", "masuk", studio.image],
+  ["POST", "/ai/prompt", "masuk", studio.manualPrompt],
+  ["GET", "/media/:id", "masuk", studio.media],
+  ["GET", "/drive/files", "masuk", studio.driveFiles],
+  ["GET", "/drive/thumb/:id", "masuk", studio.driveThumb],
   ["GET", "/contents", "masuk", marketing.listContents],
   ["POST", "/contents", "masuk", marketing.createContent],
   ["DELETE", "/contents/:id", "masuk", marketing.deleteContent],
@@ -109,6 +114,7 @@ export async function handle(req: Request, path: string, url = new URL(req.url))
 async function backup() {
   const { query } = await getDb();
   const tables = ["settings", "products", "orders", "order_items", "stock_moves", "expenses", "contents", "ad_campaigns"];
+  // Gambar AI (tabel media) tidak ikut karena besar; bisa diunduh satu per satu dari menu Tersimpan.
   const data: Record<string, unknown[]> = {};
   for (const t of tables) data[t] = await query(`select * from ${t} order by 1`);
   data.users = await query("select id, name, username, role, created_at from users order by id");

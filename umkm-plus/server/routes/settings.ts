@@ -1,5 +1,6 @@
 import { DEFAULT_SETTINGS, type Settings } from "../../shared/types.js";
 import { getDb } from "../db.js";
+import { parseFolderId } from "../google.js";
 import { HttpError, int, json, str, type Ctx } from "../http.js";
 
 export async function loadSettings(): Promise<Settings> {
@@ -20,14 +21,19 @@ export async function save(ctx: Ctx) {
     city: str(b.city, "Kota", { max: 80 }),
     brandDescription: str(b.brandDescription, "Tentang usaha", { max: 600 }),
     brandVoice: str(b.brandVoice, "Gaya bahasa", { max: 30 }) || "Santai",
+    driveFolderUrl: str(b.driveFolderUrl, "Link folder Google Drive", { max: 300 }),
     channels: (b.channels as Record<string, unknown>[])
       .map((c) => ({ name: str(c?.name, "Nama saluran", { max: 40 }), feePct: int(c?.feePct, "Potongan saluran", { max: 100 }) }))
       .filter((c) => c.name),
   };
   if (!settings.channels.length) throw new HttpError(400, "Minimal harus ada satu saluran penjualan.");
+  if (settings.driveFolderUrl && !parseFolderId(settings.driveFolderUrl)) {
+    throw new HttpError(400, "Link folder Google Drive tidak dikenali. Salin link folder dari tombol Bagikan.");
+  }
   const { query } = await getDb();
   await query(
-    "insert into settings (id, data) values (1, $1::jsonb) on conflict (id) do update set data = excluded.data",
+    // $1::text dulu: driver postgres.js meng-encode ulang string JSON bila langsung di-cast ke jsonb.
+    "insert into settings (id, data) values (1, $1::text::jsonb) on conflict (id) do update set data = excluded.data",
     [JSON.stringify(settings)]
   );
   return json(settings);

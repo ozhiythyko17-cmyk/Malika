@@ -52,6 +52,9 @@ describe("UMKM Plus API", () => {
     assert.equal(again.status, 409);
     const settings = await owner("GET", "/settings");
     assert.equal(settings.data.businessName, "Dapur Bakar");
+    const saved = await owner("PUT", "/settings", { ...settings.data, city: "Bekasi" });
+    assert.equal(saved.status, 200);
+    assert.equal((await owner("GET", "/settings")).data.city, "Bekasi");
   });
 
   test("tanpa login ditolak, kata sandi salah ditolak", async () => {
@@ -137,9 +140,10 @@ describe("UMKM Plus API", () => {
   });
 
   test("AI tanpa kunci API memberi pesan jelas", async () => {
-    const r = await owner("POST", "/ai/caption", { productId: geprek, platform: "TikTok", style: "Santai", goal: "Kenalkan menu", promo: "" });
+    const req = { source: "prompt", brief: "Kenalkan menu baru", productId: geprek, platform: "TikTok", style: "Santai", wantImage: false, wantVideo: false };
+    const r = await owner("POST", "/ai/generate", req);
     assert.equal(r.status, 503);
-    const m = await owner("POST", "/ai/prompt", { productId: geprek, platform: "TikTok", style: "Santai", goal: "Kenalkan menu", promo: "" });
+    const m = await owner("POST", "/ai/prompt", req);
     assert.match(m.data.text, /Ayam Bakar Madu/);
   });
 });

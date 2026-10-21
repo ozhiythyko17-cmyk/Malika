@@ -138,6 +138,14 @@ const SCHEMA = [
     platform text not null,
     text text not null
   )`,
+  `create table if not exists media (
+    id serial primary key,
+    created_at timestamptz not null default now(),
+    mime text not null,
+    data bytea not null,
+    prompt text not null default ''
+  )`,
+  `alter table contents add column if not exists media_id int references media(id) on delete set null`,
   `create table if not exists ad_campaigns (
     id serial primary key,
     name text not null,

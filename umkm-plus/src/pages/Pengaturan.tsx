@@ -75,6 +75,16 @@ function ProfilUsaha() {
       </div>
 
       <div className="card stack">
+        <b>📁 Bahan konten di Google Drive</b>
+        <p className="small muted">
+          Buat satu folder berisi foto & video menu. Di Google Drive: klik kanan folder → <i>Bagikan</i> → Akses umum: <i>Siapa saja yang memiliki link</i> (Pelihat) → <i>Salin link</i>, lalu tempel di sini. Siapa pun yang punya link bisa melihat isi folder, jadi isi hanya dengan bahan promosi.
+        </p>
+        <Field label="Link folder">
+          <input value={s.driveFolderUrl} onChange={(e) => set("driveFolderUrl", e.target.value)} placeholder="https://drive.google.com/drive/folders/…" />
+        </Field>
+      </div>
+
+      <div className="card stack">
         <b>Saluran penjualan & potongan aplikasi</b>
         <p className="small muted">Potongan (%) dipotong otomatis dari omzet pesanan saluran itu, supaya untung yang tampil adalah untung sebenarnya.</p>
         {s.channels.map((c, i) => (

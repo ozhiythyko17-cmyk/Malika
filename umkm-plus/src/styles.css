@@ -247,3 +247,18 @@ table.card { display: table; padding: 0; overflow: hidden; }
 .login-brand h1 { margin: 8px 0 2px; font-size: 1.5rem; }
 .login-brand p { margin: 0; color: var(--muted); }
 button:disabled { cursor: default; }
+
+.material-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.material { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--soft); border: 2px solid transparent; }
+.material img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.material.on { border-color: var(--brand); }
+.material.on img { opacity: 0.8; }
+.tag-video { position: absolute; left: 4px; bottom: 4px; background: rgba(0, 0, 0, 0.65); color: #fff; font-size: 0.7rem; padding: 1px 6px; border-radius: 6px; }
+.tag-num { position: absolute; right: 4px; top: 4px; width: 24px; height: 24px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: 0.8rem; display: grid; place-items: center; }
+.result-img, .poster { width: 100%; height: auto; border-radius: 12px; display: block; background: var(--soft); }
+.poster { max-height: 70vh; object-fit: contain; }
+.link-btn { color: var(--blue); text-decoration: underline; font-weight: 600; }
+.nowrap { white-space: nowrap; }
+.scenes td { padding: 8px 6px; }
+details summary { cursor: pointer; color: var(--blue); }
+details[open] summary { margin-bottom: 10px; }
