@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Master Plan Dapur Malika</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column with a sticky section bar; calculators break out wider for their tables. */
+:root {
+  --bg: #f6f8f2;          /* daun pisang muda, sangat pucat */
+  --surface: #ffffff;
+  --sunk: #edf1e6;
+  --ink: #1b241d;
+  --muted: #56645a;
+  --line: #d5ddcd;
+  --leaf: #2f6b3f;        /* hijau daun pisang */
+  --leaf-soft: #e1ecdc;
+  --kunyit: #c98a0a;      /* kunyit, aksen angka penting */
+  --kunyit-soft: #f8edcf;
+  --bara: #b4471b;        /* bara arang, angka negatif/risiko */
+  --bara-soft: #f7e2d7;
+  --store: #dbe7f2; --store-s: #3d6a8f;
+  --prep: #e3eedb;  --prep-s: #2f6b3f;
+  --cook: #f8e1c4;  --cook-s: #b5651d;
+  --pack: #f4ecc7;  --pack-s: #9a7a12;
+  --pick: #ece3f1;  --pick-s: #6b4d85;
+  --f-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --w: 860px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131813; --surface: #1b221c; --sunk: #222b23; --ink: #e7eee5; --muted: #a2b1a5; --line: #334036;
+    --leaf: #82bf8f; --leaf-soft: #233628; --kunyit: #f0b93a; --kunyit-soft: #3a2f12; --bara: #ef8a5e; --bara-soft: #3d2219;
+    --store: #1f3242; --store-s: #7fa9cc; --prep: #213526; --prep-s: #82bf8f; --cook: #3d2a17; --cook-s: #e09a57;
+    --pack: #37311a; --pack-s: #d8b84a; --pick: #2e2538; --pick-s: #b493cf;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131813; --surface: #1b221c; --sunk: #222b23; --ink: #e7eee5; --muted: #a2b1a5; --line: #334036;
+  --leaf: #82bf8f; --leaf-soft: #233628; --kunyit: #f0b93a; --kunyit-soft: #3a2f12; --bara: #ef8a5e; --bara-soft: #3d2219;
+  --store: #1f3242; --store-s: #7fa9cc; --prep: #213526; --prep-s: #82bf8f; --cook: #3d2a17; --cook-s: #e09a57;
+  --pack: #37311a; --pack-s: #d8b84a; --pick: #2e2538; --pick-s: #b493cf;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: var(--w); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wide { max-width: 1120px; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.1rem, 5.5vw, 3.4rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; margin-top: 1.6rem; }
+p { margin: 0.6rem 0; max-width: 68ch; }
+ul, ol { padding-left: 1.3rem; margin: 0.6rem 0; }
+li { margin: 0.25rem 0; max-width: 66ch; }
+a { color: var(--leaf); }
+strong { font-weight: 700; }
+.num, td, .stat b { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--kunyit); outline-offset: 2px; border-radius: 3px; }
+
+/* header */
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { padding-block: 44px 30px; }
+.eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--leaf); }
+.lede { font-size: 1.12rem; color: var(--muted); max-width: 60ch; margin-top: 0.8rem; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 26px; }
+.stat { background: var(--surface); padding: 14px 16px; min-width: 0; }
+.stat span { display: block; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.02em; }
+.stat b { display: block; font-family: var(--f-display); font-size: 1.45rem; font-weight: 800; margin-top: 2px; }
+.stat b.k { color: var(--kunyit); }
+.note { font-size: 0.86rem; color: var(--muted); }
+
+/* sticky nav */
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav.toc .wrap { display: flex; gap: 4px; overflow-x: auto; padding-block: 8px; scrollbar-width: none; }
+nav.toc a { flex: none; text-decoration: none; color: var(--muted); font-size: 0.85rem; font-weight: 600; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
+nav.toc a:hover { background: var(--sunk); color: var(--ink); }
+
+/* sections */
+main section { padding-block: 44px 8px; scroll-margin-top: 56px; }
+main section + section { border-top: 1px solid var(--line); }
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px; }
+.sec-no { font-family: var(--f-display); font-weight: 800; color: var(--leaf); font-size: 1rem; min-width: 1.8em; }
+
+/* tables */
+.tbl { overflow-x: auto; margin: 14px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { padding: 8px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 700; background: var(--sunk); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+tr.tot td { font-weight: 700; background: var(--sunk); }
+tr.grp td { font-weight: 700; color: var(--leaf); background: var(--leaf-soft); font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.neg { color: var(--bara); }
+.pos { color: var(--leaf); }
+
+/* pills / callouts */
+.callout { border-left: 3px solid var(--kunyit); background: var(--kunyit-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; max-width: 72ch; }
+.callout.warn { border-color: var(--bara); background: var(--bara-soft); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 14px 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.card h4 { margin: 0 0 4px; font-size: 1rem; font-family: var(--f-display); }
+.card ul { margin: 0.3rem 0 0; }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--leaf-soft); color: var(--leaf); letter-spacing: 0.03em; }
+.tag.k { background: var(--kunyit-soft); color: var(--kunyit); }
+.tag.b { background: var(--bara-soft); color: var(--bara); }
+pre.formula { background: var(--sunk); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-size: 0.9rem; }
+
+/* calculators */
+.calc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin: 18px 0; }
+.calc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.calc-head p { margin: 0; }
+.btn { font: inherit; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--line); background: var(--sunk); color: var(--ink); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--leaf); }
+.btn.link { background: none; border: 0; color: var(--leaf); padding: 2px 4px; text-decoration: underline; }
+input.in { font: inherit; font-size: 0.9rem; width: 100%; min-width: 64px; border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; background: var(--bg); color: var(--leaf); text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+input.in:hover { border-color: var(--leaf); }
+.assume { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 16px; margin: 14px 0; }
+.assume label { display: flex; flex-direction: column; gap: 3px; font-size: 0.82rem; color: var(--muted); }
+.legend-in { font-size: 0.82rem; color: var(--muted); }
+.legend-in i { font-style: normal; color: var(--leaf); font-weight: 700; border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; background: var(--bg); }
+tr.detail > td { background: var(--sunk); padding: 6px 12px 12px; }
+tr.detail table { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+td.name { min-width: 190px; }
+td.name button { font: inherit; font-weight: 600; background: none; border: 0; color: var(--ink); cursor: pointer; padding: 0; text-align: left; }
+td.name button::before { content: "▸ "; color: var(--leaf); }
+td.name button[aria-expanded="true"]::before { content: "▾ "; }
+.proj td, .proj th { padding: 6px 8px; }
+.proj td:first-child, .proj th:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; min-width: 220px; }
+.proj tr.tot td:first-child { background: var(--sunk); }
+.proj th:first-child { background: var(--sunk); }
+.proj input.in { min-width: 78px; }
+.chart { margin-top: 16px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--muted); font-size: 11px; font-family: var(--f-body); }
+.chart .grid { stroke: var(--line); }
+.chart .zero { stroke: var(--muted); }
+.chart .bp { fill: var(--leaf); }
+.chart .bn { fill: var(--bara); }
+.chart .cum { fill: none; stroke: var(--kunyit); stroke-width: 2.5; }
+.chart .cumd { fill: var(--kunyit); }
+.keys { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+.keys span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+
+/* layout svg */
+.layout-box { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; margin: 16px 0; }
+.layout-svg { display: block; width: 100%; min-width: 560px; max-width: 760px; margin: 0 auto; height: auto; font-family: var(--f-body); }
+.layout-svg .floor, .layout-svg .gap { fill: var(--surface); }
+.layout-svg .wall { fill: none; stroke: var(--ink); stroke-width: 10; }
+.layout-svg .fx { stroke-width: 1.5; }
+.layout-svg .fx-store { fill: var(--store); stroke: var(--store-s); }
+.layout-svg .fx-prep { fill: var(--prep); stroke: var(--prep-s); }
+.layout-svg .fx-cook { fill: var(--cook); stroke: var(--cook-s); }
+.layout-svg .fx-pack { fill: var(--pack); stroke: var(--pack-s); }
+.layout-svg .fx-pick { fill: var(--pick); stroke: var(--pick-s); }
+.layout-svg .t1 { font-size: 13px; font-weight: 700; fill: var(--ink); }
+.layout-svg .t2, .layout-svg .walk { font-size: 10.5px; fill: var(--muted); }
+.layout-svg .walk { font-style: italic; font-size: 11.5px; }
+.layout-svg .dim { stroke: var(--muted); stroke-width: 1; }
+.layout-svg .dimt { font-size: 12px; font-weight: 600; fill: var(--muted); }
+.layout-svg .hood { fill: none; stroke: var(--cook-s); stroke-dasharray: 5 4; stroke-width: 1.2; }
+.layout-svg .flow { fill: none; stroke: var(--leaf); stroke-width: 2.2; stroke-dasharray: 7 5; }
+.layout-svg .badge { fill: var(--leaf); }
+.layout-svg .badget { fill: var(--surface); font-size: 12px; font-weight: 700; }
+.layout-svg .door { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.layout-svg .win { stroke: var(--store-s); stroke-width: 3; }
+.zones { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 12px 0; }
+.zone { display: flex; gap: 10px; align-items: flex-start; font-size: 0.92rem; min-width: 0; }
+.zone .sw { flex: none; width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid; margin-top: 3px; }
+.steps { counter-reset: s; list-style: none; padding: 0; display: grid; gap: 6px; }
+.steps li { counter-increment: s; display: flex; gap: 10px; align-items: baseline; }
+.steps li::before { content: counter(s); flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--leaf); color: var(--surface); font-size: 0.75rem; font-weight: 700; display: grid; place-items: center; }
+
+/* timeline */
+.phases { display: grid; gap: 12px; margin: 14px 0; }
+.phase { display: grid; grid-template-columns: 150px 1fr; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.phase .when { font-family: var(--f-display); font-weight: 800; color: var(--leaf); }
+.phase .when small { display: block; font-family: var(--f-body); font-weight: 500; color: var(--muted); font-size: 0.8rem; }
+.phase > div { min-width: 0; }
+.phase ul { margin: 0.2rem 0 0; }
+@media (max-width: 560px) { .phase { grid-template-columns: 1fr; gap: 4px; } }
+
+/* checklist */
+.checks { columns: 2 260px; column-gap: 24px; }
+.checks fieldset { break-inside: avoid; border: 0; padding: 0; margin: 0 0 16px; }
+.checks legend { font-weight: 700; font-family: var(--f-display); margin-bottom: 4px; }
+.checks label { display: flex; gap: 8px; align-items: flex-start; padding: 3px 0; font-size: 0.94rem; cursor: pointer; }
+.checks input { accent-color: var(--leaf); margin-top: 5px; }
+.checks input:checked + span { color: var(--muted); text-decoration: line-through; }
+.progress { height: 8px; background: var(--sunk); border-radius: 999px; overflow: hidden; margin: 8px 0 18px; max-width: 420px; }
+.progress div { height: 100%; background: var(--leaf); width: 0; transition: width .3s; }
+footer { padding-block: 40px 60px; color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--line); margin-top: 40px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Master Plan · Cloud Kitchen · Kontrakan 3 × 3 m</div>
+    <h1 style="margin-top:10px">Dapur Malika</h1>
+    <p class="lede">Rencana lengkap dapur yang jualan 100% online lewat GoFood, GrabFood, ShopeeFood, dan WhatsApp, dengan menu andalan nasi bakar dan ayam bakar. Kalkulator HPP dan proyeksi di halaman ini bisa diubah langsung, dan semua angka ringkasan ikut menyesuaikan.</p>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><span>Modal awal</span><b data-bind="modal">–</b></div>
+      <div class="stat"><span>Untung per order</span><b data-bind="untung_o">–</b></div>
+      <div class="stat"><span>Titik impas (BEP)</span><b data-bind="bep">–</b></div>
+      <div class="stat"><span>Balik modal</span><b class="k" data-bind="payback">–</b></div>
+      <div class="stat"><span>Laba bersih bulan ke-12</span><b data-bind="laba12">–</b></div>
+    </div>
+    <p class="note" style="margin-top:12px">Semua harga adalah estimasi 2026. Cocokkan dengan harga pasar, sewa, dan komisi aplikasi di kota kamu. Nama "Dapur Malika" adalah nama sementara.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Daftar isi">
+  <div class="wrap wide">
+    <a href="#ringkasan">Ringkasan</a><a href="#konsep">Konsep</a><a href="#menu">Menu</a><a href="#hpp">HPP &amp; Harga</a><a href="#layout">Layout Dapur</a><a href="#modal">Modal Awal</a><a href="#legal">Legalitas</a><a href="#operasional">Operasional</a><a href="#tim">Tim</a><a href="#jualan">Jualan Online</a><a href="#marketing">Marketing</a><a href="#proyeksi">Proyeksi</a><a href="#roadmap">Roadmap</a><a href="#kpi">KPI</a><a href="#risiko">Risiko</a><a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<main>
+<section id="ringkasan"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">01</span><h2>Ringkasan bisnis</h2></div>
+  <div class="tbl"><table>
+    <tbody>
+      <tr><td><strong>Model bisnis</strong></td><td>Cloud kitchen (dapur khusus delivery), tanpa tempat makan</td></tr>
+      <tr><td><strong>Lokasi</strong></td><td>Kontrakan 3 × 3 m dekat perkantoran, kampus, kos-kosan, atau perumahan padat</td></tr>
+      <tr><td><strong>Menu inti</strong></td><td>Nasi bakar, ayam bakar, ayam goreng, lauk tambahan, sambal, minuman</td></tr>
+      <tr><td><strong>Kanal jualan</strong></td><td>GoFood, GrabFood, ShopeeFood, WhatsApp, Instagram/TikTok</td></tr>
+      <tr><td><strong>Jam buka</strong></td><td>10.00–21.00, fokus jam makan siang (11–13) dan makan malam (17–20)</td></tr>
+      <tr><td><strong>Tim awal</strong></td><td>Owner + 1 helper</td></tr>
+      <tr><td><strong>Modal awal</strong></td><td><span data-bind="modal">–</span> termasuk dana cadangan (rincian di bagian Modal Awal)</td></tr>
+      <tr><td><strong>Titik impas</strong></td><td><span data-bind="bep">–</span> per hari</td></tr>
+      <tr><td><strong>Target</strong></td><td>60 order/hari di bulan ke-7, 90 order/hari di bulan ke-12 dengan 2–3 brand virtual</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Kenapa model ini masuk akal</h3>
+  <ul>
+    <li>Sewa murah: tidak perlu ruko di pinggir jalan, cukup dekat dengan area yang padat pembeli.</li>
+    <li>Tidak butuh meja kursi, pelayan, dan dekorasi.</li>
+    <li>Satu dapur bisa punya beberapa brand di aplikasi, jadi omzet bisa naik tanpa menambah tempat.</li>
+  </ul>
+</div></section>
+
+<section id="konsep"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">02</span><h2>Konsep &amp; positioning</h2></div>
+  <p class="lede" style="color:var(--ink)">"Nasi bakar &amp; ayam bakar rumahan, porsi kenyang, harga mahasiswa dan karyawan, sampai masih hangat."</p>
+  <div class="grid2">
+    <div class="card"><h4>Target pembeli</h4><ul>
+      <li><strong>Karyawan kantor</strong>: makan siang, pesan dari meja kerja.</li>
+      <li><strong>Mahasiswa &amp; anak kos</strong>: harga terjangkau, porsi besar.</li>
+      <li><strong>Keluarga</strong>: makan malam, paket 2–4 orang.</li>
+      <li><strong>Acara kecil</strong>: nasi kotak untuk arisan, rapat, pengajian (pre-order).</li>
+    </ul></div>
+    <div class="card"><h4>Pembeda</h4><ul>
+      <li>Nasi bakar dengan isian banyak dan bervariasi, bukan cuma teri.</li>
+      <li>Ayam bakar 3 bumbu: kecap manis, madu pedas, taliwang.</li>
+      <li>Sambal bisa pilih level, selalu ada lalapan.</li>
+      <li>Kemasan rapi, tidak bocor, ada stiker brand dan kartu terima kasih.</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="menu"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">03</span><h2>Strategi menu</h2></div>
+  <h3>Prinsip menu dapur kecil</h3>
+  <ul>
+    <li><strong>Sedikit bahan, banyak menu.</strong> Ayam, nasi, dan bumbu dasar dipakai di banyak menu sekaligus.</li>
+    <li><strong>Bisa disiapkan duluan.</strong> Ayam diungkep pagi, nasi bakar dibungkus sebelum jam ramai. Saat pesanan masuk tinggal dibakar.</li>
+    <li><strong>Mulai dari 13 menu</strong>, bukan puluhan. Menu baru ditambah hanya kalau data penjualan mendukung.</li>
+  </ul>
+  <h3>Bumbu dasar (dimasak sekali, dipakai banyak)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Bumbu dasar</th><th>Dipakai untuk</th></tr></thead>
+    <tbody>
+      <tr><td>Bumbu kuning (ungkep)</td><td>Ayam bakar, ayam goreng, ayam suwir</td></tr>
+      <tr><td>Bumbu merah</td><td>Isian nasi bakar (tongkol, cumi), sambal, telur balado</td></tr>
+      <tr><td>Bumbu putih + santan</td><td>Nasi gurih untuk semua nasi bakar</td></tr>
+      <tr><td>Olesan kecap / madu pedas / taliwang</td><td>Tiga varian ayam bakar</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Daftar menu awal</h3>
+  <div class="grid2">
+    <div class="card"><h4>Nasi bakar <span class="tag">utama</span></h4><ul>
+      <li>Nasi Bakar Ayam Suwir Kemangi</li><li>Nasi Bakar Tongkol Pedas</li><li>Nasi Bakar Cumi Asin</li><li>Nasi Bakar Teri Pete</li></ul></div>
+    <div class="card"><h4>Paket ayam <span class="tag">utama</span></h4><ul>
+      <li>Ayam Bakar Kecap</li><li>Ayam Bakar Madu Pedas</li><li>Ayam Bakar Taliwang</li><li>Ayam Goreng Bumbu Kuning</li></ul></div>
+    <div class="card"><h4>Tambahan <span class="tag k">margin tinggi</span></h4><ul>
+      <li>Tahu tempe bacem bakar</li><li>Telur balado</li><li>Ekstra sambal (bawang, terasi, matah)</li></ul></div>
+    <div class="card"><h4>Minuman <span class="tag k">margin tertinggi</span></h4><ul>
+      <li>Es teh manis (botol)</li><li>Es jeruk (botol)</li></ul>
+      <p class="note" style="margin-bottom:0">Paket: <em>Hemat</em> (nasi bakar + es teh), <em>Berdua</em>, <em>Keluarga</em>.</p></div>
+  </div>
+  <h3>Menu engineering (mulai bulan ke-2)</h3>
+  <p>Kelompokkan setiap menu berdasarkan jumlah terjual dan untung per porsi, lalu ambil tindakan:</p>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Untung tinggi</th><th>Untung rendah</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Laku</strong></td><td><strong>Star</strong>: pertahankan, jadikan foto utama</td><td><strong>Plowhorse</strong>: naikkan harga sedikit atau tekan biaya</td></tr>
+      <tr><td><strong>Kurang laku</strong></td><td><strong>Puzzle</strong>: perbaiki foto/nama, promosikan</td><td><strong>Dog</strong>: hapus dari menu</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="hpp"><div class="wrap wide">
+  <div class="sec-head"><span class="sec-no">04</span><h2>HPP &amp; harga jual</h2></div>
+  <p>Aplikasi ojol memotong komisi sekitar 20% dari harga menu, jadi harga di aplikasi biasanya 20–25% lebih mahal dari harga pesan langsung lewat WhatsApp.</p>
+  <pre class="formula">Harga di aplikasi = (HPP + untung yang diinginkan) ÷ (1 − % komisi)
+Untung per porsi  = Harga jual − Komisi aplikasi − HPP</pre>
+  <div class="calc" id="calc-hpp">
+    <div class="calc-head">
+      <p class="legend-in">Kotak <i>hijau</i> bisa diubah. Klik nama menu untuk melihat dan mengubah rincian bahannya.</p>
+      <button class="btn" type="button" data-reset>Kembalikan angka awal</button>
+    </div>
+    <div class="assume">
+      <label for="a-komisi">Komisi aplikasi (%)<input class="in" id="a-komisi" type="number" step="0.5" min="0" max="60"></label>
+      <label for="a-promo">Promo/diskon per order (Rp)<input class="in" id="a-promo" type="number" step="100" min="0"></label>
+      <label for="a-attach_minum">Order yang tambah minuman (%)<input class="in" id="a-attach_minum" type="number" step="1" min="0" max="100"></label>
+      <label for="a-attach_addon">Order yang tambah lauk/sambal (%)<input class="in" id="a-attach_addon" type="number" step="1" min="0" max="100"></label>
+    </div>
+    <div class="tbl"><table id="hpp-table">
+      <thead><tr><th>Menu</th><th class="r">Harga jual</th><th class="r">HPP</th><th class="r">Komisi</th><th class="r">Untung / porsi</th><th class="r">Food cost</th><th class="r">Mix %</th></tr></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table></div>
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Nilai order rata-rata</span><b data-bind="aov">–</b></div>
+      <div class="stat"><span>HPP per order</span><b data-bind="hpp_o">–</b></div>
+      <div class="stat"><span>Komisi per order</span><b data-bind="kom_o">–</b></div>
+      <div class="stat"><span>Untung kotor per order</span><b class="k" data-bind="untung_o">–</b></div>
+    </div>
+    <p class="note">Rata-rata per order = mix menu utama + (% tambah minuman × rata-rata harga minuman) + (% tambah lauk × rata-rata harga lauk tambahan), dikurangi promo per order.</p>
+  </div>
+  <div class="wrap" style="padding:0;max-width:var(--w);margin:0">
+  <h3>Patokan sehat</h3>
+  <ul>
+    <li><strong>Food cost</strong> (bahan + kemasan) idealnya ≤ 40% dari harga jual rata-rata. Paket ayam memang sekitar 50%; selisihnya ditutup nasi bakar, lauk tambahan, dan minuman.</li>
+    <li>Dorong pembeli menambah <strong>minuman dan lauk tambahan</strong>, karena dari situ margin terbesar datang.</li>
+    <li>Hitung ulang HPP setiap bulan, terutama saat harga ayam dan cabai naik.</li>
+  </ul>
+  </div>
+</div></section>
+
+<section id="layout"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">05</span><h2>Layout dapur 3 × 3 m</h2></div>
+  <p>Kuncinya alur satu arah dari bahan masuk sampai pesanan keluar. Semua peralatan menempel ke tiga dinding (bentuk U), jadi tengah ruangan tetap lega untuk dua orang bekerja.</p>
+  <div class="layout-box">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 750" role="img" aria-labelledby="layout-title layout-desc" class="layout-svg">
+<title id="layout-title">Layout dapur 3 × 3 meter</title>
+<desc id="layout-desc">Denah dapur: bak cuci, kompor, grill dan rice cooker di dinding belakang; meja prep dan freezer di dinding kiri; meja packing dan rak pickup di dinding kanan; pintu di dinding depan. Alur kerja: bahan masuk, simpan, prep, masak, packing, serah ke driver.</desc>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="badge"/></marker></defs>
+<rect class="floor" x="90" y="80" width="600" height="600"/>
+<rect class="fx fx-prep" x="90" y="80" width="120" height="120" rx="3"/>
+<text class="t1" x="150.0" y="137.0" text-anchor="middle">Bak cuci</text>
+<text class="t2" x="150.0" y="152.0" text-anchor="middle">60×60</text>
+<rect class="fx fx-cook" x="210" y="80" width="200" height="120" rx="3"/>
+<text class="t1" x="310.0" y="137.0" text-anchor="middle">Kompor 2 tungku</text>
+<text class="t2" x="310.0" y="152.0" text-anchor="middle">100×60 · gas di bawah</text>
+<rect class="fx fx-cook" x="410" y="80" width="180" height="120" rx="3"/>
+<text class="t1" x="500.0" y="137.0" text-anchor="middle">Grill / griddle</text>
+<text class="t2" x="500.0" y="152.0" text-anchor="middle">90×60</text>
+<rect class="fx fx-pack" x="590" y="80" width="100" height="120" rx="3"/>
+<text class="t1" x="640.0" y="137.0" text-anchor="middle">Rice</text>
+<text class="t2" x="640.0" y="152.0" text-anchor="middle">cooker</text>
+<rect class="fx fx-prep" x="90" y="220" width="120" height="260" rx="3"/>
+<text class="t1" x="150.0" y="347.0" text-anchor="middle">Meja prep</text>
+<text class="t2" x="150.0" y="362.0" text-anchor="middle">stainless 130×60</text>
+<rect class="fx fx-store" x="90" y="500" width="120" height="180" rx="3"/>
+<text class="t1" x="150.0" y="587.0" text-anchor="middle">Chest</text>
+<text class="t2" x="150.0" y="602.0" text-anchor="middle">freezer 100 L</text>
+<rect class="fx fx-pack" x="570" y="220" width="120" height="260" rx="3"/>
+<text class="t1" x="630.0" y="347.0" text-anchor="middle">Meja packing</text>
+<text class="t2" x="630.0" y="362.0" text-anchor="middle">130×60 · HP + printer</text>
+<rect class="fx fx-pick" x="590" y="520" width="100" height="160" rx="3"/>
+<text class="t1" x="640.0" y="597.0" text-anchor="middle">Rak</text>
+<text class="t2" x="640.0" y="612.0" text-anchor="middle">pickup</text>
+<rect class="hood" x="218" y="84" width="184" height="100" rx="2"/>
+<rect class="hood" x="418" y="84" width="164" height="100" rx="2"/>
+<text class="t2" x="400" y="68" text-anchor="middle">▲ exhaust fan di atas kompor &amp; grill ▲</text>
+<rect class="wall" x="90" y="80" width="600" height="600"/>
+<line class="win" x1="90" y1="90" x2="90" y2="190"/>
+<text class="t2" x="80" y="140" text-anchor="end">jendela /</text>
+<text class="t2" x="80" y="153" text-anchor="end">ventilasi</text>
+<rect class="gap" x="370" y="674" width="180" height="12"/>
+<line class="door" x1="550" y1="680" x2="550" y2="500"/>
+<path class="door" stroke-dasharray="3 3" d="M370,680 A180,180 0 0 1 550,500"/>
+<text class="t1" x="460" y="706" text-anchor="middle">PINTU 90 cm</text>
+<text class="t2" x="460" y="721" text-anchor="middle">bahan masuk · driver ambil pesanan</text>
+<line class="dim" x1="218" y1="304" x2="562" y2="304" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<text class="walk" x="390" y="292" text-anchor="middle">jalur kerja ±180 cm</text>
+<path class="flow" d="M390,656 L246,590 L246,380 L310,240 L500,240 L534,380 L534,580 L490,652" marker-end="url(#arr)"/>
+<circle class="badge" cx="390" cy="620" r="11"/>
+<text class="badget" x="390"  y="624" text-anchor="middle">1</text>
+<circle class="badge" cx="150" cy="532" r="11"/>
+<text class="badget" x="150"  y="536" text-anchor="middle">2</text>
+<circle class="badge" cx="150" cy="410" r="11"/>
+<text class="badget" x="150"  y="414" text-anchor="middle">3</text>
+<circle class="badge" cx="310" cy="104" r="11"/>
+<text class="badget" x="310"  y="108" text-anchor="middle">4</text>
+<circle class="badge" cx="500" cy="104" r="11"/>
+<text class="badget" x="500"  y="108" text-anchor="middle">4</text>
+<circle class="badge" cx="630" cy="410" r="11"/>
+<text class="badget" x="630"  y="414" text-anchor="middle">5</text>
+<circle class="badge" cx="640" cy="654" r="11"/>
+<text class="badget" x="640"  y="658" text-anchor="middle">6</text>
+<line class="dim" x1="90" y1="40" x2="690" y2="40" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<text class="dimt" x="390" y="33" text-anchor="middle">3,00 m</text>
+<line class="dim" x1="722" y1="80" x2="722" y2="680" marker-start="url(#arr)" marker-end="url(#arr)"/>
+<text class="dimt" x="738" y="380" text-anchor="middle" transform="rotate(90 738 380)">3,00 m</text>
+</svg>
+  </div>
+  <p class="note" style="text-align:center">Skala: 1 kotak meja 60 cm = kedalaman meja dapur standar. Ukuran alat bisa digeser menyesuaikan posisi pintu dan jendela kontrakan kamu.</p>
+  <div class="zones">
+    <div class="zone"><span class="sw" style="background:var(--store);border-color:var(--store-s)"></span><div><strong>Penyimpanan</strong><br><span class="note">Freezer dekat pintu, bahan langsung masuk. Rak gantung di atas meja prep untuk bumbu kering dan kemasan.</span></div></div>
+    <div class="zone"><span class="sw" style="background:var(--prep);border-color:var(--prep-s)"></span><div><strong>Cuci &amp; persiapan</strong><br><span class="note">Bak cuci di pojok belakang dekat jendela, meja prep stainless di dinding kiri.</span></div></div>
+    <div class="zone"><span class="sw" style="background:var(--cook);border-color:var(--cook-s)"></span><div><strong>Masak</strong><br><span class="note">Kompor dan grill di dinding belakang, tepat di bawah exhaust fan.</span></div></div>
+    <div class="zone"><span class="sw" style="background:var(--pack);border-color:var(--pack-s)"></span><div><strong>Packing</strong><br><span class="note">Rice cooker, HP pesanan, printer struk, dan stok kemasan harian.</span></div></div>
+    <div class="zone"><span class="sw" style="background:var(--pick);border-color:var(--pick-s)"></span><div><strong>Serah ke driver</strong><br><span class="note">Rak pickup di samping pintu, driver tidak perlu masuk dapur.</span></div></div>
+  </div>
+  <h3>Alur kerja (nomor di denah)</h3>
+  <ol class="steps">
+    <li>Bahan masuk lewat pintu.</li>
+    <li>Simpan di freezer atau rak (bahan lama dipakai duluan).</li>
+    <li>Cuci dan siapkan di meja prep: potong, ungkep, bungkus nasi bakar.</li>
+    <li>Masak dan bakar di kompor dan grill.</li>
+    <li>Packing sesuai struk pesanan, segel, tempel stiker.</li>
+    <li>Taruh di rak pickup, serahkan ke driver lewat pintu.</li>
+  </ol>
+  <h3>Tips memaksimalkan ruang</h3>
+  <ul>
+    <li>Manfaatkan dinding: rak gantung, ambalan, gantungan panci dan spatula.</li>
+    <li>Pilih meja stainless yang ada rak bawahnya, satu meja jadi meja kerja sekaligus penyimpanan.</li>
+    <li>Tabung gas di bawah kompor, tabung cadangan di luar ruangan.</li>
+    <li>Stok kemasan dalam jumlah besar disimpan di luar dapur, bawa secukupnya per minggu.</li>
+  </ul>
+  <div class="callout warn"><strong>Soal membakar di kontrakan.</strong> Asap arang bisa mengganggu tetangga dan berbahaya di ruang sempit. Utamakan panggangan gas, griddle besi, atau grill pan di atas kompor. Kalau tetap memakai arang, bakar di luar ruangan dengan izin pemilik. Wajib ada exhaust fan, ventilasi silang, APAR, dan izin tertulis dari pemilik kontrakan bahwa tempatnya dipakai untuk usaha masak.</div>
+</div></section>
+
+<section id="modal"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">06</span><h2>Peralatan &amp; modal awal</h2></div>
+  <div class="tbl"><table id="modal-table">
+    <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Harga satuan</th><th class="r">Total</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <p class="note">Dana cadangan = 2 × total biaya tetap bulan pertama, untuk menutup biaya saat order masih sepi. Ikut berubah kalau biaya tetap di kalkulator proyeksi diubah. Sewa dihitung sebagai biaya bulanan; kalau pemilik minta bayar 6–12 bulan di muka, ambil dari dana cadangan.</p>
+  <div class="callout">Tips hemat: beli freezer dan meja stainless bekas dari marketplace atau grup jual-beli alat resto, bisa 30–50% lebih murah. Versi hemat (alat bekas, tanpa printer, cadangan 1 bulan) bisa ditekan ke sekitar Rp22–25 juta.</div>
+</div></section>
+
+<section id="legal"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">07</span><h2>Legalitas &amp; perizinan</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Izin</th><th>Fungsi</th><th>Cara / biaya</th></tr></thead>
+    <tbody>
+      <tr><td><strong>NIB</strong></td><td>Identitas usaha resmi, syarat banyak hal</td><td>Online di oss.go.id, gratis</td></tr>
+      <tr><td><strong>SPP-IRT / PIRT</strong></td><td>Izin pangan olahan rumah tangga</td><td>Lewat OSS dan dinas kesehatan setempat</td></tr>
+      <tr><td><strong>Sertifikat halal</strong></td><td>Banyak pembeli mencari label halal</td><td>Program self-declare BPJPH, sering gratis untuk UMKM</td></tr>
+      <tr><td><strong>Rekening usaha</strong></td><td>Pencairan dana dari aplikasi</td><td>Bank pilihan</td></tr>
+      <tr><td><strong>NPWP</strong></td><td>Pajak dan kerja sama (opsional di awal)</td><td>Online, gratis</td></tr>
+      <tr><td><strong>Izin pemilik kontrakan</strong></td><td>Bukti tempat boleh dipakai usaha masak</td><td>Surat sederhana, ditandatangani pemilik</td></tr>
+      <tr><td><strong>Lapor RT/RW</strong></td><td>Mencegah komplain tetangga</td><td>Datang dan kenalan</td></tr>
+    </tbody>
+  </table></div>
+  <p>Pendaftaran merchant GoFood (GoBiz), GrabFood (GrabMerchant), dan ShopeeFood biasanya cukup dengan KTP, NIB, rekening, foto menu, dan foto tempat.</p>
+</div></section>
+
+<section id="operasional"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">08</span><h2>Operasional harian &amp; SOP</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Jam</th><th>Kegiatan</th></tr></thead>
+    <tbody>
+      <tr><td class="num">06.30–07.30</td><td>Belanja bahan segar (ayam, sayur, daun pisang) atau terima kiriman supplier</td></tr>
+      <tr><td class="num">07.30–09.30</td><td>Prep: masak nasi, ungkep ayam, suwir ayam, buat sambal dan isian nasi bakar</td></tr>
+      <tr><td class="num">09.30–10.00</td><td>Bungkus nasi bakar siap bakar, cek kemasan, buka toko di aplikasi</td></tr>
+      <tr><td class="num">10.00–14.00</td><td><strong>Jam sibuk siang</strong>: terima order, bakar, packing, serahkan ke driver</td></tr>
+      <tr><td class="num">14.00–16.00</td><td>Istirahat bergantian, cuci alat, prep ulang untuk sore</td></tr>
+      <tr><td class="num">16.00–20.00</td><td><strong>Jam sibuk malam</strong></td></tr>
+      <tr><td class="num">20.00–21.00</td><td>Tutup order, bersih-bersih, catat penjualan dan sisa stok, rencanakan belanja</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Alur pesanan (target siap ≤ 10–12 menit)</h3>
+  <ol class="steps">
+    <li>Order masuk, terima dalam kurang dari 1 menit (cepat terima membantu ranking toko).</li>
+    <li>Cetak atau tulis struk, tempel di area masak.</li>
+    <li>Ambil nasi bakar atau ayam yang sudah diungkep, lalu bakar atau panaskan.</li>
+    <li>Packing: cek isi sesuai pesanan (sambal, lauk tambahan, sendok, tisu).</li>
+    <li>Segel kemasan, tempel stiker, taruh di rak pickup dengan nama pemesan.</li>
+    <li>Serahkan ke driver setelah cek kode atau nama pesanan.</li>
+  </ol>
+  <div class="grid2">
+    <div class="card"><h4>Kebersihan &amp; keamanan pangan</h4><ul>
+      <li>Cuci tangan, pakai celemek, penutup kepala, dan sarung tangan saat packing.</li>
+      <li>Talenan bahan mentah dan matang dipisah.</li>
+      <li>FIFO: stok lama dipakai duluan, semua wadah diberi label tanggal.</li>
+      <li>Ayam ungkep matang maksimal 1 hari di kulkas.</li>
+      <li>Bersihkan lantai, meja, kompor setiap tutup; exhaust setiap minggu.</li>
+    </ul></div>
+    <div class="card"><h4>Standar porsi &amp; stok</h4><ul>
+      <li>Timbang nasi, ayam suwir, dan sambal dengan timbangan dan centong takar.</li>
+      <li>Kartu resep (gramasi + foto hasil jadi) ditempel di dinding.</li>
+      <li>Tetapkan stok minimum harian untuk setiap bahan.</li>
+      <li>Bahan segar dibeli harian; bahan kering dan kemasan mingguan.</li>
+      <li>Punya 2 supplier ayam sebagai cadangan.</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="tim"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">09</span><h2>Tim &amp; pembagian kerja</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Tahap</th><th>Tim</th><th>Peran</th></tr></thead>
+    <tbody>
+      <tr><td>Bulan 1–5</td><td>Owner + 1 helper</td><td>Owner: bumbu dan masak, belanja, keuangan, kelola aplikasi. Helper: prep, packing, cuci, serah driver.</td></tr>
+      <tr><td>Bulan 6–9 (&gt; 50 order/hari)</td><td>+ 1 helper</td><td>Satu orang khusus grill, satu khusus packing.</td></tr>
+      <tr><td>Bulan 10–12</td><td>+ admin paruh waktu</td><td>Konten media sosial, balas chat, kelola promo.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Gaji helper bisa memakai skema gaji pokok + bonus per order di atas target. Tulis semua resep dan SOP supaya bisnis tidak bergantung pada satu orang.</p>
+</div></section>
+
+<section id="jualan"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">10</span><h2>Strategi penjualan online</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Kanal</th><th>Kelebihan</th><th>Catatan</th></tr></thead>
+    <tbody>
+      <tr><td><strong>GoFood</strong></td><td>Pengguna banyak, kuat di kota besar</td><td>Ikut promo yang masih masuk hitungan margin</td></tr>
+      <tr><td><strong>GrabFood</strong></td><td>Kuat di area perkantoran</td><td>Manfaatkan fitur paket dan bundling</td></tr>
+      <tr><td><strong>ShopeeFood</strong></td><td>Promo agresif, harga cenderung murah</td><td>Cocok untuk segmen mahasiswa</td></tr>
+      <tr><td><strong>WhatsApp Business</strong></td><td>Tanpa komisi, margin lebih besar</td><td>Kirim lewat kurir instan atau antar sendiri di radius dekat</td></tr>
+      <tr><td><strong>Instagram / TikTok</strong></td><td>Membangun brand dan pelanggan setia</td><td>Arahkan pembeli ke WhatsApp atau aplikasi</td></tr>
+      <tr><td><strong>Pre-order nasi kotak</strong></td><td>Order besar, dikerjakan di jam sepi</td><td>Kantor, arisan, pengajian, acara RT</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Strategi multi-brand</h3>
+  <p>Karena tidak ada toko fisik, satu dapur bisa punya beberapa brand di aplikasi dengan menu yang fokus: misalnya "Nasi Bakar [Nama]" untuk semua varian nasi bakar, dan "Ayam Bakar [Nama]" untuk paket ayam. Brand ketiga (rice bowl atau nasi kotak) bisa menyusul di bulan ke-6. Toko kamu jadi lebih sering muncul di pencarian, dengan dapur, bahan, dan tim yang sama.</p>
+  <div class="callout">Mulai dengan 1 brand dulu sampai operasional stabil (2–3 bulan), baru buka brand kedua.</div>
+  <h3>Optimasi toko di aplikasi</h3>
+  <ul>
+    <li><strong>Foto menu</strong> terang dan close-up, terlihat porsi dan isian. Ini yang paling berpengaruh ke penjualan.</li>
+    <li><strong>Nama menu deskriptif</strong>: "Nasi Bakar Ayam Suwir Kemangi Pedas", bukan "Nasbak 1".</li>
+    <li>Kategori jelas: Best Seller, Nasi Bakar, Ayam, Paket Hemat, Tambahan, Minuman.</li>
+    <li>Jaga rating ≥ 4,7: balas semua ulasan, perbaiki keluhan secepatnya.</li>
+    <li>Jangan sering tutup atau menolak order, karena ranking toko bisa turun.</li>
+  </ul>
+</div></section>
+
+<section id="marketing"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">11</span><h2>Strategi marketing</h2></div>
+  <div class="grid2">
+    <div class="card"><h4>Pra-peluncuran <span class="tag">minggu −4 s/d 0</span></h4><ul>
+      <li>Buat akun Instagram dan TikTok, posting proses masak dan "segera buka".</li>
+      <li>Tes rasa gratis ke tetangga, teman kantor, grup kos.</li>
+      <li>Siapkan foto menu dan logo.</li></ul></div>
+    <div class="card"><h4>Peluncuran <span class="tag">bulan 1</span></h4><ul>
+      <li>Promo pembukaan di aplikasi selama 2–4 minggu.</li>
+      <li>Sebar brosur atau voucher WhatsApp di radius 3 km.</li>
+      <li>Kartu terima kasih di kemasan, ajak memberi ulasan.</li></ul></div>
+    <div class="card"><h4>Pertumbuhan <span class="tag">bulan 2–6</span></h4><ul>
+      <li>Konten 3–5× per minggu: proses bakar, nasi bakar dibuka, testimoni.</li>
+      <li>Loyalitas WhatsApp: beli 10 gratis 1.</li>
+      <li>Kerja sama admin grup kantor dan kos untuk pesanan rombongan.</li>
+      <li>Iklan kecil Rp30–50 ribu/hari di jam makan.</li></ul></div>
+    <div class="card"><h4>Jangka panjang <span class="tag">bulan 6–12</span></h4><ul>
+      <li>Menu musiman atau edisi terbatas (misalnya menu Ramadan).</li>
+      <li>Paket catering mingguan untuk karyawan.</li>
+      <li>Kerja sama dengan food vlogger lokal.</li></ul></div>
+  </div>
+</div></section>
+
+<section id="proyeksi"><div class="wrap wide">
+  <div class="sec-head"><span class="sec-no">12</span><h2>Proyeksi keuangan 12 bulan</h2></div>
+  <p>Skenario moderat. Omzet, komisi, HPP, dan promo diambil dari kalkulator HPP di atas; ubah target order, jumlah helper, dan biaya di bawah ini untuk melihat dampaknya.</p>
+  <div class="calc" id="calc-proj">
+    <div class="calc-head">
+      <p class="legend-in">Kotak <i>hijau</i> bisa diubah. Tabel bisa digeser ke samping.</p>
+      <button class="btn" type="button" data-reset>Kembalikan angka awal</button>
+    </div>
+    <div class="assume">
+      <label for="a-hari">Hari buka per bulan<input class="in" id="a-hari" type="number" step="1" min="1" max="31"></label>
+      <label for="a-gaji_helper">Gaji 1 helper (Rp/bulan)<input class="in" id="a-gaji_helper" type="number" step="50000" min="0"></label>
+      <label for="a-gaji_owner">Gaji owner (Rp/bulan)<input class="in" id="a-gaji_owner" type="number" step="50000" min="0"></label>
+      <label for="a-cad">Dana cadangan (× biaya tetap bulan 1)<input class="in" id="a-cad" type="number" step="1" min="0" max="12"></label>
+    </div>
+    <div class="tbl"><table class="proj" id="proj-table"><thead></thead><tbody></tbody></table></div>
+    <div class="chart" id="chart"></div>
+    <div class="keys"><span style="--c:var(--leaf)">Laba bersih per bulan</span><span style="--c:var(--bara)">Rugi per bulan</span><span style="--c:var(--kunyit)">Laba kumulatif setelah modal awal</span></div>
+  </div>
+  <div style="max-width:var(--w)">
+  <h3>Cara membaca titik impas</h3>
+  <pre class="formula">BEP = Biaya tetap bulan 1 ÷ Untung kotor per order ÷ Hari buka
+    = <span data-bind="bep_calc">–</span></pre>
+  <p>Angka ini belum termasuk gaji owner. Isi kolom "Gaji owner" di atas untuk melihat target order yang dibutuhkan supaya kamu juga digaji.</p>
+  <h3>Kapasitas maksimal dapur 3 × 3 m</h3>
+  <p>Dengan 2–3 orang dan prep yang baik, kapasitas realistis sekitar 100–150 order per hari. Hambatannya biasanya jumlah alat bakar di jam sibuk. Kalau sudah konsisten di atas 100 order per hari, saatnya memikirkan dapur kedua atau tempat yang lebih besar.</p>
+  <h3>Aturan keuangan</h3>
+  <ul>
+    <li>Pisahkan rekening usaha dan pribadi sejak hari pertama.</li>
+    <li>Catat semua pemasukan dan pengeluaran harian.</li>
+    <li>Owner mengambil gaji tetap, bukan mengambil uang kas sesuka hati.</li>
+    <li>Sisihkan 5–10% laba untuk dana darurat dan perbaikan alat.</li>
+  </ul>
+  </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">13</span><h2>Roadmap &amp; timeline</h2></div>
+  <div class="phases">
+    <div class="phase"><div class="when">Fase 0<small>Minggu −6 s/d −1</small></div><div><strong>Persiapan</strong><ul>
+      <li>−6: riset lokasi dan kompetitor di aplikasi, tentukan nama brand</li>
+      <li>−5: sewa kontrakan, izin tertulis pemilik, urus NIB</li>
+      <li>−4: renovasi kecil, pasang exhaust, beli dan tata peralatan</li>
+      <li>−3: finalisasi resep, gramasi, hitung HPP</li>
+      <li>−2: tes rasa ke 20–30 orang, foto menu, desain kemasan</li>
+      <li>−1: daftar GoFood, GrabFood, ShopeeFood; urus PIRT dan halal; latih helper; simulasi jam sibuk</li></ul></div></div>
+    <div class="phase"><div class="when">Fase 1<small>Bulan 1–3</small></div><div><strong>Soft launch &amp; stabilisasi</strong><ul>
+      <li>Buka dengan 1 brand. Fokus rasa konsisten, waktu masak cepat, rating tinggi.</li>
+      <li>Evaluasi menu setiap 2 minggu. Target lewat titik impas di bulan ke-2.</li></ul></div></div>
+    <div class="phase"><div class="when">Fase 2<small>Bulan 4–6</small></div><div><strong>Pertumbuhan</strong><ul>
+      <li>Tambah helper kedua, buka brand virtual kedua, mulai terima pre-order nasi kotak.</li>
+      <li>Target 50 order/hari, rating ≥ 4,7.</li></ul></div></div>
+    <div class="phase"><div class="when">Fase 3<small>Bulan 7–12</small></div><div><strong>Optimasi &amp; scale</strong><ul>
+      <li>Brand ketiga atau catering mingguan, negosiasi harga supplier, sistemkan SOP.</li>
+      <li>Target 90 order/hari. Modal kembali sekitar bulan ke-<span data-bind="payback_n">–</span>.</li></ul></div></div>
+    <div class="phase"><div class="when">Fase 4<small>Tahun ke-2</small></div><div><strong>Ekspansi</strong><ul>
+      <li>Dapur kedua di area lain dengan sistem yang sama, atau pindah ke dapur produksi yang lebih besar.</li>
+      <li>Opsi tambahan: jual bumbu atau sambal kemasan.</li></ul></div></div>
+  </div>
+</div></section>
+
+<section id="kpi"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">14</span><h2>KPI yang dipantau</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>KPI</th><th>Target</th><th>Cek</th></tr></thead>
+    <tbody>
+      <tr><td>Order per hari</td><td>Sesuai proyeksi (15 → 60 → 90)</td><td>Harian</td></tr>
+      <tr><td>Nilai order rata-rata</td><td>≥ <span data-bind="aov">–</span></td><td>Mingguan</td></tr>
+      <tr><td>Rating di aplikasi</td><td>≥ 4,7</td><td>Harian</td></tr>
+      <tr><td>Waktu siap pesanan</td><td>≤ 10–12 menit</td><td>Harian</td></tr>
+      <tr><td>Order dibatalkan atau ditolak</td><td>&lt; 2%</td><td>Mingguan</td></tr>
+      <tr><td>Food cost rata-rata</td><td>≤ 47% dari harga jual (lihat kalkulator)</td><td>Bulanan</td></tr>
+      <tr><td>Bahan terbuang</td><td>&lt; 5% dari belanja</td><td>Mingguan</td></tr>
+      <tr><td>Pelanggan pesan ulang via WhatsApp</td><td>Naik setiap bulan</td><td>Bulanan</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="risiko"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">15</span><h2>Risiko &amp; mitigasi</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Risiko</th><th>Dampak</th><th>Mitigasi</th></tr></thead>
+    <tbody>
+      <tr><td>Asap dan bau mengganggu tetangga</td><td><span class="tag b">tinggi</span></td><td>Grill gas atau griddle, exhaust fan, izin RT dan pemilik, jaga hubungan baik</td></tr>
+      <tr><td>Kebakaran</td><td><span class="tag b">tinggi</span></td><td>APAR, cek selang dan regulator rutin, jangan tinggalkan kompor menyala, instalasi listrik aman</td></tr>
+      <tr><td>Harga ayam dan cabai naik</td><td><span class="tag k">sedang</span></td><td>2 supplier, review HPP bulanan, naikkan harga bertahap</td></tr>
+      <tr><td>Bergantung pada aplikasi</td><td><span class="tag k">sedang</span></td><td>Database pelanggan WhatsApp, jualan di beberapa aplikasi, pre-order catering</td></tr>
+      <tr><td>Rasa tidak konsisten</td><td><span class="tag k">sedang</span></td><td>Kartu resep, gramasi, latihan staf</td></tr>
+      <tr><td>Keracunan makanan</td><td><span class="tag b">tinggi</span></td><td>SOP kebersihan, FIFO, label tanggal, buang stok yang meragukan</td></tr>
+      <tr><td>Dapur penuh di jam sibuk</td><td><span class="tag k">sedang</span></td><td>Prep sebelum jam sibuk, tambah alat bakar, batasi menu yang lama dimasak</td></tr>
+      <tr><td>Helper keluar</td><td><span class="tag">rendah</span></td><td>SOP tertulis, owner menguasai semua posisi</td></tr>
+      <tr><td>Order sepi di awal</td><td><span class="tag k">sedang</span></td><td>Dana cadangan, promo terukur, fokus radius dekat, cari pesanan rombongan</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="checklist"><div class="wrap">
+  <div class="sec-head"><span class="sec-no">16</span><h2>Checklist sebelum buka</h2></div>
+  <p class="note"><span id="check-count">0</span> dari <span id="check-total">0</span> selesai. Centang tersimpan di browser ini saja.</p>
+  <div class="progress"><div id="check-bar"></div></div>
+  <div class="checks" id="checks"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  Spreadsheet Excel dengan rumus yang sama tersedia di repo sebagai <strong>HPP_Proyeksi_Dapur_Online.xlsx</strong>, dan denah terpisah sebagai <strong>layout-dapur-3x3.svg</strong>. Dokumen ini rencana hidup: perbarui setiap bulan berdasarkan data penjualan, masukan pelanggan, dan harga bahan.
+</div></footer>
+
+<script>
+const DATA = {"v": 1, "asumsi": {"komisi": 0.2, "promo": 1000, "hari": 30, "gaji_helper": 2500000, "gaji_owner": 0, "attach_minum": 0.35, "attach_addon": 0.25, "cad": 2}, "menu": [{"nama": "Nasi Bakar Ayam Suwir Kemangi", "kat": "Nasi Bakar", "harga": 22000, "mix": 0.18, "comps": [["Beras", 0.08, "kg", 14000], ["Santan & bumbu nasi gurih", 1, "porsi", 880], ["Ayam suwir bumbu", 0.05, "kg", 60000], ["Kemangi, cabai, bumbu", 1, "porsi", 1500], ["Daun pisang + lidi", 1, "bungkus", 500], ["Kemasan (box, sendok, stiker)", 1, "set", 1500], ["Gas & listrik (alokasi)", 1, "porsi", 500]]}, {"nama": "Nasi Bakar Tongkol Pedas", "kat": "Nasi Bakar", "harga": 21000, "mix": 0.1, "comps": [["Beras", 0.08, "kg", 14000], ["Santan & bumbu nasi gurih", 1, "porsi", 880], ["Tongkol suwir bumbu", 0.05, "kg", 50000], ["Kemangi, cabai, bumbu", 1, "porsi", 1500], ["Daun pisang + lidi", 1, "bungkus", 500], ["Kemasan (box, sendok, stiker)", 1, "set", 1500], ["Gas & listrik (alokasi)", 1, "porsi", 500]]}, {"nama": "Nasi Bakar Cumi Asin", "kat": "Nasi Bakar", "harga": 23000, "mix": 0.07, "comps": [["Beras", 0.08, "kg", 14000], ["Santan & bumbu nasi gurih", 1, "porsi", 880], ["Cumi asin", 0.04, "kg", 90000], ["Kemangi, cabai, bumbu", 1, "porsi", 1500], ["Daun pisang + lidi", 1, "bungkus", 500], ["Kemasan (box, sendok, stiker)", 1, "set", 1500], ["Gas & listrik (alokasi)", 1, "porsi", 500]]}, {"nama": "Nasi Bakar Teri Pete", "kat": "Nasi Bakar", "harga": 23000, "mix": 0.05, "comps": [["Beras", 0.08, "kg", 14000], ["Santan & bumbu nasi gurih", 1, "porsi", 880], ["Teri medan", 0.03, "kg", 100000], ["Pete", 1, "papan kecil", 1000], ["Kemangi, cabai, bumbu", 1, "porsi", 1500], ["Daun pisang + lidi", 1, "bungkus", 500], ["Kemasan (box, sendok, stiker)", 1, "set", 1500], ["Gas & listrik (alokasi)", 1, "porsi", 500]]}, {"nama": "Paket Ayam Bakar Kecap", "kat": "Ayam", "harga": 38000, "mix": 0.25, "comps": [["Ayam 1/4 ekor", 0.28, "kg", 37500], ["Bumbu ungkep + olesan kecap", 1, "porsi", 2000], ["Nasi putih", 1, "porsi", 2000], ["Sambal + lalapan", 1, "porsi", 2000], ["Kemasan (box, sendok, stiker)", 1, "set", 2000], ["Gas & listrik (alokasi)", 1, "porsi", 700]]}, {"nama": "Paket Ayam Bakar Madu Pedas", "kat": "Ayam", "harga": 39000, "mix": 0.15, "comps": [["Ayam 1/4 ekor", 0.28, "kg", 37500], ["Bumbu ungkep + olesan madu pedas", 1, "porsi", 2800], ["Nasi putih", 1, "porsi", 2000], ["Sambal + lalapan", 1, "porsi", 2000], ["Kemasan (box, sendok, stiker)", 1, "set", 2000], ["Gas & listrik (alokasi)", 1, "porsi", 700]]}, {"nama": "Paket Ayam Bakar Taliwang", "kat": "Ayam", "harga": 39000, "mix": 0.08, "comps": [["Ayam 1/4 ekor", 0.28, "kg", 37500], ["Bumbu ungkep + bumbu taliwang", 1, "porsi", 2500], ["Nasi putih", 1, "porsi", 2000], ["Sambal + lalapan", 1, "porsi", 2000], ["Kemasan (box, sendok, stiker)", 1, "set", 2000], ["Gas & listrik (alokasi)", 1, "porsi", 700]]}, {"nama": "Paket Ayam Goreng Bumbu Kuning", "kat": "Ayam", "harga": 37000, "mix": 0.12, "comps": [["Ayam 1/4 ekor", 0.28, "kg", 37500], ["Bumbu ungkep kuning", 1, "porsi", 1500], ["Minyak goreng", 0.05, "liter", 18000], ["Nasi putih", 1, "porsi", 2000], ["Sambal + lalapan", 1, "porsi", 2000], ["Kemasan (box, sendok, stiker)", 1, "set", 2000], ["Gas & listrik (alokasi)", 1, "porsi", 700]]}, {"nama": "Tahu Tempe Bacem Bakar", "kat": "Tambahan", "harga": 8000, "mix": null, "comps": [["Tahu", 2, "potong", 600], ["Tempe", 2, "potong", 500], ["Bumbu bacem", 1, "porsi", 400], ["Cup kemasan", 1, "pcs", 500]]}, {"nama": "Telur Balado", "kat": "Tambahan", "harga": 8000, "mix": null, "comps": [["Telur ayam", 1, "butir", 2200], ["Bumbu balado", 1, "porsi", 600], ["Cup kemasan", 1, "pcs", 500]]}, {"nama": "Ekstra Sambal", "kat": "Tambahan", "harga": 5000, "mix": null, "comps": [["Sambal (bawang/terasi/matah)", 1, "porsi", 1000], ["Cup sambal", 1, "pcs", 300]]}, {"nama": "Es Teh Manis (botol)", "kat": "Minuman", "harga": 8000, "mix": null, "comps": [["Teh, gula, es", 1, "porsi", 1000], ["Botol + segel", 1, "pcs", 1500]]}, {"nama": "Es Jeruk (botol)", "kat": "Minuman", "harga": 10000, "mix": null, "comps": [["Jeruk peras", 1, "porsi", 2500], ["Gula & es", 1, "porsi", 500], ["Botol + segel", 1, "pcs", 1500]]}], "biaya_tetap": [["Sewa kontrakan", 800000], ["Listrik & air", 500000], ["Internet & pulsa", 200000], ["Kebersihan & perawatan alat", 300000], ["Transport belanja & lain-lain", 400000]], "proyeksi": {"order_hari": [15, 22, 30, 36, 42, 50, 60, 66, 72, 78, 84, 90], "helper": [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2], "iklan": [1000000, 1000000, 1000000, 1000000, 1000000, 1500000, 1500000, 1500000, 1500000, 2000000, 2000000, 2000000], "admin": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1000000, 1000000, 1000000]}, "modal": [["Peralatan", "Kompor 2 tungku tekanan tinggi + regulator & selang", 1, 800000], ["Peralatan", "Panggangan gas / griddle besi / grill pan", 2, 350000], ["Peralatan", "Rice cooker kapasitas besar", 1, 800000], ["Peralatan", "Chest freezer ±100 L", 1, 2500000], ["Peralatan", "Meja kerja stainless (rak bawah)", 2, 750000], ["Peralatan", "Rak susun / ambalan dinding", 1, 800000], ["Peralatan", "Bak cuci + keran", 1, 600000], ["Peralatan", "Exhaust fan + pemasangan", 2, 250000], ["Peralatan", "Panci, wajan, spatula, pisau, talenan, baskom", 1, 1500000], ["Peralatan", "Blender / chopper bumbu", 1, 400000], ["Peralatan", "Timbangan digital", 1, 150000], ["Peralatan", "Wadah penyimpanan food grade", 1, 500000], ["Peralatan", "Tabung gas (isi)", 2, 300000], ["Peralatan", "APAR 3 kg", 1, 350000], ["Peralatan", "Printer struk thermal (opsional)", 1, 400000], ["Persiapan", "Renovasi kecil (keramik dinding, listrik, lampu)", 1, 1500000], ["Persiapan", "Stok bahan baku awal", 1, 3000000], ["Persiapan", "Stok kemasan awal", 1, 1500000], ["Persiapan", "Perizinan (NIB, PIRT, halal)", 1, 500000], ["Persiapan", "Logo, stiker, foto menu", 1, 1500000], ["Persiapan", "Promo & iklan peluncuran", 1, 2000000]]};
+const KEY = "dapur-malika-plan-v1";
+const CHECK_KEY = "dapur-malika-checks-v1";
+const clone = o => JSON.parse(JSON.stringify(o));
+let S = clone(DATA);
+try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.v === DATA.v) S = saved; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+const nf = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
+const rp = v => (v < 0 ? "−Rp" : "Rp") + nf.format(Math.abs(Math.round(v)));
+const pct = v => (v * 100).toLocaleString("id-ID", { maximumFractionDigits: 1 }) + "%";
+const jt = v => (v < 0 ? "−" : "") + "Rp" + (Math.abs(v) / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 1 }) + " jt";
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const num = el => { const v = parseFloat(el.value); return isFinite(v) ? v : 0; };
+
+function compute() {
+  const a = S.asumsi;
+  const rows = S.menu.map(m => {
+    const hpp = m.comps.reduce((s, c) => s + c[1] * c[3], 0);
+    const kom = m.harga * a.komisi;
+    return { hpp, kom, untung: m.harga - kom - hpp, fc: m.harga ? hpp / m.harga : 0 };
+  });
+  const avg = (kat, k) => { const xs = S.menu.map((m, i) => [m, i]).filter(([m]) => m.kat === kat); return xs.length ? xs.reduce((s, [m, i]) => s + (k === "harga" ? m.harga : rows[i][k]), 0) / xs.length : 0; };
+  let mixSum = 0, aov = 0, hppO = 0;
+  S.menu.forEach((m, i) => { if (m.mix != null) { mixSum += m.mix; aov += m.mix * m.harga; hppO += m.mix * rows[i].hpp; } });
+  aov += a.attach_minum * avg("Minuman", "harga") + a.attach_addon * avg("Tambahan", "harga");
+  hppO += a.attach_minum * avg("Minuman", "hpp") + a.attach_addon * avg("Tambahan", "hpp");
+  const komO = aov * a.komisi;
+  const untungO = aov - komO - hppO - a.promo;
+  const fixedOther = S.biaya_tetap.reduce((s, b) => s + b[1], 0);
+  const P = S.proyeksi;
+  const months = P.order_hari.map((oh, i) => {
+    const orders = oh * a.hari, omzet = orders * aov;
+    const kom = omzet * a.komisi, hpp = orders * hppO, promo = orders * a.promo;
+    const uk = omzet - kom - hpp - promo;
+    const gaji = P.helper[i] * a.gaji_helper;
+    const tetap = fixedOther + gaji + P.iklan[i] + P.admin[i] + a.gaji_owner;
+    return { orders, omzet, kom, hpp, promo, uk, gaji, tetap, laba: uk - tetap };
+  });
+  const modalItems = S.modal.reduce((s, m) => s + m[2] * m[3], 0);
+  const cadangan = a.cad * months[0].tetap;
+  const modal = modalItems + cadangan;
+  let cum = -modal, payback = null;
+  months.forEach((m, i) => { cum += m.laba; m.kum = cum; if (payback === null && cum >= 0) payback = i + 1; });
+  const bep = untungO > 0 ? months[0].tetap / untungO / a.hari : Infinity;
+  return { rows, mixSum, aov, hppO, komO, untungO, months, modalItems, cadangan, modal, payback, bep, fixedOther };
+}
+
+/* ---------- HPP calculator ---------- */
+function buildHpp() {
+  const tb = $("#hpp-table tbody");
+  let html = "", lastKat = "";
+  S.menu.forEach((m, i) => {
+    if (m.kat !== lastKat) { html += `<tr class="grp"><td colspan="7">${esc(m.kat)}</td></tr>`; lastKat = m.kat; }
+    html += `<tr>
+      <td class="name"><button type="button" aria-expanded="false" aria-controls="det-${i}" data-toggle="${i}">${esc(m.nama)}</button></td>
+      <td class="r"><input class="in" id="h-${i}" type="number" step="500" min="0" value="${m.harga}" aria-label="Harga jual ${esc(m.nama)}"></td>
+      <td class="r" id="o-hpp-${i}"></td><td class="r" id="o-kom-${i}"></td><td class="r" id="o-unt-${i}"></td><td class="r" id="o-fc-${i}"></td>
+      <td class="r">${m.mix != null ? `<input class="in" id="mx-${i}" type="number" step="1" min="0" max="100" value="${+(m.mix * 100).toFixed(2)}" aria-label="Mix penjualan ${esc(m.nama)}">` : `<span class="note">tambahan</span>`}</td>
+    </tr>
+    <tr class="detail" id="det-${i}" hidden><td colspan="7"><table>
+      <thead><tr><th>Komponen</th><th class="r">Qty</th><th>Satuan</th><th class="r">Harga / satuan</th><th class="r">Biaya</th></tr></thead>
+      <tbody>${m.comps.map((c, j) => `<tr><td>${esc(c[0])}</td>
+        <td class="r"><input class="in" id="q-${i}-${j}" type="number" step="0.01" min="0" value="${c[1]}" aria-label="Qty ${esc(c[0])}"></td>
+        <td>${esc(c[2])}</td>
+        <td class="r"><input class="in" id="p-${i}-${j}" type="number" step="100" min="0" value="${c[3]}" aria-label="Harga ${esc(c[0])}"></td>
+        <td class="r" id="o-c-${i}-${j}"></td></tr>`).join("")}
+        <tr class="tot"><td colspan="4">HPP per porsi</td><td class="r" id="o-hpp2-${i}"></td></tr>
+      </tbody></table></td></tr>`;
+  });
+  tb.innerHTML = html;
+  $("#hpp-table tfoot").innerHTML = `<tr class="tot"><td colspan="6">Total mix menu utama (harus 100%)</td><td class="r" id="o-mix"></td></tr>`;
+}
+
+/* ---------- Projection ---------- */
+const PROWS = [
+  ["oh", "Target order per hari", "in:order_hari"],
+  ["orders", "Total order per bulan", "n"],
+  ["omzet", "Omzet (harga aplikasi)", "rp"],
+  ["kom", "(−) Komisi aplikasi", "rp"],
+  ["hpp", "(−) HPP bahan & kemasan", "rp"],
+  ["promo", "(−) Promo/diskon", "rp"],
+  ["uk", "Untung kotor", "rp", "tot"],
+  ["grp", "Biaya tetap"],
+  ["fixed", null, "fixed"],
+  ["helper", "Jumlah helper", "in:helper"],
+  ["gaji", "Gaji helper", "rp"],
+  ["iklan", "Iklan & promo berbayar", "in:iklan"],
+  ["admin", "Admin paruh waktu", "in:admin"],
+  ["owner", "Gaji owner", "rp"],
+  ["tetap", "Total biaya tetap", "rp", "tot"],
+  ["laba", "LABA BERSIH", "rp", "tot"],
+  ["kum", "Laba kumulatif setelah modal", "rp"],
+];
+function buildProj() {
+  $("#proj-table thead").innerHTML = `<tr><th>Keterangan</th>${S.proyeksi.order_hari.map((_, i) => `<th class="r">Bln ${i + 1}</th>`).join("")}<th class="r">Total</th></tr>`;
+  let h = "";
+  for (const [k, label, type, cls] of PROWS) {
+    if (k === "grp") { h += `<tr class="grp"><td colspan="14">${label}</td></tr>`; continue; }
+    if (type === "fixed") {
+      S.biaya_tetap.forEach((b, j) => {
+        h += `<tr><td><label for="bt-${j}">${esc(b[0])}</label><br><input class="in" id="bt-${j}" type="number" step="50000" min="0" value="${b[1]}" style="max-width:130px"></td>${S.proyeksi.order_hari.map((_, i) => `<td class="r" id="pf-${j}-${i}"></td>`).join("")}<td class="r" id="pf-${j}-t"></td></tr>`;
+      });
+      continue;
+    }
+    h += `<tr class="${cls || ""}"><td>${label}</td>`;
+    S.proyeksi.order_hari.forEach((_, i) => {
+      if (type.startsWith("in:")) {
+        const f = type.slice(3);
+        const step = f === "order_hari" ? 1 : f === "helper" ? 1 : 100000;
+        h += `<td class="r"><input class="in" id="${k}-${i}" type="number" min="0" step="${step}" value="${S.proyeksi[f][i]}" aria-label="${label} bulan ${i + 1}"></td>`;
+      } else h += `<td class="r" id="pr-${k}-${i}"></td>`;
+    });
+    h += `<td class="r" id="pr-${k}-t"></td></tr>`;
+  }
+  $("#proj-table tbody").innerHTML = h;
+}
+
+function buildModal() {
+  let h = "", last = "";
+  S.modal.forEach((m, i) => {
+    if (m[0] !== last) { h += `<tr class="grp"><td colspan="4">${esc(m[0])}</td></tr>`; last = m[0]; }
+    h += `<tr><td>${esc(m[1])}</td><td class="r">${m[2]}</td><td class="r">${rp(m[3])}</td><td class="r">${rp(m[2] * m[3])}</td></tr>`;
+  });
+  h += `<tr class="tot"><td colspan="3">Subtotal peralatan &amp; persiapan</td><td class="r" id="md-items"></td></tr>
+        <tr><td colspan="3">Dana cadangan operasional</td><td class="r" id="md-cad"></td></tr>
+        <tr class="tot"><td colspan="3">Total modal awal</td><td class="r" id="md-total"></td></tr>`;
+  $("#modal-table tbody").innerHTML = h;
+}
+
+function setText(id, t, cls) { const el = document.getElementById(id); if (!el) return; el.textContent = t; if (cls !== undefined) el.className = "r " + cls; }
+
+function render() {
+  const R = compute();
+  S.menu.forEach((m, i) => {
+    const r = R.rows[i];
+    setText(`o-hpp-${i}`, rp(r.hpp)); setText(`o-hpp2-${i}`, rp(r.hpp));
+    setText(`o-kom-${i}`, rp(r.kom));
+    setText(`o-unt-${i}`, rp(r.untung), r.untung < 0 ? "neg" : "pos");
+    setText(`o-fc-${i}`, pct(r.fc), r.fc > 0.55 ? "neg" : "");
+    m.comps.forEach((c, j) => setText(`o-c-${i}-${j}`, rp(c[1] * c[3])));
+  });
+  setText("o-mix", pct(R.mixSum), Math.abs(R.mixSum - 1) > 0.001 ? "neg" : "pos");
+
+  const ms = R.months, sum = k => ms.reduce((s, m) => s + m[k], 0);
+  const fill = (k, f, total) => { ms.forEach((m, i) => { const v = f(m, i); setText(`pr-${k}-${i}`, typeof v === "number" ? (k === "orders" ? nf.format(v) : rp(v)) : v, typeof v === "number" && v < 0 ? "neg" : ""); }); if (total !== undefined) setText(`pr-${k}-t`, k === "orders" ? nf.format(total) : rp(total), total < 0 ? "neg" : ""); else setText(`pr-${k}-t`, ""); };
+  ["orders", "omzet", "kom", "hpp", "promo", "uk", "gaji", "tetap", "laba"].forEach(k => fill(k, m => m[k], sum(k)));
+  fill("owner", () => S.asumsi.gaji_owner, S.asumsi.gaji_owner * 12);
+  fill("kum", m => m.kum);
+  S.biaya_tetap.forEach((b, j) => { ms.forEach((_, i) => setText(`pf-${j}-${i}`, rp(b[1]))); setText(`pf-${j}-t`, rp(b[1] * 12)); });
+  setText("pr-oh-t", ""); setText("pr-helper-t", "");
+  ["iklan", "admin"].forEach(k => setText(`pr-${k}-t`, rp(S.proyeksi[k].reduce((s, v) => s + v, 0))));
+
+  setText("md-items", rp(R.modalItems)); setText("md-cad", rp(R.cadangan)); setText("md-total", rp(R.modal));
+
+  const binds = {
+    modal: jt(R.modal), untung_o: rp(R.untungO), aov: rp(R.aov), hpp_o: rp(R.hppO), kom_o: rp(R.komO),
+    bep: isFinite(R.bep) ? Math.ceil(R.bep) + " order/hari" : "tidak tercapai",
+    payback: R.payback ? "Bulan ke-" + R.payback : "> 12 bulan",
+    payback_n: R.payback ? R.payback : "12+",
+    laba12: jt(ms[11].laba),
+    bep_calc: isFinite(R.bep) ? `${rp(ms[0].tetap)} ÷ ${rp(R.untungO)} ÷ ${S.asumsi.hari} hari ≈ ${Math.ceil(R.bep)} order per hari` : "untung per order masih minus",
+  };
+  document.querySelectorAll("[data-bind]").forEach(el => { const v = binds[el.dataset.bind]; if (v !== undefined) el.textContent = v; });
+  drawChart(R);
+}
+
+function drawChart(R) {
+  const ms = R.months, W = 760, H = 260, L = 64, Rm = 12, T = 14, B = 30;
+  const vals = ms.flatMap(m => [m.laba, m.kum]);
+  let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
+  const span = hi - lo || 1, rawStep = span / 5, mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const step = [1, 2, 2.5, 5, 10].map(x => x * mag).find(x => x >= rawStep);
+  lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+  const y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  const bw = (W - L - Rm) / 12;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik laba bersih per bulan dan laba kumulatif">`;
+  for (let v = lo; v <= hi + step / 2; v += step) s += `<line class="grid" x1="${L}" x2="${W - Rm}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${(v / 1e6).toLocaleString("id-ID")} jt</text>`;
+  s += `<line class="zero" x1="${L}" x2="${W - Rm}" y1="${y(0)}" y2="${y(0)}"/>`;
+  ms.forEach((m, i) => {
+    const x = L + i * bw + bw * 0.22, w = bw * 0.56, y0 = y(0), y1 = y(m.laba);
+    s += `<rect class="${m.laba < 0 ? "bn" : "bp"}" x="${x}" y="${Math.min(y0, y1)}" width="${w}" height="${Math.max(1, Math.abs(y1 - y0))}" rx="2"><title>Bulan ${i + 1}: laba ${rp(m.laba)}</title></rect>`;
+    s += `<text x="${L + i * bw + bw / 2}" y="${H - 10}" text-anchor="middle">${i + 1}</text>`;
+  });
+  const pts = ms.map((m, i) => `${L + i * bw + bw / 2},${y(m.kum)}`).join(" ");
+  s += `<polyline class="cum" points="${pts}"/>`;
+  ms.forEach((m, i) => { s += `<circle class="cumd" cx="${L + i * bw + bw / 2}" cy="${y(m.kum)}" r="${R.payback === i + 1 ? 5.5 : 3}"><title>Bulan ${i + 1}: kumulatif ${rp(m.kum)}</title></circle>`; });
+  if (R.payback) { const px = L + (R.payback - 1) * bw + bw / 2; s += `<text x="${px}" y="${y(ms[R.payback - 1].kum) - 10}" text-anchor="middle" style="fill:var(--kunyit);font-weight:700">balik modal</text>`; }
+  s += `</svg>`;
+  $("#chart").innerHTML = s;
+}
+
+/* ---------- inputs ---------- */
+const PCT_KEYS = ["komisi", "attach_minum", "attach_addon"];
+function syncAssume() {
+  for (const k of Object.keys(S.asumsi)) { const el = document.getElementById("a-" + k); if (el) el.value = PCT_KEYS.includes(k) ? +(S.asumsi[k] * 100).toFixed(2) : S.asumsi[k]; }
+}
+document.addEventListener("input", e => {
+  const el = e.target, id = el.id || "";
+  let m;
+  if ((m = id.match(/^a-(.+)$/))) S.asumsi[m[1]] = PCT_KEYS.includes(m[1]) ? num(el) / 100 : num(el);
+  else if ((m = id.match(/^h-(\d+)$/))) S.menu[+m[1]].harga = num(el);
+  else if ((m = id.match(/^mx-(\d+)$/))) S.menu[+m[1]].mix = num(el) / 100;
+  else if ((m = id.match(/^q-(\d+)-(\d+)$/))) S.menu[+m[1]].comps[+m[2]][1] = num(el);
+  else if ((m = id.match(/^p-(\d+)-(\d+)$/))) S.menu[+m[1]].comps[+m[2]][3] = num(el);
+  else if ((m = id.match(/^bt-(\d+)$/))) S.biaya_tetap[+m[1]][1] = num(el);
+  else if ((m = id.match(/^(oh|helper|iklan|admin)-(\d+)$/))) S.proyeksi[{ oh: "order_hari", helper: "helper", iklan: "iklan", admin: "admin" }[m[1]]][+m[2]] = num(el);
+  else return;
+  save(); render();
+});
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-toggle]");
+  if (t) { const row = document.getElementById("det-" + t.dataset.toggle); row.hidden = !row.hidden; t.setAttribute("aria-expanded", String(!row.hidden)); return; }
+  if (e.target.closest("[data-reset]")) { S = clone(DATA); save(); init(); }
+});
+
+/* ---------- checklist ---------- */
+const CHECKS = {
+  "Tempat & alat": ["Kontrakan disewa + izin tertulis pemilik", "Lapor RT/RW", "Exhaust fan & ventilasi terpasang", "APAR tersedia", "Semua peralatan lengkap & dites"],
+  "Legal": ["NIB", "SPP-IRT/PIRT (proses)", "Sertifikat halal (proses)", "Rekening usaha"],
+  "Produk": ["Resep final + kartu resep & gramasi", "HPP & harga jual dihitung", "Tes rasa ke minimal 20 orang", "Kemasan dites (tidak bocor, tetap hangat)"],
+  "Penjualan & marketing": ["Logo & stiker", "Foto menu", "Toko aktif di GoFood / GrabFood / ShopeeFood", "WhatsApp Business + katalog", "Instagram & TikTok aktif", "Promo pembukaan disiapkan"],
+  "Operasional": ["Helper sudah dilatih", "Supplier utama & cadangan", "Pembukuan harian siap", "Simulasi jam sibuk (10 order berturut-turut)"],
+};
+function buildChecks() {
+  let done = {}; try { done = JSON.parse(localStorage.getItem(CHECK_KEY) || "{}") || {}; } catch (e) {}
+  let h = "", n = 0;
+  for (const [g, items] of Object.entries(CHECKS)) {
+    h += `<fieldset><legend>${esc(g)}</legend>`;
+    items.forEach(t => { const id = "ck-" + n++; h += `<label for="${id}"><input type="checkbox" id="${id}" ${done[id] ? "checked" : ""}><span>${esc(t)}</span></label>`; });
+    h += `</fieldset>`;
+  }
+  $("#checks").innerHTML = h;
+  $("#check-total").textContent = n;
+  const upd = () => { const boxes = [...document.querySelectorAll("#checks input")]; const c = boxes.filter(b => b.checked).length; $("#check-count").textContent = c; $("#check-bar").style.width = (c / boxes.length * 100) + "%"; };
+  $("#checks").addEventListener("change", e => { done[e.target.id] = e.target.checked; try { localStorage.setItem(CHECK_KEY, JSON.stringify(done)); } catch (er) {} upd(); });
+  upd();
+}
+
+function init() { buildHpp(); buildProj(); buildModal(); syncAssume(); render(); }
+init();
+buildChecks();
+</script>
+
+</body>
+</html>

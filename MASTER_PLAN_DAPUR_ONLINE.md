@@ -2,6 +2,8 @@
 
 > Bisnis dapur yang **jualan 100% online** (GoFood, GrabFood, ShopeeFood, WhatsApp/Instagram) dari kontrakan berukuran **3×3 meter (9 m²)**, dengan menu andalan **nasi bakar, ayam bakar**, dan menu pendukung lainnya.
 >
+> 📎 File pendamping: **`MASTER_PLAN_DAPUR_ONLINE.html`** (versi HTML interaktif), **`HPP_Proyeksi_Dapur_Online.xlsx`** (spreadsheet HPP & proyeksi), **`layout-dapur-3x3.svg`** (denah dapur).
+>
 > Semua angka harga di dokumen ini adalah **estimasi kasar (2026)**. Cek ulang ke pasar, toko alat dapur, dan aplikasi ojol di kota kamu sebelum dipakai untuk keputusan.
 
 ---
@@ -37,9 +39,9 @@
 | Kanal jualan | GoFood, GrabFood, ShopeeFood, WhatsApp, Instagram/TikTok |
 | Jam buka | 10.00–21.00 (fokus jam makan siang 11–13 dan makan malam 17–20) |
 | Tim awal | Owner + 1 helper |
-| Modal awal | ± Rp25–35 juta (lihat bagian 6) |
-| Target BEP operasional | ± 20 order/hari |
-| Target bulan ke-6 | 60 order/hari |
+| Modal awal | ± Rp33,5 juta termasuk dana cadangan (lihat bagian 6) |
+| Target BEP operasional | ± 18 order/hari |
+| Target bulan ke-7 | 60 order/hari (balik modal) |
 | Target bulan ke-12 | 90+ order/hari dengan 2–3 brand virtual |
 
 **Kenapa model ini masuk akal:**
@@ -192,6 +194,8 @@ Biasanya harga di aplikasi **lebih mahal ±20–25%** dibanding harga kalau pesa
 ---
 
 ## 5. Layout Dapur 3×3 m
+
+Denah lengkap berskala: **`layout-dapur-3x3.svg`**.
 
 Kunci dapur kecil: **alur satu arah** dari bahan masuk sampai pesanan keluar, dan jalur jalan ±60–80 cm di tengah.
 
@@ -427,43 +431,58 @@ Keuntungan: **muncul lebih banyak di hasil pencarian** dan menjangkau pembeli de
 
 ## 12. Proyeksi Keuangan
 
+> Hitungan lengkap (dengan rumus yang bisa diubah) ada di **`HPP_Proyeksi_Dapur_Online.xlsx`** dan di kalkulator interaktif pada **`MASTER_PLAN_DAPUR_ONLINE.html`**. Angka di bawah adalah skenario dasarnya.
+
 ### Biaya tetap per bulan (tahap awal)
 
 | Pos | Estimasi |
 |---|---|
 | Sewa kontrakan | Rp800.000 |
 | Listrik & air | Rp500.000 |
-| Gas | Rp700.000 |
 | Gaji 1 helper | Rp2.500.000 |
 | Internet & pulsa | Rp200.000 |
-| Iklan & promo | Rp1.000.000 |
-| Lain-lain (sabun, perawatan, transport belanja) | Rp300.000 |
-| **Total** | **± Rp6.000.000** |
+| Iklan & promo berbayar | Rp1.000.000 |
+| Kebersihan & perawatan alat | Rp300.000 |
+| Transport belanja & lain-lain | Rp400.000 |
+| **Total** | **Rp5.700.000** |
+
+Gas & listrik untuk memasak sudah dialokasikan per porsi di HPP, jadi tidak dihitung dua kali.
+
+### Rata-rata per order (dari menu mix)
+
+| | Nilai |
+|---|---|
+| Nilai order rata-rata (harga aplikasi) | ± Rp36.600 |
+| HPP per order | ± Rp17.200 |
+| Komisi aplikasi 20% | ± Rp7.300 |
+| Promo/diskon | Rp1.000 |
+| **Untung kotor per order** | **± Rp11.000** |
+
+Asumsi: 35% order menambah minuman, 25% menambah lauk/sambal.
 
 ### Titik impas (BEP)
 
-Asumsi rata-rata **untung kotor per order ± Rp10.000** (setelah HPP & komisi aplikasi, sudah termasuk add-on/minuman).
-
 ```
-BEP = Biaya tetap ÷ Untung per order
-    = Rp6.000.000 ÷ Rp10.000
-    = 600 order/bulan ≈ 20 order/hari
+BEP = Biaya tetap ÷ Untung per order ÷ Hari buka
+    = Rp5.700.000 ÷ Rp11.067 ÷ 30
+    ≈ 18 order/hari
 ```
 
-> Ini belum termasuk gaji owner. Kalau owner ingin digaji Rp4 juta/bulan, butuh tambahan ±400 order/bulan, jadi target **± 34 order/hari**.
+> Ini belum termasuk gaji owner. Isi "Gaji owner" di spreadsheet/kalkulator untuk melihat target order supaya owner juga digaji.
 
-### Proyeksi omzet & laba (skenario moderat)
+### Proyeksi laba (skenario moderat)
 
-| Bulan | Order/hari | Order/bulan | Untung kotor | Biaya tetap | **Laba bersih** |
-|---|---|---|---|---|---|
-| 1 | 15 | 450 | Rp4.500.000 | Rp6.000.000 | **−Rp1.500.000** |
-| 3 | 35 | 1.050 | Rp10.500.000 | Rp6.000.000 | **Rp4.500.000** |
-| 6 | 60 | 1.800 | Rp18.000.000 | Rp8.500.000* | **Rp9.500.000** |
-| 12 | 90 | 2.700 | Rp27.000.000 | Rp11.000.000** | **Rp16.000.000** |
+| Bulan | Order/hari | Omzet | Untung kotor | Biaya tetap | **Laba bersih** | Kumulatif setelah modal |
+|---|---|---|---|---|---|---|
+| 1 | 15 | Rp16,5 jt | Rp5,0 jt | Rp5,7 jt | **−Rp0,7 jt** | −Rp34,2 jt |
+| 3 | 30 | Rp33,0 jt | Rp10,0 jt | Rp5,7 jt | **Rp4,3 jt** | −Rp28,4 jt |
+| 6 | 50 | Rp54,9 jt | Rp16,6 jt | Rp8,7 jt* | **Rp7,9 jt** | −Rp6,0 jt |
+| 7 | 60 | Rp65,9 jt | Rp19,9 jt | Rp8,7 jt | **Rp11,2 jt** | **+Rp5,3 jt** |
+| 12 | 90 | Rp98,9 jt | Rp29,9 jt | Rp10,2 jt** | **Rp19,7 jt** | +Rp86,8 jt |
 
-\* tambah 1 helper. \*\* 2 helper + admin paruh waktu + iklan lebih besar.
+\* tambah 1 helper + iklan Rp1,5 jt. \*\* + admin paruh waktu, iklan Rp2 jt.
 
-**Estimasi balik modal:** ± **6–9 bulan** untuk modal ± Rp30 juta (tergantung kecepatan naiknya order).
+**Modal awal ± Rp33,5 juta** (peralatan & persiapan Rp22,1 jt + dana cadangan 2 bulan Rp11,4 jt), **balik modal di bulan ke-7**.
 
 ### Kapasitas maksimal dapur 3×3 m
 
