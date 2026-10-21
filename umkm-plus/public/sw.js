@@ -1,5 +1,5 @@
 // Service worker sederhana: aplikasi tetap terbuka saat sinyal hilang.
-const CACHE = "umkm-plus-v2";
+const CACHE = "umkm-plus-v3";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => {

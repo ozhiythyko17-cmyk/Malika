@@ -1,9 +1,10 @@
+import { Megaphone } from "lucide-react";
 import { useState } from "react";
 import type { Content, DriveFile, MetaLaunchInput, MetaObjective, MetaStatus } from "../../shared/types";
 import { mutate, useApi } from "../api";
 import { useSession } from "../App";
 import { rp } from "../utils";
-import { ApiImage, Chips, Field, MoneyInput, Sheet, useRun } from "./ui";
+import { Alert, ApiImage, Chips, Field, MoneyInput, Sheet, Spinner, useRun } from "./ui";
 
 /** Bahan iklan yang dikirim dari Studio Konten (gambar + caption). */
 export interface AdDraft {
@@ -13,7 +14,7 @@ export interface AdDraft {
   headline: string;
 }
 
-const OBJECTIVES: Record<string, MetaObjective> = { "💬 Chat WhatsApp": "whatsapp", "🔗 Buka link": "link" };
+const OBJECTIVES: Record<string, MetaObjective> = { "Chat WhatsApp": "whatsapp", "Buka link": "link" };
 const BUDGETS = [20_000, 30_000, 50_000, 100_000];
 const BUDGET_LABELS = BUDGETS.map((b) => rp(b));
 type Source = "Galeri AI" | "Google Drive" | "Dari HP";
@@ -48,7 +49,7 @@ function Preview({ path }: { path: string }) {
 
 export default function AdWizard({ draft, meta, onClose }: { draft: AdDraft | null; meta: MetaStatus | undefined; onClose: () => void }) {
   const { settings, go } = useSession();
-  const [objectiveLabel, setObjectiveLabel] = useState("💬 Chat WhatsApp");
+  const [objectiveLabel, setObjectiveLabel] = useState("Chat WhatsApp");
   const objective = OBJECTIVES[objectiveLabel];
   const [link, setLink] = useState("");
   const [image, setImage] = useState<{ value: MetaLaunchInput["image"]; preview: string } | null>(
@@ -137,7 +138,7 @@ export default function AdWizard({ draft, meta, onClose }: { draft: AdDraft | nu
                   ))}
                 </div>
               ) : (
-                <p className="small muted">Belum ada gambar AI tersimpan. Buat di tab AI Konten lalu tekan ⭐ Simpan.</p>
+                <p className="small muted">Belum ada gambar AI tersimpan. Buat di tab AI Konten lalu tekan Simpan.</p>
               ))}
             {source === "Google Drive" &&
               (photos.length ? (
@@ -174,10 +175,10 @@ export default function AdWizard({ draft, meta, onClose }: { draft: AdDraft | nu
         {hasLocation ? (
           <div className="small muted">Orang di sekitar lokasi usaha ({settings.city || "titik di Pengaturan"}), dalam radius:</div>
         ) : (
-          <div className="alert warn small">
+          <Alert tone="warn" className="small">
             Lokasi usaha belum diisi.{" "}
             <button className="link-btn" onClick={() => go("pengaturan")}>Isi di Pengaturan</button>
-          </div>
+          </Alert>
         )}
         <Chips options={RADII.map((r) => `${r} km`)} value={`${radiusKm} km`} onChange={(v) => setRadiusKm(parseInt(v))} />
       </Field>
@@ -217,7 +218,7 @@ export default function AdWizard({ draft, meta, onClose }: { draft: AdDraft | nu
         <label className="check">
           <input type="checkbox" checked={autopilot} onChange={(e) => setAutopilot(e.target.checked)} />
           <span>
-            <b>🤖 Autopilot hemat</b> — jeda otomatis bila biaya sudah mencapai batas tapi belum ada satu pun {objective === "whatsapp" ? "chat" : "klik"}
+            <b>Autopilot hemat</b> — jeda otomatis bila biaya sudah mencapai batas tapi belum ada satu pun {objective === "whatsapp" ? "chat" : "klik"}
           </span>
         </label>
         {autopilot && (
@@ -246,9 +247,9 @@ export default function AdWizard({ draft, meta, onClose }: { draft: AdDraft | nu
           {problems.map((p) => <li key={p}>{p}</li>)}
         </ul>
       )}
-      {error && <div className="alert warn">{error}</div>}
+      {error && <Alert tone="warn">{error}</Alert>}
       <button className="btn primary big" disabled={busy || problems.length > 0} onClick={launch}>
-        {busy ? "⏳ Memasang iklan di Meta…" : `📣 Pasang iklan · maks. ${rp(total)}`}
+        {busy ? <><Spinner size={20} /> Memasang iklan di Meta…</> : <><Megaphone size={20} /> Pasang iklan · maks. {rp(total)}</>}
       </button>
     </Sheet>
   );

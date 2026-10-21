@@ -1,25 +1,26 @@
+import { Bot, CircleCheck, Link, Megaphone, MessageCircle, Pause, Play, Plus, ReceiptText, RefreshCw, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AD_PLATFORMS, type AdCampaign, type AdInput, type MetaAdState, type MetaStatus, type Product } from "../../shared/types";
 import { api, invalidate, mutate, useApi } from "../api";
 import AdWizard, { type AdDraft } from "../components/AdWizard";
-import { Chips, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
+import { Alert, Chips, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, Spinner, useRun } from "../components/ui";
 import { dateStr, fromInputDate, num, rp, toInputDate } from "../utils";
 
 const STATE: Record<MetaAdState, { label: string; cls: string }> = {
-  review: { label: "⏳ Ditinjau Meta", cls: "st-baru" },
-  active: { label: "🟢 Berjalan", cls: "st-selesai" },
-  paused: { label: "⏸ Dijeda", cls: "st-diproses" },
-  rejected: { label: "⛔ Ditolak Meta", cls: "neg" },
-  billing: { label: "💳 Perlu pembayaran", cls: "neg" },
-  issue: { label: "⚠️ Ada masalah", cls: "st-diproses" },
-  ended: { label: "🏁 Selesai", cls: "st-batal" },
+  review: { label: "Ditinjau Meta", cls: "st-baru" },
+  active: { label: "Berjalan", cls: "st-selesai" },
+  paused: { label: "Dijeda", cls: "st-diproses" },
+  rejected: { label: "Ditolak Meta", cls: "neg" },
+  billing: { label: "Perlu pembayaran", cls: "neg" },
+  issue: { label: "Ada masalah", cls: "st-diproses" },
+  ended: { label: "Selesai", cls: "st-batal" },
 };
 
 function verdict(a: AdCampaign) {
   if (!a.spend) return { label: "Belum ada biaya", cls: "" };
   if (!a.revenue) return { label: "Catat penjualannya", cls: "muted" };
   const roas = a.revenue / a.spend;
-  if (roas >= 3) return { label: "BAGUS 👍", cls: "pos" };
+  if (roas >= 3) return { label: "BAGUS", cls: "pos" };
   if (roas >= 1.5) return { label: "CUKUP", cls: "warn-text" };
   return { label: "PERLU DIPERBAIKI", cls: "neg" };
 }
@@ -80,7 +81,7 @@ export default function Iklan({ draft, onDraftUsed }: { draft: AdDraft | null; o
         <div className="row between">
           <b>Iklan dari aplikasi</b>
           <button className="btn small" disabled={syncing} onClick={() => sync(true)}>
-            {syncing ? "⏳ Memperbarui…" : "🔄 Perbarui dari Meta"}
+            {syncing ? <><Spinner size={16} /> Memperbarui…</> : <><RefreshCw size={16} /> Perbarui dari Meta</>}
           </button>
         </div>
       )}
@@ -96,12 +97,12 @@ export default function Iklan({ draft, onDraftUsed }: { draft: AdDraft | null; o
             setEditing({ name: "", platform: AD_PLATFORMS[0], startDate: Date.now(), endDate: Date.now() + 6 * 86_400_000, spend: 0, reach: 0, chats: 0, orders: 0, revenue: 0, note: "" })
           }
         >
-          + Catat iklan lain
+          <Plus size={16} /> Catat iklan lain
         </button>
       </div>
       <p className="small muted">Untuk iklan yang dijalankan di luar aplikasi (TikTok Ads, iklan GoFood/GrabFood, dll.).</p>
       <LoadError error={error} />
-      {ads && ads.length === 0 && <Empty icon="📣">Belum ada iklan.</Empty>}
+      {ads && ads.length === 0 && <Empty icon={<Megaphone size={26} />}>Belum ada iklan.</Empty>}
       {manualAds.map((a) => {
         const v = verdict(a);
         const profit = a.revenue * avgMargin - a.spend;
@@ -136,28 +137,34 @@ export default function Iklan({ draft, onDraftUsed }: { draft: AdDraft | null; o
 }
 
 function MetaConnection({ status, error, onLaunch }: { status: MetaStatus | undefined; error: string | null; onLaunch: () => void }) {
-  if (error) return <div className="alert warn">{error}</div>;
+  if (error) return <Alert tone="warn">{error}</Alert>;
   if (!status) return <div className="card muted small">Memeriksa akun Meta Ads…</div>;
   if (status.connected && status.account) {
     return (
       <div className="card stack">
-        <div className="small">
-          ✅ Terhubung ke akun iklan <b>{status.account.name}</b> · Page <b>{status.page?.name}</b>
-          {!status.account.active && <span className="neg"> · {status.account.statusText}</span>}
+        <b className="section-title"><Megaphone size={18} /> Iklan Facebook & Instagram</b>
+        <div className="small icon-line ok">
+          <CircleCheck size={17} />
+          <span>
+            Terhubung ke akun iklan <b>{status.account.name}</b> · Page <b>{status.page?.name}</b>
+            {!status.account.active && <span className="neg"> · {status.account.statusText}</span>}
+          </span>
         </div>
-        <button className="btn primary big" onClick={onLaunch}>📣 Pasang iklan di Facebook & Instagram</button>
         <p className="small muted">Pilih gambar & teks, tentukan target sekitar usaha dan anggaran — aplikasi memasang, memantau, dan bisa menjeda otomatis iklan yang boros.</p>
+        <button className="btn primary big" onClick={onLaunch}>
+          <Plus size={20} /> Pasang iklan baru
+        </button>
       </div>
     );
   }
   return (
     <div className="card stack">
-      <b>📣 Hubungkan Meta Ads</b>
+      <b className="section-title"><Megaphone size={18} /> Hubungkan Meta Ads</b>
       <p className="small">
         Dengan akun iklan Meta yang terhubung, iklan Facebook & Instagram bisa dipasang, dipantau, dan dijeda langsung dari aplikasi ini — tanpa membuka Ads Manager.
       </p>
       {status.error ? (
-        <div className="alert warn small">{status.error}</div>
+        <Alert tone="warn" className="small">{status.error}</Alert>
       ) : (
         <p className="small muted">
           Yang belum diisi di pengaturan server (Vercel): {status.missing.join(", ")}. Langkahnya ada di panduan README bagian "Meta Ads".
@@ -186,12 +193,19 @@ function MetaAdCard({ ad: a, avgMargin, onRecord }: { ad: AdCampaign; avgMargin:
     <div className="card stack">
       <div className="row between">
         <b>{a.name}</b>
-        <span className={`badge ${st.cls}`}>{st.label}</span>
+        <span className={`badge dot ${st.cls}`}>{st.label}</span>
       </div>
-      <div className="small muted">
-        {wa ? "💬 Chat WhatsApp" : "🔗 Kunjungan link"} · {rp(m.dailyBudget)}/hari · {dateStr(a.startDate)} – {dateStr(a.endDate)}
+      <div className="small muted icon-line">
+        {wa ? <MessageCircle size={15} /> : <Link size={15} />}
+        <span>
+          {wa ? "Chat WhatsApp" : "Kunjungan link"} · {rp(m.dailyBudget)}/hari · {dateStr(a.startDate)} – {dateStr(a.endDate)}
+        </span>
       </div>
-      {m.notice && <div className={`alert small ${m.state === "rejected" || m.state === "billing" ? "warn" : "info"}`}>{m.notice}</div>}
+      {m.notice && (
+        <Alert tone={m.state === "rejected" || m.state === "billing" ? "warn" : "info"} className="small">
+          {m.notice}
+        </Alert>
+      )}
       <div className="ad-stats">
         <div><small>Biaya</small><b>{rp(a.spend)}</b></div>
         <div><small>Orang melihat</small><b>{num(a.reach)}</b></div>
@@ -204,19 +218,34 @@ function MetaAdCard({ ad: a, avgMargin, onRecord }: { ad: AdCampaign; avgMargin:
         <span className={v.cls}>{v.label}</span>
         <span className="muted">Data Meta: {ago(m.syncedAt)}</span>
       </div>
-      <div className="small">
-        🤖 Autopilot: {m.autopilot ? `jeda otomatis bila ${rp(m.autopilotLimit)} habis tanpa ${wa ? "chat" : "klik"}` : "mati"}
+      <div className="small icon-line">
+        <Bot size={16} />
+        <span>Autopilot: {m.autopilot ? `jeda otomatis bila ${rp(m.autopilotLimit)} habis tanpa ${wa ? "chat" : "klik"}` : "mati"}</span>
       </div>
       <div className="row gap">
-        {canPause && <button className="btn small" disabled={busy} onClick={() => running("pause")}>⏸ Jeda</button>}
-        {canResume && <button className="btn small" disabled={busy} onClick={() => running("resume")}>▶ Lanjutkan</button>}
+        {canPause && (
+          <button className="btn small" disabled={busy} onClick={() => running("pause")}>
+            <Pause size={16} /> Jeda
+          </button>
+        )}
+        {canResume && (
+          <button className="btn small" disabled={busy} onClick={() => running("resume")}>
+            <Play size={16} /> Lanjutkan
+          </button>
+        )}
         {m.state !== "ended" && m.state !== "rejected" && (
           <>
-            <button className="btn small" onClick={() => setSheet("budget")}>💰 Anggaran</button>
-            <button className="btn small" onClick={() => setSheet("autopilot")}>🤖 Autopilot</button>
+            <button className="btn small" onClick={() => setSheet("budget")}>
+              <Wallet size={16} /> Anggaran
+            </button>
+            <button className="btn small" onClick={() => setSheet("autopilot")}>
+              <Bot size={16} /> Autopilot
+            </button>
           </>
         )}
-        <button className="btn small" onClick={onRecord}>🧾 Catat penjualan</button>
+        <button className="btn small" onClick={onRecord}>
+          <ReceiptText size={16} /> Catat penjualan
+        </button>
       </div>
       {sheet === "budget" && <BudgetSheet ad={a} onClose={() => setSheet(null)} />}
       {sheet === "autopilot" && <AutopilotSheet ad={a} onClose={() => setSheet(null)} />}

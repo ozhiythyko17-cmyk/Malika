@@ -31,5 +31,6 @@ export default defineConfig({
   // Kode server membaca process.env saat berjalan; arahkan ke objek yang diisi demo/main.tsx.
   define: { "process.env": "globalThis.process.env" },
   optimizeDeps: { exclude: ["@electric-sql/pglite"] },
-  build: { outDir: path.join(here, "dist-demo"), emptyOutDir: true, target: "es2022", assetsInlineLimit: 0 },
+  // Huruf ikut ditanam (data URI) karena halaman Artifact hanya mengizinkan huruf dari data URI / Google Fonts.
+  build: { outDir: path.join(here, "dist-demo"), emptyOutDir: true, target: "es2022", assetsInlineLimit: (file) => file.endsWith(".woff2") },
 });

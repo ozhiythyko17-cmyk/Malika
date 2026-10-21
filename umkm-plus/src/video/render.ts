@@ -29,7 +29,7 @@ export interface RenderResult {
 
 const FPS = 30;
 const END_SECONDS = 3;
-const FONT = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+const FONT = "'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 
 export function supportedMime() {
   const candidates = [
@@ -132,7 +132,7 @@ function drawOverlay(ctx: CanvasRenderingContext2D, text: string, w: number, h: 
   ctx.fillStyle = "rgba(255,255,255,0.95)";
   roundRect(ctx, -boxW / 2, -boxH / 2, boxW, boxH, fontSize * 0.35);
   ctx.fill();
-  ctx.fillStyle = "#1b1f2e";
+  ctx.fillStyle = "#13348f";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   lines.forEach((l, i) => ctx.fillText(l, 0, (i - (lines.length - 1) / 2) * lineH));
@@ -141,8 +141,8 @@ function drawOverlay(ctx: CanvasRenderingContext2D, text: string, w: number, h: 
 
 function drawEndCard(ctx: CanvasRenderingContext2D, card: RenderOptions["endCard"], w: number, h: number, t: number) {
   const bg = ctx.createLinearGradient(0, 0, w, h);
-  bg.addColorStop(0, "#0f9d76");
-  bg.addColorStop(1, "#0b5d47");
+  bg.addColorStop(0, "#2463eb");
+  bg.addColorStop(1, "#13348f");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, w, h);
   ctx.globalAlpha = Math.min(1, t * 2.5);
@@ -151,12 +151,18 @@ function drawEndCard(ctx: CanvasRenderingContext2D, card: RenderOptions["endCard
   ctx.textBaseline = "middle";
   ctx.font = `800 ${Math.round(w * 0.1)}px ${FONT}`;
   wrap(ctx, card.title, w * 0.85).forEach((l, i) => ctx.fillText(l, w / 2, h * 0.4 + i * w * 0.12));
-  ctx.font = `600 ${Math.round(w * 0.055)}px ${FONT}`;
-  ctx.fillStyle = "#ffd36b";
+  // Ajakan dalam kapsul putih.
+  ctx.font = `700 ${Math.round(w * 0.05)}px ${FONT}`;
+  const pillW = ctx.measureText(card.cta).width + w * 0.1;
+  const pillH = w * 0.1;
+  ctx.fillStyle = "#fff";
+  roundRect(ctx, (w - pillW) / 2, h * 0.58 - pillH / 2, pillW, pillH, pillH / 2);
+  ctx.fill();
+  ctx.fillStyle = "#1a4fd0";
   ctx.fillText(card.cta, w / 2, h * 0.58);
-  ctx.font = `500 ${Math.round(w * 0.05)}px ${FONT}`;
-  ctx.fillStyle = "rgba(255,255,255,0.9)";
-  ctx.fillText(card.subtitle, w / 2, h * 0.66);
+  ctx.font = `500 ${Math.round(w * 0.045)}px ${FONT}`;
+  ctx.fillStyle = "rgba(255,255,255,0.88)";
+  ctx.fillText(card.subtitle, w / 2, h * 0.58 + pillH * 1.05);
   ctx.globalAlpha = 1;
 }
 
@@ -166,6 +172,8 @@ export async function renderVideo(opts: RenderOptions): Promise<RenderResult> {
   if (!opts.scenes.length) throw new Error("Tidak ada adegan untuk dirender.");
 
   const [w, h] = opts.aspectRatio === "9:16" ? [720, 1280] : [720, 720];
+  // Pastikan huruf aplikasi sudah dimuat sebelum digambar di kanvas.
+  await document.fonts?.load(`800 40px ${FONT}`).catch(() => {});
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;

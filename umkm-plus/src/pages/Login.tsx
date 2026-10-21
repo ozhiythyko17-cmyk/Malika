@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { api } from "../api";
-import { Field } from "../components/ui";
+import { Alert, Field } from "../components/ui";
 
 // Diset oleh versi demo (demo/main.tsx).
 const isDemo = Boolean((globalThis as { __UMKM_DEMO__?: boolean }).__UMKM_DEMO__);
@@ -33,14 +33,14 @@ export default function Login({ needsSetup, onDone }: { needsSetup: boolean; onD
   return (
     <div className="login">
       <div className="login-brand">
-        <img src="icon-192.png" alt="" width={72} height={72} />
+        <span className="brand-mark" aria-hidden="true">U+</span>
         <h1>UMKM Plus</h1>
         <p>{needsSetup ? "Buat akun pemilik untuk mulai" : "Masuk untuk melanjutkan"}</p>
       </div>
       {isDemo && !needsSetup && (
-        <div className="alert info demo-hint">
+        <Alert className="demo-hint">
           Akun demo — pemilik: <code>dapurbakar</code> / <code>demo1234</code> · staf: <code>sari</code> / <code>demo1234</code>
-        </div>
+        </Alert>
       )}
       <form className="card stack" onSubmit={submit}>
         {needsSetup && (
@@ -76,7 +76,7 @@ export default function Login({ needsSetup, onDone }: { needsSetup: boolean; onD
             <input type="password" value={password2} onChange={(e) => setPassword2(e.target.value)} autoComplete="new-password" required />
           </Field>
         )}
-        {error && <div className="alert warn">{error}</div>}
+        {error && <Alert tone="warn">{error}</Alert>}
         <button className="btn primary big" disabled={busy}>
           {busy ? "Memproses…" : needsSetup ? "Buat akun & mulai" : "Masuk"}
         </button>

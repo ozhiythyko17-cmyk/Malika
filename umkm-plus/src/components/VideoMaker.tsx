@@ -1,10 +1,11 @@
+import { Clapperboard, Download, Image as ImageIcon, Mic, Play, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { DriveFile } from "../../shared/types";
 import type { VideoScript } from "../../shared/prompt";
 import { api } from "../api";
 import { useSession } from "../App";
 import { fetchDriveFile, renderVideo, supportedMime, type RenderResult, type RenderScene } from "../video/render";
-import { Field } from "./ui";
+import { Alert, Field, Spinner } from "./ui";
 
 interface Props {
   script: VideoScript;
@@ -136,7 +137,9 @@ export default function VideoMaker({ script, materials, aspectRatio, musicFiles 
   let at = 0;
   return (
     <div className="card stack">
-      <b>🎬 Video otomatis: {script.title}</b>
+      <b className="section-title">
+        <Clapperboard size={18} /> Video otomatis: {script.title}
+      </b>
       <p className="small muted">
         {fromDrive
           ? "Video disusun dari bahan yang kamu pilih. Teks dan lama tiap adegan bisa diubah sebelum dibuat."
@@ -153,7 +156,10 @@ export default function VideoMaker({ script, materials, aspectRatio, musicFiles 
                 <b>
                   Adegan {i + 1} · {from}–{at} dtk
                 </b>
-                <span className="muted">{m ? `${m.kind === "video" ? "▶" : "🖼️"} Bahan ${materials.indexOf(m) + 1}` : "🖼️ Gambar AI"}</span>
+                <span className="muted inline-icon">
+                  {m?.kind === "video" ? <Play size={13} /> : <ImageIcon size={13} />}
+                  {m ? `Bahan ${materials.indexOf(m) + 1}` : "Gambar AI"}
+                </span>
               </div>
               <div className="small muted">{s.shot}</div>
               <div className="scene-edit">
@@ -164,7 +170,12 @@ export default function VideoMaker({ script, materials, aspectRatio, musicFiles 
                   ))}
                 </select>
               </div>
-              {s.voiceover && <div className="small muted">🎙️ {s.voiceover}</div>}
+              {s.voiceover && (
+                <div className="small muted icon-line">
+                  <Mic size={14} />
+                  <span>{s.voiceover}</span>
+                </div>
+              )}
             </div>
           );
         })}
@@ -175,14 +186,20 @@ export default function VideoMaker({ script, materials, aspectRatio, musicFiles 
         <select value={musicId} onChange={(e) => setMusicId(e.target.value)}>
           <option value="">Tanpa musik</option>
           {musicFiles.map((f) => (
-            <option key={f.id} value={f.id}>🎵 {f.name}</option>
+            <option key={f.id} value={f.id}>{f.name}</option>
           ))}
         </select>
       </Field>
 
-      {!canRecord && <div className="alert warn">Browser ini belum bisa membuat video. Buka aplikasi di Google Chrome terbaru.</div>}
+      {!canRecord && <Alert tone="warn">Browser ini belum bisa membuat video. Buka aplikasi di Google Chrome terbaru.</Alert>}
       <button className="btn primary" disabled={busy || !canRecord} onClick={make}>
-        {busy ? "⏳ Sedang membuat video…" : video ? "🔄 Buat ulang video" : `🎬 Buat video (${totalSeconds} detik)`}
+        {busy ? (
+          <><Spinner /> Sedang membuat video…</>
+        ) : video ? (
+          <><RefreshCw size={18} /> Buat ulang video</>
+        ) : (
+          <><Clapperboard size={18} /> Buat video ({totalSeconds} detik)</>
+        )}
       </button>
       {!fromDrive && !busy && !video && (
         <p className="small muted">Membuat {scenes.length} gambar AI (biaya kecil per gambar), lalu merekam video.</p>
@@ -193,13 +210,13 @@ export default function VideoMaker({ script, materials, aspectRatio, musicFiles 
           <div className="prog"><i style={{ width: `${Math.round(progress * 100)}%` }} /></div>
         </div>
       )}
-      {error && <div className="alert warn">{error}</div>}
+      {error && <Alert tone="warn">{error}</Alert>}
 
       {video && (
         <div className="stack">
           <video className="result-video" src={video.url} controls playsInline />
           <a className="btn" href={video.url} download={`video-${settings.businessName.toLowerCase().replace(/\W+/g, "-")}-${Date.now()}.${video.extension}`}>
-            ⬇️ Unduh video ({(video.blob.size / 1024 / 1024).toFixed(1)} MB, {video.extension.toUpperCase()})
+            <Download size={18} /> Unduh video ({(video.blob.size / 1024 / 1024).toFixed(1)} MB, {video.extension.toUpperCase()})
           </a>
           {video.extension === "webm" && (
             <p className="small muted">HP ini menyimpan video sebagai WebM. TikTok & WhatsApp biasanya menerima; bila Instagram menolak, buka aplikasi di Chrome terbaru agar tersimpan sebagai MP4.</p>

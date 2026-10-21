@@ -1,8 +1,9 @@
+import { Plus, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 import type { Product, ProductInput, StockMove } from "../../shared/types";
 import { mutate, useApi } from "../api";
 import { useSession } from "../App";
-import { Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
+import { Alert, Empty, Field, LoadError, MoneyInput, NumberInput, Sheet, useRun } from "../components/ui";
 import { rp, timeStr } from "../utils";
 
 const EMOJIS = ["🔥", "🍗", "🍢", "🐟", "🦐", "🦑", "🌽", "🍖", "🥩", "🍱", "🍛", "🍚", "🌶️", "🥗", "🧋", "🥤", "☕", "🍹", "🧊", "🍰"];
@@ -23,12 +24,12 @@ export default function Produk() {
         <h2>Produk</h2>
         {isOwner && (
           <button className="btn primary" onClick={() => setEditing(blank)}>
-            + Produk
+            <Plus size={18} /> Produk
           </button>
         )}
       </div>
       <LoadError error={error} />
-      {products?.length === 0 && <Empty icon="🍱">Belum ada produk. Tambahkan menu jualanmu.</Empty>}
+      {products?.length === 0 && <Empty icon={<UtensilsCrossed size={26} />}>Belum ada produk. Tambahkan menu jualanmu.</Empty>}
       <div className="list">
         {products?.map((p) => {
           const margin = marginPct(p);
@@ -113,10 +114,10 @@ function ProductForm({ product, onClose }: { product: ProductInput & { id?: numb
         </Field>
       </div>
       {p.price > 0 && (
-        <div className="alert info">
+        <Alert tone={margin < 40 ? "warn" : "info"}>
           Untung per porsi <b>{rp(p.price - p.cost)}</b> ({margin}%).
           {margin < 40 && " Untuk kuliner online, idealnya di atas 40% agar tetap untung setelah potongan aplikasi (±20%)."}
-        </div>
+        </Alert>
       )}
       <Field label="Deskripsi singkat" hint="Dipakai AI saat membuat caption. Mis. rasa, porsi, keunggulan.">
         <textarea rows={2} value={p.description} onChange={(e) => set("description", e.target.value)} />
@@ -171,7 +172,7 @@ function StockForm({ product, onClose }: { product: Product; onClose: () => void
       <p>
         Stok sekarang: <b>{product.stock}</b>
       </p>
-      <div className="chips">
+      <div className="chips segmented">
         <button className={mode === "masuk" ? "chip on" : "chip"} onClick={() => setMode("masuk")}>Tambah stok</button>
         <button className={mode === "koreksi" ? "chip on" : "chip"} onClick={() => setMode("koreksi")}>Hitung ulang</button>
       </div>

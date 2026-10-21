@@ -1,3 +1,4 @@
+import { Check, DatabaseBackup, Download, FolderOpen, KeyRound, LocateFixed, LogOut, MapPin, Percent, Plus, Smartphone, Store, Users, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Role, Settings, User } from "../../shared/types";
 import { STYLES } from "../../shared/prompt";
@@ -16,14 +17,14 @@ export default function Pengaturan() {
       <GantiSandi />
       {isOwner && <Backup />}
       <div className="card stack">
-        <b>📱 Pasang di layar utama HP</b>
+        <b className="section-title"><Smartphone size={18} /> Pasang di layar utama HP</b>
         <p className="small">
           <b>Android (Chrome):</b> ketuk menu ⋮ → <i>Tambahkan ke layar utama</i> / <i>Instal aplikasi</i>.<br />
           <b>iPhone (Safari):</b> ketuk tombol Bagikan → <i>Tambah ke Layar Utama</i>.
         </p>
       </div>
       <button className="btn ghost danger" onClick={logout}>
-        Keluar dari akun {user.username}
+        <LogOut size={18} /> Keluar dari akun {user.username}
       </button>
       <p className="small muted center">UMKM Plus · versi uji coba 0.2</p>
     </div>
@@ -75,7 +76,7 @@ function ProfilUsaha() {
   return (
     <>
       <div className="card stack">
-        <b>Profil usaha</b>
+        <b className="section-title"><Store size={18} /> Profil usaha</b>
         <Field label="Nama usaha">
           <input value={s.businessName} onChange={(e) => set("businessName", e.target.value)} />
         </Field>
@@ -99,7 +100,7 @@ function ProfilUsaha() {
       </div>
 
       <div className="card stack">
-        <b>📁 Bahan konten di Google Drive</b>
+        <b className="section-title"><FolderOpen size={18} /> Bahan konten di Google Drive</b>
         <p className="small muted">
           Buat satu folder berisi foto & video menu. Di Google Drive: klik kanan folder → <i>Bagikan</i> → Akses umum: <i>Siapa saja yang memiliki link</i> (Pelihat) → <i>Salin link</i>, lalu tempel di sini. Siapa pun yang punya link bisa melihat isi folder, jadi isi hanya dengan bahan promosi.
         </p>
@@ -109,7 +110,7 @@ function ProfilUsaha() {
       </div>
 
       <div className="card stack">
-        <b>📍 Lokasi usaha</b>
+        <b className="section-title"><MapPin size={18} /> Lokasi usaha</b>
         <p className="small muted">
           Pusat target iklan Facebook & Instagram (orang di sekitar usaha). Di Google Maps, tekan lama titik dapurmu lalu salin angka koordinatnya, atau pakai lokasi HP saat berada di dapur.
         </p>
@@ -117,11 +118,13 @@ function ProfilUsaha() {
           <input value={coords} inputMode="decimal" onChange={(e) => changeCoords(e.target.value)} placeholder="-6.2383, 106.9756" />
         </Field>
         {!coordsValid && <div className="small neg">Format belum benar. Contoh: -6.2383, 106.9756</div>}
-        <button className="btn small" onClick={useHere}>📍 Pakai lokasi HP sekarang</button>
+        <button className="btn small" onClick={useHere}>
+          <LocateFixed size={16} /> Pakai lokasi HP sekarang
+        </button>
       </div>
 
       <div className="card stack">
-        <b>Saluran penjualan & potongan aplikasi</b>
+        <b className="section-title"><Percent size={18} /> Saluran penjualan & potongan aplikasi</b>
         <p className="small muted">Potongan (%) dipotong otomatis dari omzet pesanan saluran itu, supaya untung yang tampil adalah untung sebenarnya.</p>
         {s.channels.map((c, i) => (
           <div key={i} className="channel-row">
@@ -135,17 +138,17 @@ function ProfilUsaha() {
               <span>%</span>
             </div>
             <button className="icon-btn" aria-label="Hapus saluran" onClick={() => set("channels", s.channels.filter((_, j) => j !== i))}>
-              ✕
+              <X size={18} />
             </button>
           </div>
         ))}
         <button className="btn small" onClick={() => set("channels", [...s.channels, { name: "", feePct: 0 }])}>
-          + Tambah saluran
+          <Plus size={16} /> Tambah saluran
         </button>
       </div>
 
       <button className="btn primary big" disabled={busy || !coordsValid} onClick={save}>
-        {saved ? "✓ Tersimpan" : "Simpan pengaturan"}
+        {saved ? <><Check size={20} /> Tersimpan</> : "Simpan pengaturan"}
       </button>
     </>
   );
@@ -159,7 +162,7 @@ function Akun() {
 
   return (
     <div className="card stack">
-      <b>👥 Akun</b>
+      <b className="section-title"><Users size={18} /> Akun</b>
       <p className="small muted">Akun <b>staf</b> bisa mencatat pesanan, stok, dan membuat konten, tapi tidak bisa melihat keuangan, modal, dan iklan.</p>
       {users?.map((u) => (
         <div key={u.id} className="row between">
@@ -173,7 +176,9 @@ function Akun() {
           )}
         </div>
       ))}
-      <button className="btn small" onClick={() => setAdding(true)}>+ Tambah akun</button>
+      <button className="btn small" onClick={() => setAdding(true)}>
+        <Plus size={16} /> Tambah akun
+      </button>
       {adding && <TambahAkun onClose={() => setAdding(false)} />}
     </div>
   );
@@ -226,7 +231,7 @@ function GantiSandi() {
 
   return (
     <div className="card stack">
-      <b>🔑 Kata sandi</b>
+      <b className="section-title"><KeyRound size={18} /> Kata sandi</b>
       <button className="btn small" onClick={() => setOpen(true)}>Ganti kata sandi</button>
       {open && (
         <Sheet title="Ganti kata sandi" onClose={() => setOpen(false)}>
@@ -252,11 +257,13 @@ function Backup() {
     });
   return (
     <div className="card stack">
-      <b>💾 Cadangan data</b>
+      <b className="section-title"><DatabaseBackup size={18} /> Cadangan data</b>
       <p className="small">
         Data tersimpan aman di database online dan bisa dibuka dari HP mana pun setelah masuk. Sebagai jaga-jaga, unduh cadangan sebulan sekali.
       </p>
-      <button className="btn" disabled={busy} onClick={backup}>⬇️ Unduh cadangan (JSON)</button>
+      <button className="btn" disabled={busy} onClick={backup}>
+        <Download size={18} /> Unduh cadangan (JSON)
+      </button>
     </div>
   );
 }

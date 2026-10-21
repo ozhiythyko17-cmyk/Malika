@@ -1,6 +1,7 @@
+import { Download, Megaphone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useBlobUrl } from "../api";
-import { Field } from "./ui";
+import { Alert, Field } from "./ui";
 
 interface Props {
   imageUrl: string; // alamat API (/api/...), diambil lewat fetch supaya kanvas bisa diunduh
@@ -13,6 +14,13 @@ interface Props {
 }
 
 const SIZE: Record<string, [number, number]> = { "1:1": [1080, 1080], "9:16": [1080, 1920] };
+const FONT = "'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+
+function pill(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, h / 2);
+  ctx.fill();
+}
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
   const lines: string[] = [];
@@ -55,41 +63,59 @@ export default function Poster(props: Props) {
   useEffect(() => {
     const ctx = canvas.current?.getContext("2d");
     if (!ctx || !img) return;
-    // Foto memenuhi kanvas (crop tengah).
-    const scale = Math.max(w / img.width, h / img.height);
-    ctx.drawImage(img, (w - img.width * scale) / 2, (h - img.height * scale) / 2, img.width * scale, img.height * scale);
+    let cancelled = false;
+    const draw = () => {
+      // Foto memenuhi kanvas (crop tengah).
+      const scale = Math.max(w / img.width, h / img.height);
+      ctx.drawImage(img, (w - img.width * scale) / 2, (h - img.height * scale) / 2, img.width * scale, img.height * scale);
 
-    const grad = ctx.createLinearGradient(0, h * 0.45, 0, h);
-    grad.addColorStop(0, "rgba(0,0,0,0)");
-    grad.addColorStop(1, "rgba(0,0,0,0.85)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, h * 0.45, w, h * 0.55);
+      const grad = ctx.createLinearGradient(0, h * 0.4, 0, h);
+      grad.addColorStop(0, "rgba(8,22,64,0)");
+      grad.addColorStop(1, "rgba(8,22,64,0.9)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, h * 0.4, w, h * 0.6);
 
-    const pad = 72;
-    ctx.fillStyle = "#fff";
-    ctx.textBaseline = "alphabetic";
-    ctx.font = "800 96px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-    const hl = wrap(ctx, headline.toUpperCase(), w - pad * 2).slice(0, 3);
-    ctx.font = "500 50px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-    const sub = wrap(ctx, subheadline, w - pad * 2).slice(0, 2);
+      // Susun dari bawah: kapsul nama usaha, teks pendukung, judul, garis aksen.
+      const pad = 72;
+      ctx.textBaseline = "top";
+      ctx.font = `800 92px ${FONT}`;
+      const hl = wrap(ctx, headline.toUpperCase(), w - pad * 2).slice(0, 3);
+      ctx.font = `500 48px ${FONT}`;
+      const sub = wrap(ctx, subheadline, w - pad * 2).slice(0, 2);
+      ctx.font = `600 36px ${FONT}`;
+      const footerW = Math.min(w - pad * 2, ctx.measureText(props.footer).width + 64);
+      const pillH = 76;
 
-    let y = h - pad - 70 - sub.length * 64 - 24;
-    ctx.font = "800 96px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-    y -= (hl.length - 1) * 104;
-    for (const line of hl) {
-      ctx.fillText(line, pad, y);
-      y += 104;
-    }
-    y += 4;
-    ctx.font = "500 50px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-    ctx.fillStyle = "#ffd36b";
-    for (const line of sub) {
-      ctx.fillText(line, pad, y);
-      y += 64;
-    }
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.font = "600 40px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-    ctx.fillText(props.footer, pad, h - pad);
+      let y = h - pad - pillH - 44 - sub.length * 62 - (sub.length ? 16 : 0) - hl.length * 100;
+      ctx.fillStyle = "#4d8bff";
+      pill(ctx, pad, y - 40, 88, 10);
+      ctx.fillStyle = "#fff";
+      ctx.font = `800 92px ${FONT}`;
+      for (const line of hl) {
+        ctx.fillText(line, pad, y);
+        y += 100;
+      }
+      y += 16;
+      ctx.fillStyle = "#c4d7ff";
+      ctx.font = `500 48px ${FONT}`;
+      for (const line of sub) {
+        ctx.fillText(line, pad, y);
+        y += 62;
+      }
+      if (props.footer) {
+        ctx.fillStyle = "#2463eb";
+        pill(ctx, pad, h - pad - pillH, footerW, pillH);
+        ctx.fillStyle = "#fff";
+        ctx.font = `600 36px ${FONT}`;
+        ctx.textBaseline = "middle";
+        ctx.fillText(props.footer, pad + 32, h - pad - pillH / 2, footerW - 64);
+      }
+    };
+    // Tunggu huruf aplikasi siap supaya poster tidak tergambar dengan huruf cadangan.
+    document.fonts.load(`800 92px ${FONT}`).catch(() => {}).then(() => !cancelled && draw());
+    return () => {
+      cancelled = true;
+    };
   }, [img, headline, subheadline, props.footer, w, h]);
 
   const download = () => {
@@ -105,17 +131,19 @@ export default function Poster(props: Props) {
 
   return (
     <div className="stack">
-      {error ? <div className="alert warn">{error}</div> : <canvas ref={canvas} width={w} height={h} className="poster" />}
+      {error ? <Alert tone="warn">{error}</Alert> : <canvas ref={canvas} width={w} height={h} className="poster" />}
       <Field label="Judul poster">
         <input value={headline} onChange={(e) => setHeadline(e.target.value)} />
       </Field>
       <Field label="Teks pendukung">
         <input value={subheadline} onChange={(e) => setSubheadline(e.target.value)} />
       </Field>
-      <button className="btn" disabled={!img} onClick={download}>⬇️ Unduh poster</button>
+      <button className="btn" disabled={!img} onClick={download}>
+        <Download size={18} /> Unduh poster
+      </button>
       {props.onAdvertise && (
         <button className="btn" disabled={!img} onClick={() => canvas.current && props.onAdvertise!(canvas.current.toDataURL("image/jpeg", 0.9))}>
-          📣 Iklankan poster ini
+          <Megaphone size={18} /> Iklankan poster ini
         </button>
       )}
     </div>

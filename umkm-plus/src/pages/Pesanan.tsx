@@ -1,3 +1,4 @@
+import { ClipboardList, Copy, MessageCircle, NotebookPen, Plus, ReceiptText } from "lucide-react";
 import { useState } from "react";
 import { ORDER_STATUSES, PAYMENT_METHODS, type Order, type OrderStatus, type Product, type Settings } from "../../shared/types";
 import { mutate, useApi } from "../api";
@@ -20,13 +21,13 @@ export default function Pesanan() {
       <div className="row between">
         <h2>Pesanan</h2>
         <button className="btn primary" onClick={() => setCreating(true)}>
-          + Pesanan baru
+          <Plus size={18} /> Pesanan baru
         </button>
       </div>
-      <Chips options={["Aktif", "Selesai", "Batal", "Semua"] as Filter[]} value={filter} onChange={setFilter} />
+      <Chips segmented options={["Aktif", "Selesai", "Batal", "Semua"] as Filter[]} value={filter} onChange={setFilter} />
       <LoadError error={error} />
 
-      {orders?.length === 0 && <Empty icon="🧾">Belum ada pesanan di sini.</Empty>}
+      {orders?.length === 0 && <Empty icon={<ReceiptText size={26} />}>Belum ada pesanan di sini.</Empty>}
       <div className="list">
         {orders?.map((o) => (
           <button key={o.id} className="card order-row" onClick={() => setOpenId(o.id)}>
@@ -91,7 +92,7 @@ function OrderForm({ onClose }: { onClose: () => void }) {
 
   return (
     <Sheet title="Pesanan baru" onClose={onClose}>
-      {products?.length === 0 && <Empty icon="🍱">Belum ada produk yang dijual. Tambahkan di menu Produk.</Empty>}
+      {products?.length === 0 && <Empty icon={<ClipboardList size={26} />}>Belum ada produk yang dijual. Tambahkan di menu Produk.</Empty>}
       <div className="product-pick">
         {products?.map((p) => {
           const q = qty[p.id] ?? 0;
@@ -208,7 +209,7 @@ function OrderDetail({ id, onClose }: { id: number; onClose: () => void }) {
         </div>
         <b>{o.customerName || "Pelanggan"}</b> {o.customerWa && <span className="muted">· {o.customerWa}</span>}
         {o.address && <div className="small">{o.address}</div>}
-        {o.note && <div className="small">📝 {o.note}</div>}
+        {o.note && <div className="small inline-icon"><NotebookPen size={15} /> {o.note}</div>}
       </div>
       <table className="tbl">
         <tbody>
@@ -240,11 +241,11 @@ function OrderDetail({ id, onClose }: { id: number; onClose: () => void }) {
       <div className="stack">
         {o.customerWa ? (
           <a className="btn primary" href={waLink(o.customerWa, receiptText(o, settings))} target="_blank" rel="noreferrer">
-            💬 Kirim struk ke WhatsApp pelanggan
+            <MessageCircle size={18} /> Kirim struk ke WhatsApp pelanggan
           </a>
         ) : (
           <button className="btn" onClick={() => navigator.clipboard.writeText(receiptText(o, settings))}>
-            📋 Salin struk
+            <Copy size={18} /> Salin struk
           </button>
         )}
         {isOwner && (

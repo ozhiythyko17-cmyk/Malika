@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight, Download, Plus, ReceiptText, Wallet } from "lucide-react";
 import { useState } from "react";
 import { EXPENSE_CATEGORIES, type Expense, type ExpenseInput, type Report } from "../../shared/types";
 import { api, mutate, useApi } from "../api";
@@ -50,13 +51,13 @@ export default function Keuangan() {
       <div className="row between">
         <h2>Keuangan</h2>
         <button className="btn primary" onClick={() => setEditing({ date: Date.now(), category: EXPENSE_CATEGORIES[0], amount: 0, note: "" })}>
-          + Uang keluar
+          <Plus size={18} /> Uang keluar
         </button>
       </div>
       <div className="month-nav">
-        <button className="icon-btn" aria-label="Bulan sebelumnya" onClick={() => shift(-1)}>‹</button>
+        <button className="icon-btn" aria-label="Bulan sebelumnya" onClick={() => shift(-1)}><ChevronLeft size={20} /></button>
         <b>{label}</b>
-        <button className="icon-btn" aria-label="Bulan berikutnya" onClick={() => shift(1)}>›</button>
+        <button className="icon-btn" aria-label="Bulan berikutnya" onClick={() => shift(1)}><ChevronRight size={20} /></button>
       </div>
       <LoadError error={error} />
 
@@ -67,7 +68,7 @@ export default function Keuangan() {
         </div>
       )}
 
-      <Chips options={["Laporan", "Pengeluaran"] as Tab[]} value={tab} onChange={setTab} />
+      <Chips segmented options={["Laporan", "Pengeluaran"] as Tab[]} value={tab} onChange={setTab} />
 
       {tab === "Laporan" && r && (
         <>
@@ -102,16 +103,21 @@ export default function Keuangan() {
 
           {r.unpaid.count > 0 && (
             <div className="alert warn">
-              🧾 <b>{r.unpaid.count} pesanan belum dibayar</b> senilai {rp(r.unpaid.amount)} (semua bulan). Cek di menu Pesanan.
+              <ReceiptText size={18} />
+              <span>
+                <b>{r.unpaid.count} pesanan belum dibayar</b> senilai {rp(r.unpaid.amount)} (semua bulan). Cek di menu Pesanan.
+              </span>
             </div>
           )}
-          <button className="btn" disabled={busy} onClick={exportCsv}>⬇️ Unduh laporan (Excel/CSV)</button>
+          <button className="btn" disabled={busy} onClick={exportCsv}>
+            <Download size={18} /> Unduh laporan (Excel/CSV)
+          </button>
         </>
       )}
 
       {tab === "Pengeluaran" && (
         <>
-          {expenses?.length === 0 && <Empty icon="💸">Belum ada uang keluar bulan ini.</Empty>}
+          {expenses?.length === 0 && <Empty icon={<Wallet size={26} />}>Belum ada uang keluar bulan ini.</Empty>}
           <div className="list">
             {expenses?.map((e) => (
               <button key={e.id} className="card row between" onClick={() => setEditing(e)}>

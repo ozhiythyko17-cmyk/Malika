@@ -1,3 +1,4 @@
+import { Bookmark, Copy, Download, Eye, FolderOpen, Image as ImageIcon, Megaphone, Play, RefreshCw, Sparkles } from "lucide-react";
 import { useState } from "react";
 import type { DriveFile, Product } from "../../shared/types";
 import { ASPECT, PLATFORMS, STYLES, type StudioResult } from "../../shared/prompt";
@@ -6,7 +7,7 @@ import { useSession } from "../App";
 import Poster from "../components/Poster";
 import VideoMaker from "../components/VideoMaker";
 import type { AdDraft } from "../components/AdWizard";
-import { ApiImage, Chips, Empty, Field, useRun } from "../components/ui";
+import { Alert, ApiImage, Chips, Empty, Field, Spinner, useRun } from "../components/ui";
 
 type Source = "Dari prompt" | "Dari Google Drive";
 type ImageMode = "Poster dari foto asli" | "Foto dipercantik AI";
@@ -116,6 +117,7 @@ export default function Studio({ onAdvertise }: { onAdvertise?: (draft: AdDraft)
     <div className="stack">
       <Field label="Bahan konten" group>
         <Chips
+          segmented
           options={["Dari prompt", "Dari Google Drive"] as Source[]}
           value={source}
           onChange={(v) => {
@@ -128,27 +130,29 @@ export default function Studio({ onAdvertise }: { onAdvertise?: (draft: AdDraft)
       </Field>
 
       {fromDrive && !settings.driveFolderUrl && (
-        <div className="alert info">
+        <Alert>
           Belum ada folder Google Drive. {isOwner ? "Tempel link folder bahan foto/video di " : "Minta pemilik mengisi link folder di "}
           {isOwner ? <button className="link-btn" onClick={() => go("pengaturan")}>Pengaturan</button> : "Pengaturan"}.
-        </div>
+        </Alert>
       )}
       {fromDrive && settings.driveFolderUrl && (
         <div className="stack">
           <div className="row between">
             <span className="small muted">Pilih maksimal {MAX_MATERIALS} foto/video ({selected.length} dipilih)</span>
-            <button className="btn small" onClick={drive.reload}>🔄 Muat ulang</button>
+            <button className="btn small" onClick={drive.reload}>
+              <RefreshCw size={16} /> Muat ulang
+            </button>
           </div>
-          {drive.error && <div className="alert warn">{drive.error}</div>}
+          {drive.error && <Alert tone="warn">{drive.error}</Alert>}
           {!drive.data && !drive.error && <p className="muted small">Memuat bahan dari Google Drive…</p>}
-          {materialFiles?.length === 0 && <Empty icon="📁">Folder kosong. Unggah foto/video menu ke folder Drive, lalu muat ulang.</Empty>}
+          {materialFiles?.length === 0 && <Empty icon={<FolderOpen size={26} />}>Folder kosong. Unggah foto/video menu ke folder Drive, lalu muat ulang.</Empty>}
           <div className="material-grid">
             {materialFiles?.map((f) => {
               const n = selected.indexOf(f.id);
               return (
                 <button key={f.id} className={n >= 0 ? "material on" : "material"} onClick={() => toggleFile(f.id)} title={f.name}>
                   <ApiImage path={`/api/drive/thumb/${f.id}?w=300`} alt={f.name} />
-                  {f.kind === "video" && <span className="tag-video">▶ {f.durationSec ? `${f.durationSec}s` : "video"}</span>}
+                  {f.kind === "video" && <span className="tag-video"><Play size={10} fill="currentColor" /> {f.durationSec ? `${f.durationSec}s` : "video"}</span>}
                   {n >= 0 && <span className="tag-num">{n + 1}</span>}
                 </button>
               );
@@ -191,52 +195,60 @@ export default function Studio({ onAdvertise }: { onAdvertise?: (draft: AdDraft)
       </div>
 
       <button className="btn primary big" disabled={loading || !canGenerate} onClick={generate}>
-        {loading ? "⏳ AI sedang bekerja…" : "✨ Buat konten"}
+        {loading ? <><Spinner size={20} /> AI sedang bekerja…</> : <><Sparkles size={20} /> Buat konten</>}
       </button>
 
       {error && (
-        <div className="alert warn">
-          {error.message}
+        <Alert tone="warn">
+          <div>{error.message}</div>
           {error.status === 503 && (
             <>
               <div className="small">Sementara bisa pakai cara manual: salin perintah di bawah lalu tempel di aplikasi Claude.</div>
-              <button className="btn small" onClick={copyPrompt}>📋 Salin perintah AI</button>
+              <button className="btn small" onClick={copyPrompt}>
+                <Copy size={16} /> Salin perintah AI
+              </button>
             </>
           )}
-        </div>
+        </Alert>
       )}
 
       {result && (
         <div className="stack">
           {result.materialNotes.length > 0 && (
             <div className="card flat small">
-              <b>👀 Yang dilihat AI dari bahanmu</b>
+              <b className="section-title"><Eye size={17} /> Yang dilihat AI dari bahanmu</b>
               <ul>{result.materialNotes.map((n, i) => <li key={i}>{n}</li>)}</ul>
             </div>
           )}
 
           {wantImage && (
             <div className="card stack">
-              <b>🖼️ Gambar promo</b>
-              {imageLoading && <p className="muted">⏳ Sedang membuat gambar… (bisa 10–30 detik)</p>}
+              <b className="section-title"><ImageIcon size={18} /> Gambar promo</b>
+              {imageLoading && <p className="muted inline-icon"><Spinner size={16} /> Sedang membuat gambar… (bisa 10–30 detik)</p>}
               {imageError && (
-                <div className="alert warn">
-                  {imageError}
-                  <button className="btn small" onClick={() => makeImage(result, usedFiles)}>Coba lagi</button>
-                </div>
+                <Alert tone="warn">
+                  <div>{imageError}</div>
+                  <button className="btn small" onClick={() => makeImage(result, usedFiles)}>
+                    <RefreshCw size={16} /> Coba lagi
+                  </button>
+                </Alert>
               )}
               {image && (
                 <>
                   <ApiImage className="result-img" path={image.url} alt="Gambar promo buatan AI" />
                   <div className="row gap">
-                    <a className="btn small" href={image.url} download={`gambar-promo-${image.mediaId}.png`}>⬇️ Unduh gambar</a>
-                    <button className="btn small" onClick={() => makeImage(result, usedFiles)}>🔄 Buat ulang</button>
+                    <a className="btn small" href={image.url} download={`gambar-promo-${image.mediaId}.png`}>
+                      <Download size={16} /> Unduh gambar
+                    </a>
+                    <button className="btn small" onClick={() => makeImage(result, usedFiles)}>
+                      <RefreshCw size={16} /> Buat ulang
+                    </button>
                     {onAdvertise && (
                       <button
                         className="btn small"
                         onClick={() => onAdvertise({ image: { mediaId: image.mediaId }, previewPath: image.url, captions: result.captions, headline: result.headline })}
                       >
-                        📣 Iklankan gambar ini
+                        <Megaphone size={16} /> Iklankan gambar ini
                       </button>
                     )}
                   </div>
@@ -272,8 +284,12 @@ export default function Studio({ onAdvertise }: { onAdvertise?: (draft: AdDraft)
               <small className="muted">Caption {i + 1}</small>
               <pre>{text}</pre>
               <div className="row gap">
-                <button className="btn small" onClick={() => copy(text)}>📋 Salin</button>
-                <button className="btn small" onClick={() => save(text)}>⭐ Simpan</button>
+                <button className="btn small" onClick={() => copy(text)}>
+                  <Copy size={16} /> Salin
+                </button>
+                <button className="btn small" onClick={() => save(text)}>
+                  <Bookmark size={16} /> Simpan
+                </button>
               </div>
             </div>
           ))}
@@ -282,8 +298,12 @@ export default function Studio({ onAdvertise }: { onAdvertise?: (draft: AdDraft)
             <>
               <VideoMaker script={result.video} materials={usedFiles} aspectRatio={result.aspectRatio} musicFiles={musicFiles} />
               <div className="row gap">
-                <button className="btn small" onClick={() => copy(videoText(result.video!))}>📋 Salin naskah video</button>
-                <button className="btn small" onClick={() => save(videoText(result.video!))}>⭐ Simpan naskah</button>
+                <button className="btn small" onClick={() => copy(videoText(result.video!))}>
+                  <Copy size={16} /> Salin naskah video
+                </button>
+                <button className="btn small" onClick={() => save(videoText(result.video!))}>
+                  <Bookmark size={16} /> Simpan naskah
+                </button>
               </div>
             </>
           )}

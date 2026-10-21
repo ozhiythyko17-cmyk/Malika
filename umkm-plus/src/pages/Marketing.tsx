@@ -1,3 +1,4 @@
+import { Bookmark, Copy, Megaphone, MessageCircle, Users } from "lucide-react";
 import { useCallback, useState } from "react";
 import type { Content, Customer } from "../../shared/types";
 import Studio from "./Studio";
@@ -26,7 +27,7 @@ export default function Marketing() {
   return (
     <div className="stack">
       <h2>Marketing</h2>
-      <Chips options={tabs} value={tab} onChange={setTab} />
+      <Chips segmented options={tabs} value={tab} onChange={setTab} />
       {tab === "AI Konten" && <Studio onAdvertise={advertise} />}
       {tab === "Tersimpan" && <Tersimpan onAdvertise={advertise} />}
       {tab === "Pelanggan" && <Pelanggan />}
@@ -42,7 +43,7 @@ function copy(text: string) {
 function Tersimpan({ onAdvertise }: { onAdvertise?: (draft: AdDraft) => void }) {
   const { data: contents, error } = useApi<Content[]>("/contents");
   const [, run] = useRun();
-  if (contents?.length === 0) return <Empty icon="⭐">Belum ada konten tersimpan.</Empty>;
+  if (contents?.length === 0) return <Empty icon={<Bookmark size={26} />}>Belum ada konten tersimpan.</Empty>;
   return (
     <div className="list">
       <LoadError error={error} />
@@ -56,13 +57,15 @@ function Tersimpan({ onAdvertise }: { onAdvertise?: (draft: AdDraft) => void }) 
           )}
           <pre>{c.text}</pre>
           <div className="row gap">
-            <button className="btn small" onClick={() => copy(c.text)}>📋 Salin</button>
+            <button className="btn small" onClick={() => copy(c.text)}>
+              <Copy size={16} /> Salin
+            </button>
             {onAdvertise && c.mediaId && (
               <button
                 className="btn small"
                 onClick={() => onAdvertise({ image: { mediaId: c.mediaId! }, previewPath: `/api/media/${c.mediaId}`, captions: [c.text], headline: c.title })}
               >
-                📣 Iklankan
+                <Megaphone size={16} /> Iklankan
               </button>
             )}
             <button className="btn small ghost danger" onClick={() => confirm("Hapus konten ini?") && run(() => mutate("DELETE", `/contents/${c.id}`))}>
@@ -82,7 +85,7 @@ function Pelanggan() {
   const DAY = 86_400_000;
 
   if (customers?.length === 0) {
-    return <Empty icon="👥">Pelanggan muncul otomatis dari pesanan yang ada nomor WhatsApp-nya.</Empty>;
+    return <Empty icon={<Users size={26} />}>Pelanggan muncul otomatis dari pesanan yang ada nomor WhatsApp-nya.</Empty>;
   }
   const shown = customers?.filter((c) => !q || c.name.toLowerCase().includes(q.toLowerCase()) || c.wa.includes(q));
   const greeting = (c: Customer) =>
@@ -106,7 +109,7 @@ function Pelanggan() {
                 {c.orders}× order · total {rp(c.spent)} · terakhir {dateStr(c.lastOrder)}
               </div>
               <a className="btn small" href={waLink(c.wa, greeting(c))} target="_blank" rel="noreferrer">
-                💬 Chat WhatsApp
+                <MessageCircle size={16} /> Chat WhatsApp
               </a>
             </div>
           );

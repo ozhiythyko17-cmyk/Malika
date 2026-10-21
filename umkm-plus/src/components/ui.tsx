@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { CircleAlert, Info, LoaderCircle, Minus, Plus, X } from "lucide-react";
 import { useBlobUrl } from "../api";
 
 export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
@@ -15,7 +16,7 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
         <div className="sheet-head">
           <b>{title}</b>
           <button className="icon-btn" aria-label="Tutup" onClick={onClose}>
-            ✕
+            <X size={20} />
           </button>
         </div>
         <div className="sheet-body">{children}</div>
@@ -84,30 +85,55 @@ export function Stepper({ value, onChange, min = 0 }: { value: number; onChange:
   return (
     <div className="stepper">
       <button type="button" aria-label="Kurangi" onClick={() => onChange(Math.max(min, value - 1))}>
-        −
+        <Minus size={18} strokeWidth={2.4} />
       </button>
       <b>{value}</b>
       <button type="button" aria-label="Tambah" onClick={() => onChange(value + 1)}>
-        +
+        <Plus size={18} strokeWidth={2.4} />
       </button>
     </div>
   );
 }
 
-export function Empty({ icon, children }: { icon: string; children: ReactNode }) {
+/** Kotak pesan: biru untuk info, kuning untuk peringatan/error. */
+export function Alert({ tone = "info", className, children }: { tone?: "info" | "warn"; className?: string; children: ReactNode }) {
+  const Icon = tone === "warn" ? CircleAlert : Info;
+  return (
+    <div className={`alert ${tone}${className ? ` ${className}` : ""}`}>
+      <Icon size={18} />
+      <div className="alert-body">{children}</div>
+    </div>
+  );
+}
+
+/** Ikon berputar untuk proses yang sedang berjalan. */
+export function Spinner({ size = 18 }: { size?: number }) {
+  return <LoaderCircle size={size} className="spin" aria-hidden="true" />;
+}
+
+export function Empty({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
     <div className="empty">
-      <div>{icon}</div>
+      <div className="empty-icon">{icon}</div>
       <p>{children}</p>
     </div>
   );
 }
 
-export function Chips<T extends string>({ options, value, onChange }: { options: T[]; value: T; onChange: (v: T) => void }) {
+/** Pilihan satu-dari-beberapa. `segmented` = tab utama halaman (satu baris, lebar sama). */
+export function Chips<T extends string>({ options, value, onChange, segmented }: { options: T[]; value: T; onChange: (v: T) => void; segmented?: boolean }) {
   return (
-    <div className="chips">
+    <div className={segmented ? "chips segmented" : "chips"} role={segmented ? "tablist" : undefined}>
       {options.map((o) => (
-        <button type="button" key={o} className={o === value ? "chip on" : "chip"} onClick={() => onChange(o)}>
+        <button
+          type="button"
+          key={o}
+          className={o === value ? "chip on" : "chip"}
+          role={segmented ? "tab" : undefined}
+          aria-selected={segmented ? o === value : undefined}
+          aria-pressed={segmented ? undefined : o === value}
+          onClick={() => onChange(o)}
+        >
           {o}
         </button>
       ))}
@@ -133,7 +159,7 @@ export function useRun() {
 }
 
 export function LoadError({ error }: { error: string | null }) {
-  return error ? <div className="alert warn">{error}</div> : null;
+  return error ? <Alert tone="warn">{error}</Alert> : null;
 }
 
 /** <img> untuk gambar dari API (lihat useBlobUrl). */

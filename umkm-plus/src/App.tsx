@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { House, Megaphone, ReceiptText, Settings as SettingsIcon, UtensilsCrossed, Wallet, type LucideIcon } from "lucide-react";
 import { DEFAULT_SETTINGS, type Settings, type User } from "../shared/types";
 import { api, setUnauthorizedHandler, useApi } from "./api";
 import Login from "./pages/Login";
@@ -22,12 +23,12 @@ interface Session {
 const SessionContext = createContext<Session | null>(null);
 export const useSession = () => useContext(SessionContext)!;
 
-const NAV: { page: Page; icon: string; label: string; ownerOnly?: boolean }[] = [
-  { page: "beranda", icon: "🏠", label: "Beranda" },
-  { page: "pesanan", icon: "🧾", label: "Pesanan" },
-  { page: "produk", icon: "🍱", label: "Produk" },
-  { page: "keuangan", icon: "💰", label: "Keuangan", ownerOnly: true },
-  { page: "marketing", icon: "✨", label: "Marketing" },
+const NAV: { page: Page; icon: LucideIcon; label: string; ownerOnly?: boolean }[] = [
+  { page: "beranda", icon: House, label: "Beranda" },
+  { page: "pesanan", icon: ReceiptText, label: "Pesanan" },
+  { page: "produk", icon: UtensilsCrossed, label: "Produk" },
+  { page: "keuangan", icon: Wallet, label: "Keuangan", ownerOnly: true },
+  { page: "marketing", icon: Megaphone, label: "Marketing" },
 ];
 
 function readHash(): Page {
@@ -93,13 +94,18 @@ function Main({ user, onLogout }: { user: User; onLogout: () => void }) {
     <SessionContext.Provider value={{ user, isOwner, settings: settings ?? DEFAULT_SETTINGS, logout, go }}>
       <div className="app">
         <header className="topbar">
-          <div>
-            <small>UMKM Plus · {user.name}</small>
-            <b>{settings?.businessName ?? ""}</b>
+          <div className="topbar-inner">
+            <div className="brand">
+              <span className="brand-mark" aria-hidden="true">U+</span>
+              <div className="brand-text">
+                <b>{settings?.businessName ?? ""}</b>
+                <small>UMKM Plus · {user.name}</small>
+              </div>
+            </div>
+            <button className="icon-btn" aria-label="Pengaturan" onClick={() => go("pengaturan")}>
+              <SettingsIcon size={22} strokeWidth={1.8} />
+            </button>
           </div>
-          <button className="icon-btn" aria-label="Pengaturan" onClick={() => go("pengaturan")}>
-            ⚙️
-          </button>
         </header>
 
         <main className="content">
@@ -112,10 +118,12 @@ function Main({ user, onLogout }: { user: User; onLogout: () => void }) {
         </main>
 
         <nav className="tabbar">
-          {nav.map((n) => (
-            <button key={n.page} className={current === n.page ? "on" : ""} onClick={() => go(n.page)}>
-              <span>{n.icon}</span>
-              {n.label}
+          {nav.map(({ page: p, icon: Icon, label }) => (
+            <button key={p} className={current === p ? "on" : ""} aria-current={current === p ? "page" : undefined} onClick={() => go(p)}>
+              <span className="nav-icon">
+                <Icon size={21} strokeWidth={current === p ? 2.2 : 1.8} />
+              </span>
+              {label}
             </button>
           ))}
         </nav>
