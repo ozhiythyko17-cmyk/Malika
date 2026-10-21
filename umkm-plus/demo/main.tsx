@@ -6,7 +6,9 @@ import { useState } from "react";
 import "../src/styles.css";
 import "./demo.css";
 
-const DB_NAME = "dapur-bakar-demo";
+// Nama database dinaikkan setiap data contoh berubah, supaya pengunjung lama mendapat data contoh terbaru.
+const DB_NAME = "dapur-bakar-demo-2";
+const OLD_DB_NAMES = ["dapur-bakar-demo"];
 
 const g = globalThis as Record<string, unknown>;
 g.Buffer = Buffer;
@@ -56,6 +58,7 @@ async function boot() {
   root.render(<div className="center-screen muted">Menyiapkan demo Dapur Bakar…<br /><small>Memuat database (±10 detik pertama kali)</small></div>);
 
   const persistent = await canUseIndexedDb();
+  if (persistent) OLD_DB_NAMES.forEach((name) => indexedDB.deleteDatabase(`/pglite/${name}`));
   (g.process as { env: Record<string, string> }).env.PGLITE_DIR = persistent ? `idb://${DB_NAME}` : "memory://";
 
   // Berkas data PostgreSQL dikemas sebagai modul JS (lihat demo/make-pglite-data.mjs).
