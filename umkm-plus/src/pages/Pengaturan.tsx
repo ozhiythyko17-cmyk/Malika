@@ -30,13 +30,37 @@ export default function Pengaturan() {
   );
 }
 
+const COORD = /^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
+const coordText = (x: Settings) => (x.latitude != null && x.longitude != null ? `${x.latitude}, ${x.longitude}` : "");
+
 function ProfilUsaha() {
   const { settings } = useSession();
   const [s, setS] = useState<Settings>(settings);
+  const [coords, setCoords] = useState(coordText(settings));
   const [saved, setSaved] = useState(false);
   const [busy, run] = useRun();
 
-  useEffect(() => setS(settings), [settings]);
+  useEffect(() => {
+    setS(settings);
+    setCoords(coordText(settings));
+  }, [settings]);
+
+  const coordsValid = !coords.trim() || COORD.test(coords);
+  const changeCoords = (text: string) => {
+    setCoords(text);
+    setSaved(false);
+    const m = text.match(COORD);
+    if (!text.trim()) setS((x) => ({ ...x, latitude: null, longitude: null }));
+    else if (m) setS((x) => ({ ...x, latitude: Number(m[1]), longitude: Number(m[2]) }));
+  };
+  const useHere = () => {
+    if (!navigator.geolocation) return alert("HP ini tidak bisa membaca lokasi. Tempel koordinat dari Google Maps.");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => changeCoords(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`),
+      () => alert("Lokasi tidak bisa dibaca. Izinkan akses lokasi, atau tempel koordinat dari Google Maps."),
+      { enableHighAccuracy: true, timeout: 15_000 }
+    );
+  };
 
   const set = <K extends keyof Settings>(k: K, v: Settings[K]) => {
     setS({ ...s, [k]: v });
@@ -69,7 +93,7 @@ function ProfilUsaha() {
         <Field label="Tentang usaha" hint="Dipakai AI. Mis. 'Ayam & ikan bakar arang, bumbu rempah resep keluarga, sambal diulek tiap pagi'">
           <textarea rows={3} value={s.brandDescription} onChange={(e) => set("brandDescription", e.target.value)} />
         </Field>
-        <Field label="Gaya bahasa favorit">
+        <Field label="Gaya bahasa favorit" group>
           <Chips options={STYLES} value={s.brandVoice} onChange={(v) => set("brandVoice", v)} />
         </Field>
       </div>
@@ -82,6 +106,18 @@ function ProfilUsaha() {
         <Field label="Link folder">
           <input value={s.driveFolderUrl} onChange={(e) => set("driveFolderUrl", e.target.value)} placeholder="https://drive.google.com/drive/folders/…" />
         </Field>
+      </div>
+
+      <div className="card stack">
+        <b>📍 Lokasi usaha</b>
+        <p className="small muted">
+          Pusat target iklan Facebook & Instagram (orang di sekitar usaha). Di Google Maps, tekan lama titik dapurmu lalu salin angka koordinatnya, atau pakai lokasi HP saat berada di dapur.
+        </p>
+        <Field label="Koordinat (lintang, bujur)">
+          <input value={coords} inputMode="decimal" onChange={(e) => changeCoords(e.target.value)} placeholder="-6.2383, 106.9756" />
+        </Field>
+        {!coordsValid && <div className="small neg">Format belum benar. Contoh: -6.2383, 106.9756</div>}
+        <button className="btn small" onClick={useHere}>📍 Pakai lokasi HP sekarang</button>
       </div>
 
       <div className="card stack">
@@ -108,7 +144,7 @@ function ProfilUsaha() {
         </button>
       </div>
 
-      <button className="btn primary big" disabled={busy} onClick={save}>
+      <button className="btn primary big" disabled={busy || !coordsValid} onClick={save}>
         {saved ? "✓ Tersimpan" : "Simpan pengaturan"}
       </button>
     </>
@@ -167,7 +203,7 @@ function TambahAkun({ onClose }: { onClose: () => void }) {
       <Field label="Kata sandi" hint="Minimal 8 karakter. Berikan langsung ke orangnya.">
         <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="off" />
       </Field>
-      <Field label="Peran">
+      <Field label="Peran" group>
         <Chips options={["staf", "pemilik"] as Role[]} value={role} onChange={setRole} />
       </Field>
       <button className="btn primary" disabled={busy} onClick={save}>Simpan</button>

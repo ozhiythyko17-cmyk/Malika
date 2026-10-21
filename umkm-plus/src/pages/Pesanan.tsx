@@ -109,7 +109,7 @@ function OrderForm({ onClose }: { onClose: () => void }) {
         })}
       </div>
 
-      <Field label="Pesanan dari">
+      <Field label="Pesanan dari" group>
         <Chips options={settings.channels.map((c) => c.name)} value={channel} onChange={(c) => { setChannel(c); setFeeOverride(null); }} />
       </Field>
       <div className="grid2">
@@ -136,7 +136,7 @@ function OrderForm({ onClose }: { onClose: () => void }) {
           <MoneyInput value={platformFee} onChange={setFeeOverride} />
         </Field>
       )}
-      <Field label="Pembayaran">
+      <Field label="Pembayaran" group>
         <Chips options={PAYMENT_METHODS} value={payment} onChange={setPayment} />
       </Field>
       <label className="check">
@@ -226,7 +226,7 @@ function OrderDetail({ id, onClose }: { id: number; onClose: () => void }) {
         </tbody>
       </table>
 
-      <Field label="Status">
+      <Field label="Status" group>
         <Chips
           options={ORDER_STATUSES.map((s) => s.label)}
           value={ORDER_STATUSES.find((s) => s.value === o.status)!.label}

@@ -10,7 +10,16 @@ const DB_NAME = "dapur-bakar-demo";
 
 const g = globalThis as Record<string, unknown>;
 g.Buffer = Buffer;
-g.process = { env: { ANTHROPIC_API_KEY: "demo", GOOGLE_API_KEY: "demo", PGLITE_DIR: "memory://" } };
+g.process = {
+  env: {
+    ANTHROPIC_API_KEY: "demo",
+    GOOGLE_API_KEY: "demo",
+    META_ACCESS_TOKEN: "demo",
+    META_AD_ACCOUNT_ID: "act_demo",
+    META_PAGE_ID: "demo_page",
+    PGLITE_DIR: "memory://",
+  },
+};
 g.__UMKM_DEMO__ = true;
 
 // Dialog bawaan browser tidak tampil di halaman artifact: ganti dengan notifikasi kecil & selalu "ya".
@@ -54,9 +63,10 @@ async function boot() {
   const bytes = Uint8Array.from(atob(dataB64), (c) => c.charCodeAt(0));
   g.__PGLITE_OPTIONS__ = { fsBundle: new Blob([bytes]) };
 
-  const [{ handle }, { fakeGoogleFetch }, { seedDemo }] = await Promise.all([
+  const [{ handle }, { fakeGoogleFetch }, { fakeMetaFetch }, { seedDemo }] = await Promise.all([
     import("../server/app"),
     import("./fake-google"),
+    import("./fake-meta"),
     import("./seed"),
   ]);
 
@@ -67,7 +77,7 @@ async function boot() {
       const full = new URL(url, "https://demo.local");
       return handle(new Request(full, init), full.pathname.slice(5), full);
     }
-    return (await fakeGoogleFetch(url, init)) ?? realFetch(input, init);
+    return (await fakeGoogleFetch(url, init)) ?? (await fakeMetaFetch(url, init)) ?? realFetch(input, init);
   };
 
   try {
@@ -109,6 +119,7 @@ function DemoBar({ persistent }: { persistent: boolean }) {
   const reset = () => {
     try {
       localStorage.removeItem("umkm_session");
+      localStorage.removeItem("umkm-demo-meta");
     } catch {
       // abaikan
     }

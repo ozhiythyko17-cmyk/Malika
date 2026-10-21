@@ -16,6 +16,7 @@ function demoSwaps(): Plugin {
     async resolveId(source, importer, options) {
       if (source === "@anthropic-ai/sdk") return path.join(here, "demo/anthropic-stub.ts");
       if (source === "postgres") return path.join(here, "demo/empty.ts");
+      if (source === "node:crypto") return path.join(here, "demo/crypto-stub.ts");
       const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
       return resolved && swaps[resolved.id] ? swaps[resolved.id] : null;
     },

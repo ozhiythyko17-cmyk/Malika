@@ -112,9 +112,51 @@ export interface AdCampaign {
   orders: number;
   revenue: number;
   note: string;
+  /** Terisi bila iklan dipasang dari aplikasi ke Meta (Facebook & Instagram). */
+  meta: MetaAdInfo | null;
 }
 
-export type AdInput = Omit<AdCampaign, "id">;
+export type AdInput = Omit<AdCampaign, "id" | "meta">;
+
+export type MetaObjective = "whatsapp" | "link";
+
+/** Status iklan Meta dalam bahasa sederhana. */
+export type MetaAdState = "review" | "active" | "paused" | "rejected" | "billing" | "issue" | "ended";
+
+export interface MetaAdInfo {
+  campaignId: string;
+  objective: MetaObjective;
+  state: MetaAdState;
+  dailyBudget: number;
+  clicks: number;
+  autopilot: boolean;
+  autopilotLimit: number; // jeda otomatis bila biaya mencapai angka ini tanpa satu pun hasil
+  syncedAt: number | null;
+  notice: string; // pesan terakhir: alasan ditolak, dijeda otomatis, dll.
+}
+
+export interface MetaStatus {
+  connected: boolean;
+  missing: string[]; // pengaturan server yang belum diisi
+  account?: { id: string; name: string; currency: string; active: boolean; statusText: string };
+  page?: { id: string; name: string };
+  error?: string;
+}
+
+export interface MetaLaunchInput {
+  objective: MetaObjective;
+  link: string; // untuk objective "link"
+  image: { mediaId: number } | { driveFileId: string } | { dataUrl: string };
+  primaryText: string;
+  headline: string;
+  radiusKm: number;
+  ageMin: number;
+  ageMax: number;
+  dailyBudget: number;
+  days: number;
+  autopilot: boolean;
+  autopilotLimit: number;
+}
 
 export interface Channel {
   name: string;
@@ -130,6 +172,8 @@ export interface Settings {
   brandVoice: string;
   channels: Channel[];
   driveFolderUrl: string; // folder Google Drive berisi foto/video bahan konten
+  latitude: number | null; // lokasi usaha, pusat target iklan
+  longitude: number | null;
 }
 
 export interface Customer {
@@ -195,6 +239,8 @@ export const DEFAULT_SETTINGS: Settings = {
   brandDescription: "",
   brandVoice: "Santai",
   driveFolderUrl: "",
+  latitude: null,
+  longitude: null,
   channels: [
     { name: "WhatsApp", feePct: 0 },
     { name: "Instagram", feePct: 0 },

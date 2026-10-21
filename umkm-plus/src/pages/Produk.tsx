@@ -92,7 +92,7 @@ function ProductForm({ product, onClose }: { product: ProductInput & { id?: numb
 
   return (
     <Sheet title={p.id ? "Ubah produk" : "Produk baru"} onClose={onClose}>
-      <Field label="Ikon">
+      <Field label="Ikon" group>
         <div className="emoji-pick">
           {EMOJIS.map((e) => (
             <button type="button" key={e} className={e === p.emoji ? "on" : ""} onClick={() => set("emoji", e)}>

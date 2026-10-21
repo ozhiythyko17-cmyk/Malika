@@ -5,6 +5,7 @@ import { api, ApiError, mutate, useApi } from "../api";
 import { useSession } from "../App";
 import Poster from "../components/Poster";
 import VideoMaker from "../components/VideoMaker";
+import type { AdDraft } from "../components/AdWizard";
 import { ApiImage, Chips, Empty, Field, useRun } from "../components/ui";
 
 type Source = "Dari prompt" | "Dari Google Drive";
@@ -16,7 +17,7 @@ function copy(text: string) {
   navigator.clipboard.writeText(text).then(() => alert("Tersalin! Tinggal tempel di Instagram/TikTok/WA."));
 }
 
-export default function Studio() {
+export default function Studio({ onAdvertise }: { onAdvertise?: (draft: AdDraft) => void }) {
   const { settings, isOwner, go } = useSession();
   const { data: allProducts } = useApi<Product[]>("/products");
   const products = allProducts?.filter((p) => p.active) ?? [];
@@ -101,6 +102,11 @@ export default function Studio() {
       alert(image ? "Caption + gambar disimpan di tab Tersimpan." : "Disimpan di tab Tersimpan.");
     });
 
+  const advertisePoster =
+    onAdvertise && result
+      ? (dataUrl: string) => onAdvertise({ image: { dataUrl }, previewPath: dataUrl, captions: result.captions, headline: result.headline })
+      : undefined;
+
   const canGenerate = fromDrive ? selected.length > 0 : brief.trim() !== "" || productId !== null;
   const footer = [settings.businessName, settings.businessWa && `WA ${settings.businessWa}`].filter(Boolean).join(" · ");
   const aspect = ASPECT[platform] ?? "1:1";
@@ -108,7 +114,7 @@ export default function Studio() {
 
   return (
     <div className="stack">
-      <Field label="Bahan konten">
+      <Field label="Bahan konten" group>
         <Chips
           options={["Dari prompt", "Dari Google Drive"] as Source[]}
           value={source}
@@ -162,10 +168,10 @@ export default function Studio() {
           ))}
         </select>
       </Field>
-      <Field label="Untuk">
+      <Field label="Untuk" group>
         <Chips options={PLATFORMS} value={platform} onChange={setPlatform} />
       </Field>
-      <Field label="Gaya bahasa">
+      <Field label="Gaya bahasa" group>
         <Chips options={STYLES} value={style} onChange={setStyle} />
       </Field>
 
@@ -225,11 +231,26 @@ export default function Studio() {
                   <div className="row gap">
                     <a className="btn small" href={image.url} download={`gambar-promo-${image.mediaId}.png`}>⬇️ Unduh gambar</a>
                     <button className="btn small" onClick={() => makeImage(result, usedFiles)}>🔄 Buat ulang</button>
+                    {onAdvertise && (
+                      <button
+                        className="btn small"
+                        onClick={() => onAdvertise({ image: { mediaId: image.mediaId }, previewPath: image.url, captions: result.captions, headline: result.headline })}
+                      >
+                        📣 Iklankan gambar ini
+                      </button>
+                    )}
                   </div>
                   {!fromDrive && <p className="small muted">Ini ilustrasi buatan AI. Untuk foto menu, sebaiknya pakai foto asli agar pembeli tidak kecewa.</p>}
                   <details>
                     <summary className="small">Tambahkan judul & nama usaha (poster)</summary>
-                    <Poster imageUrl={image.url} aspectRatio={result.aspectRatio} headline={result.headline} subheadline={result.subheadline} footer={footer} />
+                    <Poster
+                      imageUrl={image.url}
+                      aspectRatio={result.aspectRatio}
+                      headline={result.headline}
+                      subheadline={result.subheadline}
+                      footer={footer}
+                      onAdvertise={advertisePoster}
+                    />
                   </details>
                 </>
               )}
@@ -240,6 +261,7 @@ export default function Studio() {
                   headline={result.headline}
                   subheadline={result.subheadline}
                   footer={footer}
+                  onAdvertise={advertisePoster}
                 />
               )}
             </div>

@@ -162,6 +162,19 @@ const SCHEMA = [
     revenue int not null default 0,
     note text not null default ''
   )`,
+  // Iklan yang dipasang dari aplikasi ke Meta (Facebook & Instagram).
+  `alter table ad_campaigns
+     add column if not exists meta_campaign_id text,
+     add column if not exists meta_adset_id text,
+     add column if not exists meta_ad_id text,
+     add column if not exists meta_objective text,
+     add column if not exists meta_state text not null default '',
+     add column if not exists meta_notice text not null default '',
+     add column if not exists daily_budget int,
+     add column if not exists clicks int not null default 0,
+     add column if not exists autopilot boolean not null default false,
+     add column if not exists autopilot_limit int not null default 0,
+     add column if not exists synced_at timestamptz`,
 ];
 
 /** Ekspresi SQL: kolom timestamptz -> milidetik (angka). */

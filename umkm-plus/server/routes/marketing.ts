@@ -30,8 +30,12 @@ export async function deleteContent(ctx: Ctx) {
 
 // ---- Catatan iklan ----
 
-const AD_COLUMNS = `id, name, platform, ${ms("start_date")} as "startDate", ${ms("end_date")} as "endDate",
-  spend, reach, chats, orders, revenue, note`;
+export const AD_COLUMNS = `id, name, platform, ${ms("start_date")} as "startDate", ${ms("end_date")} as "endDate",
+  spend, reach, chats, orders, revenue, note,
+  case when meta_campaign_id is null then null else json_build_object(
+    'campaignId', meta_campaign_id, 'objective', meta_objective, 'state', meta_state, 'dailyBudget', daily_budget,
+    'clicks', clicks, 'autopilot', autopilot, 'autopilotLimit', autopilot_limit,
+    'syncedAt', ${ms("synced_at")}, 'notice', meta_notice) end as meta`;
 
 function parseAd(b: Record<string, unknown>): AdInput {
   const big = { max: 1_000_000_000 };
@@ -73,6 +77,16 @@ export async function updateAd(ctx: Ctx) {
   const id = idParam(ctx);
   const a = parseAd(await ctx.body());
   const { query } = await getDb();
+  const [existing] = await query<{ meta_campaign_id: string | null }>("select meta_campaign_id from ad_campaigns where id = $1", [id]);
+  if (!existing) throw new HttpError(404, "Catatan iklan tidak ditemukan.");
+  if (existing.meta_campaign_id) {
+    // Biaya, jangkauan, chat, dan tanggal iklan Meta diisi otomatis dari Meta; yang dicatat manual hanya hasil penjualan.
+    const [row] = await query(
+      `update ad_campaigns set name = $1, orders = $2, revenue = $3, note = $4 where id = $5 returning ${AD_COLUMNS}`,
+      [a.name, a.orders, a.revenue, a.note, id]
+    );
+    return json(row);
+  }
   const [row] = await query(
     `update ad_campaigns set name = $1, platform = $2, start_date = ${ts("$3")}, end_date = ${ts("$4")}, spend = $5,
      reach = $6, chats = $7, orders = $8, revenue = $9, note = $10 where id = $11 returning ${AD_COLUMNS}`,

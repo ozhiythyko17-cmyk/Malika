@@ -8,6 +8,8 @@ interface Props {
   headline: string;
   subheadline: string;
   footer: string;
+  /** Bila diisi, muncul tombol untuk langsung mengiklankan poster (gambar JPG dalam data URL). */
+  onAdvertise?: (dataUrl: string) => void;
 }
 
 const SIZE: Record<string, [number, number]> = { "1:1": [1080, 1080], "9:16": [1080, 1920] };
@@ -111,6 +113,11 @@ export default function Poster(props: Props) {
         <input value={subheadline} onChange={(e) => setSubheadline(e.target.value)} />
       </Field>
       <button className="btn" disabled={!img} onClick={download}>⬇️ Unduh poster</button>
+      {props.onAdvertise && (
+        <button className="btn" disabled={!img} onClick={() => canvas.current && props.onAdvertise!(canvas.current.toDataURL("image/jpeg", 0.9))}>
+          📣 Iklankan poster ini
+        </button>
+      )}
     </div>
   );
 }

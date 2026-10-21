@@ -155,7 +155,7 @@ function ExpenseForm({ expense, onClose }: { expense: ExpenseInput & { id?: numb
       <Field label="Jumlah">
         <MoneyInput value={e.amount} onChange={(amount) => setE({ ...e, amount })} />
       </Field>
-      <Field label="Kategori">
+      <Field label="Kategori" group>
         <Chips options={EXPENSE_CATEGORIES} value={e.category} onChange={(category) => setE({ ...e, category })} />
       </Field>
       <Field label="Tanggal">

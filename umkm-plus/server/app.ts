@@ -6,6 +6,7 @@ import { HttpError, json, readBody, type Ctx } from "./http.js";
 import * as auth from "./routes/auth.js";
 import * as finance from "./routes/finance.js";
 import * as marketing from "./routes/marketing.js";
+import * as metaAds from "./routes/metaAds.js";
 import * as orders from "./routes/orders.js";
 import * as products from "./routes/products.js";
 import * as settings from "./routes/settings.js";
@@ -60,6 +61,13 @@ const routes: [method: string, path: string, access: Access, handler: Handler][]
   ["PUT", "/ads/:id", "pemilik", marketing.updateAd],
   ["DELETE", "/ads/:id", "pemilik", marketing.deleteAd],
 
+  ["GET", "/meta/status", "pemilik", metaAds.status],
+  ["POST", "/meta/campaigns", "pemilik", metaAds.launch],
+  ["POST", "/meta/sync", "pemilik", metaAds.sync],
+  ["POST", "/meta/campaigns/:id/running", "pemilik", metaAds.setRunning],
+  ["POST", "/meta/campaigns/:id/budget", "pemilik", metaAds.setBudget],
+  ["POST", "/meta/campaigns/:id/autopilot", "pemilik", metaAds.setAutopilot],
+
   ["GET", "/backup", "pemilik", backup],
 ];
 
@@ -86,6 +94,7 @@ export async function handle(req: Request, path: string, url = new URL(req.url))
     if (path === "/auth/setup" && method === "POST") return await auth.setup(req);
     if (path === "/auth/login" && method === "POST") return await auth.login(req);
     if (path === "/auth/logout" && method === "POST") return auth.logout(req);
+    if (path === "/cron/meta-sync" && method === "GET") return await metaAds.cron(req);
     if (path === "/health" && method === "GET") {
       await getDb();
       return json({ ok: true });

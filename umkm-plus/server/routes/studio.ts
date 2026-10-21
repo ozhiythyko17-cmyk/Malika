@@ -15,7 +15,7 @@ const MAX_MATERIALS = 4;
 // Daftar file disimpan sebentar supaya unduhan potongan video tidak selalu memanggil Drive API.
 let cache: { folderId: string; at: number; files: DriveFile[] } | null = null;
 
-async function folderFiles(fresh = true): Promise<DriveFile[]> {
+export async function folderFiles(fresh = true): Promise<DriveFile[]> {
   const s = await loadSettings();
   const folderId = parseFolderId(s.driveFolderUrl);
   if (!folderId) throw new HttpError(400, "Link folder Google Drive belum diisi di Pengaturan.");

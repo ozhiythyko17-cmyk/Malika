@@ -11,6 +11,12 @@ export async function loadSettings(): Promise<Settings> {
 
 export const get = async () => json(await loadSettings());
 
+function coordinate(v: unknown, limit: number, field: string): number | null {
+  if (v == null || v === "") return null;
+  if (typeof v !== "number" || !Number.isFinite(v) || Math.abs(v) > limit) throw new HttpError(400, `${field} lokasi tidak valid.`);
+  return Math.round(v * 1e6) / 1e6;
+}
+
 export async function save(ctx: Ctx) {
   const b = await ctx.body();
   if (!Array.isArray(b.channels) || b.channels.length > 20) throw new HttpError(400, "Daftar saluran tidak valid.");
@@ -22,11 +28,14 @@ export async function save(ctx: Ctx) {
     brandDescription: str(b.brandDescription, "Tentang usaha", { max: 600 }),
     brandVoice: str(b.brandVoice, "Gaya bahasa", { max: 30 }) || "Santai",
     driveFolderUrl: str(b.driveFolderUrl, "Link folder Google Drive", { max: 300 }),
+    latitude: coordinate(b.latitude, 90, "Lintang"),
+    longitude: coordinate(b.longitude, 180, "Bujur"),
     channels: (b.channels as Record<string, unknown>[])
       .map((c) => ({ name: str(c?.name, "Nama saluran", { max: 40 }), feePct: int(c?.feePct, "Potongan saluran", { max: 100 }) }))
       .filter((c) => c.name),
   };
   if (!settings.channels.length) throw new HttpError(400, "Minimal harus ada satu saluran penjualan.");
+  if ((settings.latitude == null) !== (settings.longitude == null)) throw new HttpError(400, "Isi lintang dan bujur lokasi sekaligus.");
   if (settings.driveFolderUrl && !parseFolderId(settings.driveFolderUrl)) {
     throw new HttpError(400, "Link folder Google Drive tidak dikenali. Salin link folder dari tombol Bagikan.");
   }

@@ -24,13 +24,24 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   );
 }
 
-export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <label className="field">
+/**
+ * Label + isian. Untuk kelompok pilihan berisi tombol (Chips, galeri), pakai `group`: elemen <label>
+ * meneruskan klik ke tombol pertama di dalamnya bila tombol yang ditekan hilang setelah diklik.
+ */
+export function Field({ label, hint, group, children }: { label: string; hint?: string; group?: boolean; children: ReactNode }) {
+  const content = (
+    <>
       <span>{label}</span>
       {children}
       {hint && <small>{hint}</small>}
-    </label>
+    </>
+  );
+  return group ? (
+    <div className="field" role="group" aria-label={label}>
+      {content}
+    </div>
+  ) : (
+    <label className="field">{content}</label>
   );
 }
 

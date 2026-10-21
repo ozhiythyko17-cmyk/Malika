@@ -11,7 +11,7 @@ Aplikasi web lengkap (frontend + backend + database) untuk menjalankan usaha kul
 | 🧾 Pesanan | Pesanan dari WhatsApp/IG/GoFood/GrabFood/ShopeeFood, potongan aplikasi otomatis, ongkir, diskon, status (baru → selesai), tanda belum bayar, kirim struk ke WhatsApp pelanggan |
 | 🍱 Produk | Menu dengan harga jual & modal per porsi (HPP), persentase untung, stok opsional + riwayat stok |
 | 💰 Keuangan | Uang keluar, laporan untung-rugi bulanan (omzet − HPP − potongan aplikasi − biaya − iklan), omzet per saluran, unduh CSV/Excel |
-| ✨ Marketing | **Studio Konten AI** (lihat di bawah), konten tersimpan, daftar pelanggan otomatis (setia / lama tidak order) + tombol chat WA, catatan iklan dengan rapor BAGUS / CUKUP / PERLU DIPERBAIKI |
+| ✨ Marketing | **Studio Konten AI** (lihat di bawah), **iklan otomatis di Meta Ads**, konten tersimpan, daftar pelanggan otomatis (setia / lama tidak order) + tombol chat WA, catatan iklan dengan rapor BAGUS / CUKUP / PERLU DIPERBAIKI |
 | ⚙️ Pengaturan | Profil usaha, saluran & persen potongan, akun staf, ganti kata sandi, unduh cadangan data |
 
 ## Studio Konten AI
@@ -34,6 +34,28 @@ Dua cara membuat konten:
   - File video Drive diambil lewat server per potongan 4 MB (batas Vercel), maksimal ±160 MB.
 - Folder Drive dibagikan "Siapa saja yang memiliki link" (hanya-lihat). Server hanya memakai file yang ada di folder itu.
 
+## Iklan otomatis di Meta Ads (Facebook & Instagram)
+
+Menu **Marketing → Iklan** (khusus pemilik):
+
+- **Pasang iklan langsung dari aplikasi** lewat 5 langkah: tujuan (💬 chat WhatsApp atau 🔗 buka link, mis. toko GoFood), gambar (gambar AI, poster, foto Drive, atau foto dari HP), teks iklan (bisa pilih dari caption AI), target (radius 2–25 km dari lokasi usaha, umur), anggaran harian & lama iklan. Tombol **📣 Iklankan** juga ada di Studio Konten dan konten tersimpan.
+- **Pemantauan otomatis**: biaya, jangkauan, chat WhatsApp / klik, biaya per chat, status (ditinjau, berjalan, dijeda, ditolak + alasannya, perlu pembayaran, selesai) diambil dari Meta setiap tab Iklan dibuka. Pesanan & penjualan dari iklan dicatat manual untuk menghitung untung.
+- **Kendali**: jeda / lanjutkan, ubah anggaran harian (mis. +20%/+50%).
+- **🤖 Autopilot hemat**: bila biaya sudah mencapai batas (bawaan = anggaran 1 hari) tanpa satu pun chat/klik, iklan dijeda otomatis. Dicek setiap tab Iklan dibuka dan sekali sehari lewat Vercel Cron (08.00 WIB).
+- Pengaman: kampanye dibuat dalam keadaan dijeda dan baru diaktifkan setelah semua bagiannya berhasil; bila gagal di tengah jalan, kampanye dihapus. Iklan berhenti sendiri di akhir periode. Biaya maksimal = anggaran harian × jumlah hari, ditampilkan sebelum memasang.
+- Hanya akun iklan bermata uang **Rupiah (IDR)**. Iklan video & sinkron pesanan GoFood/GrabFood/ShopeeFood belum ada.
+
+### Cara menghubungkan Meta (sekali saja)
+
+1. Siapkan **Meta Business Suite / Business Manager** yang memiliki: Page Facebook usaha, akun iklan (mata uang IDR, sudah ada metode pembayaran), dan — untuk iklan chat WhatsApp — Page yang sudah **terhubung ke nomor WhatsApp Business** (Page → Pengaturan → WhatsApp).
+2. Buka https://developers.facebook.com → *Buat Aplikasi* (jenis Bisnis) → tambahkan produk **Marketing API**, hubungkan ke Business Manager tadi.
+3. Di Business Manager → *Pengaturan Bisnis → Pengguna Sistem* → buat pengguna sistem (Admin) → *Tetapkan Aset*: akun iklan (kelola kampanye) dan Page → *Buat Token* untuk aplikasi tadi dengan izin `ads_management`, `ads_read`, `business_management`, `pages_read_engagement`, `pages_manage_ads`, `pages_show_list`. Salin token (pilih masa berlaku "Tidak pernah").
+4. Catat **ID akun iklan** (angka di Ads Manager, mis. `act_1234567890` atau `1234567890`) dan **ID Page** (Page → Tentang → ID Page).
+5. Di Vercel → *Settings → Environment Variables*: `META_ACCESS_TOKEN`, `META_AD_ACCOUNT_ID`, `META_PAGE_ID`. Opsional: `META_INSTAGRAM_USER_ID`, `META_APP_SECRET` (dari Pengaturan Aplikasi → Dasar), `META_GRAPH_VERSION` (bawaan `v25.0`), `CRON_SECRET` (teks acak, untuk autopilot harian). Lalu *Redeploy*.
+6. Di aplikasi: **Pengaturan → Lokasi usaha** (koordinat dari Google Maps atau "Pakai lokasi HP sekarang"), lalu buka **Marketing → Iklan** — harus muncul "✅ Terhubung ke akun iklan …".
+
+> Integrasi ini dibuat mengikuti dokumentasi Marketing API (Click-to-WhatsApp, `targeting_automation`, `instagram_user_id`, anggaran IDR offset 1) dan diuji dengan tiruan API, **belum dengan akun iklan sungguhan**. Pasang iklan pertama dengan anggaran kecil (mis. Rp20.000/hari) dan cek di Meta Ads Manager bahwa pengaturannya sesuai.
+
 ## Arsitektur
 
 ```
@@ -43,7 +65,8 @@ HP / laptop (browser, bisa dipasang seperti aplikasi)
 /api/*  ── Vercel Function (api/app.ts) ── router & logika bisnis (server/)
    │                                   ├── Claude API (caption & naskah)
    │                                   ├── Gemini API (gambar)
-   │                                   └── Google Drive API (bahan foto/video)
+   │                                   ├── Google Drive API (bahan foto/video)
+   │                                   └── Meta Marketing API (iklan FB & IG)
    ▼
 PostgreSQL (Neon lewat Vercel, gratis untuk skala kecil)
 ```
@@ -67,14 +90,14 @@ Tanpa `ANTHROPIC_API_KEY` semua fitur tetap jalan; tombol AI menawarkan "Salin p
 
 ## Versi demo (tanpa server)
 
-`npm run build:demo` membuat `dist-demo/`: aplikasi yang sama, tapi server (`server/`) dijalankan di dalam browser dengan PostgreSQL WASM (PGlite), data contoh Dapur Bakar, serta Google Drive/Gemini/Claude tiruan (lihat `demo/`). Dipakai untuk mencoba aplikasi sebelum dipasang online. Akun demo: `dapurbakar` / `demo1234` (pemilik), `sari` / `demo1234` (staf).
+`npm run build:demo` membuat `dist-demo/`: aplikasi yang sama, tapi server (`server/`) dijalankan di dalam browser dengan PostgreSQL WASM (PGlite), data contoh Dapur Bakar, serta Google Drive/Gemini/Claude/Meta Ads tiruan (lihat `demo/`; di demo waktu iklan dipercepat: 1 menit = 2 jam). Dipakai untuk mencoba aplikasi sebelum dipasang online. Akun demo: `dapurbakar` / `demo1234` (pemilik), `sari` / `demo1234` (staf).
 
 ## Untuk pengembang
 
 ```bash
 npm install
 npm run dev     # http://localhost:5173 — API ikut jalan, database lokal otomatis (PGlite di .data/)
-npm test        # 16 tes API end-to-end (PostgreSQL di memori; Google & Claude ditiru)
+npm test        # 29 tes API end-to-end (PostgreSQL di memori; Google, Claude & Meta ditiru)
 TEST_DATABASE_URL=postgres://... npm test   # tes ke PostgreSQL sungguhan (database kosong)
 npm run build   # cek tipe + build frontend ke dist/
 ```
@@ -82,7 +105,7 @@ npm run build   # cek tipe + build frontend ke dist/
 | Folder | Isi |
 |---|---|
 | `src/` | Frontend React: `App.tsx` (login, navigasi), `pages/*`, `api.ts` (klien API) |
-| `server/` | Backend: `app.ts` (router + hak akses), `routes/*` (pesanan, produk, keuangan, marketing, studio, akun), `google.ts` (Drive & Gemini), `db.ts` (koneksi & skema), `auth.ts` |
+| `server/` | Backend: `app.ts` (router + hak akses), `routes/*` (pesanan, produk, keuangan, marketing, studio, iklan Meta, akun), `google.ts` (Drive & Gemini), `meta.ts` (Meta Marketing API), `db.ts` (koneksi & skema), `auth.ts` |
 | `shared/` | Tipe data & prompt AI yang dipakai frontend dan backend |
 | `api/app.ts` | Pintu masuk Vercel Function (semua `/api/*` diteruskan lewat `vercel.json`) |
 | `tests/` | Tes API |
