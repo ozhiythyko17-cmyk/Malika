@@ -212,7 +212,7 @@ function MetaAdCard({ ad: a, avgMargin, onRecord }: { ad: AdCampaign; avgMargin:
         <div><small>{wa ? "Chat masuk" : "Klik"}</small><b>{num(results)}</b></div>
         <div><small>{wa ? "Biaya / chat" : "Biaya / klik"}</small><b>{results ? rp(a.spend / results) : "–"}</b></div>
         <div><small>Pesanan · Penjualan</small><b>{num(a.orders)} · {rp(a.revenue)}</b></div>
-        <div><small>Untung (perkiraan)</small><b className={profit >= 0 ? "pos" : "neg"}>{a.revenue ? rp(profit) : "–"}</b></div>
+        <div><small>Untung (perkiraan)</small><b className={!a.revenue ? "" : profit >= 0 ? "pos" : "neg"}>{a.revenue ? rp(profit) : "–"}</b></div>
       </div>
       <div className="row between small">
         <span className={v.cls}>{v.label}</span>
