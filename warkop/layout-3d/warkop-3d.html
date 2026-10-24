@@ -1,0 +1,498 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>img{max-width:100%}[hidden]{display:none!important}body{margin:0}</style></head><body>
+<title>Warkop Naik Kelas 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: one working stage (the 3D ruko) with its controls docked on top, zone legend below as tap targets that fly the camera. */
+:root{
+  --bg:#FBF8F4; --surface:#FFFFFF; --ink:#241A14; --muted:#76665A; --line:#E6DCCF;
+  --accent:#A8660F; --accent-soft:#F7EBD6; --brand:#5B3A29; --on-brand:#FFF7EC;
+  --stage:#EAE3D8;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#16110E; --surface:#201915; --ink:#F1E8DD; --muted:#A89888; --line:#3A2E26;
+  --accent:#E2A43B; --accent-soft:#3A2A16; --brand:#C89B74; --on-brand:#1B130E; --stage:#1E1814; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#16110E; --surface:#201915; --ink:#F1E8DD; --muted:#A89888; --line:#3A2E26;
+  --accent:#E2A43B; --accent-soft:#3A2A16; --brand:#C89B74; --on-brand:#1B130E; --stage:#1E1814; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 40px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:18px}
+header{display:grid;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,5vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);max-width:62ch}
+
+.stage{position:relative;height:clamp(380px,64vh,680px);border-radius:16px;overflow:hidden;background:var(--stage);border:1px solid var(--line);touch-action:none}
+canvas#c{display:block;width:100%;height:100%}
+.bar{position:absolute;left:10px;right:10px;top:10px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;pointer-events:none}
+.group{display:flex;flex-wrap:wrap;gap:4px;padding:4px;background:color-mix(in srgb, var(--surface) 88%, transparent);border:1px solid var(--line);border-radius:12px;pointer-events:auto;backdrop-filter:blur(6px)}
+.group button{font:600 13px/1 var(--body);color:var(--ink);background:transparent;border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
+.group button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.group button:focus-visible,.zone:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{position:absolute;left:10px;bottom:10px;font-size:12px;color:var(--muted);background:color-mix(in srgb, var(--surface) 85%, transparent);padding:5px 9px;border-radius:999px;border:1px solid var(--line);pointer-events:none}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;white-space:nowrap;font:600 12px/1.2 var(--body);color:#2A1D15;background:rgba(255,250,243,.92);border:1px solid rgba(91,58,41,.25);padding:4px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(40,25,15,.12)}
+.lbl::after{content:"";position:absolute;left:50%;bottom:-5px;width:8px;height:8px;margin-left:-4px;background:inherit;border-right:1px solid rgba(91,58,41,.25);border-bottom:1px solid rgba(91,58,41,.25);transform:rotate(45deg)}
+.lbl.ghost{background:rgba(242,183,5,.95);color:#2A1D15;border-color:rgba(0,0,0,.1)}
+.lbl.dim{background:transparent;border:0;box-shadow:none;color:#5B3A29;font-weight:700;padding:0}
+.lbl.dim::after{display:none}
+.night .lbl.dim{color:#F2D9B8}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px}
+
+.zones{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.zone{all:unset;box-sizing:border-box;display:grid;gap:3px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer;min-width:0}
+.zone:hover{border-color:var(--accent)}
+.zone b{font-family:var(--display);font-weight:600;font-size:16px}
+.zone span{font-size:13px;color:var(--muted)}
+.zone .tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.note{font-size:13px;color:var(--muted);margin:0;max-width:75ch}
+h2{font-family:var(--display);font-weight:600;font-size:20px;margin:6px 0 0}
+@media (max-width:560px){ .group button{padding:7px 8px;font-size:12px} .lbl{font-size:11px;padding:3px 6px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Denah 3D · Ruko ± 4 × 10 m + teras</div>
+    <h1>Warkop Naik Kelas</h1>
+    <p class="lede">Tata letak warkop Kuningan yang bersih, terang, dan nyaman untuk nongkrong. Putar dan perbesar untuk melihat setiap sudut, atau ketuk zona di bawah untuk langsung ke sana.</p>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="Model 3D interaktif tata letak warkop"></canvas>
+    <div class="labels" id="labels"></div>
+    <div class="loading" id="loading">Memuat model 3D…</div>
+    <div class="bar">
+      <div class="group" role="group" aria-label="Sudut pandang">
+        <button type="button" id="v-iso" data-view="iso" aria-pressed="true">Isometrik</button>
+        <button type="button" id="v-top" data-view="top" aria-pressed="false">Denah atas</button>
+        <button type="button" id="v-street" data-view="street" aria-pressed="false">Dari jalan</button>
+        <button type="button" id="v-inside" data-view="inside" aria-pressed="false">Di dalam</button>
+      </div>
+      <div class="group" role="group" aria-label="Tampilan">
+        <button type="button" id="t-night" aria-pressed="false">Malam</button>
+        <button type="button" id="t-ghost" aria-pressed="false">Tahap 2b</button>
+        <button type="button" id="t-label" aria-pressed="true">Label</button>
+      </div>
+    </div>
+    <div class="hint">Geser untuk memutar · cubit atau scroll untuk zoom</div>
+  </div>
+
+  <h2>Zona</h2>
+  <div class="zones" id="zones">
+    <button class="zone" type="button" id="z-teras" data-zone="teras"><span class="tag">Depan</span><b>Teras & parkir</b><span>2 meja, 8 kursi, area merokok · parkir 8–10 motor</span></button>
+    <button class="zone" type="button" id="z-bar" data-zone="bar"><span class="tag">Depan</span><b>Bar & kasir</b><span>Renteng sachet tertata, water boiler, HP POS, kulkas showcase</span></button>
+    <button class="zone" type="button" id="z-mabar" data-zone="mabar"><span class="tag">Dalam</span><b>Meja bar + colokan</b><span>4 stool menghadap dinding, untuk mabar & nugas</span></button>
+    <button class="zone" type="button" id="z-duduk" data-zone="duduk"><span class="tag">Dalam</span><b>Area duduk</b><span>2 meja, 8 kursi, kipas dinding, lampu putih hangat</span></button>
+    <button class="zone" type="button" id="z-foto" data-zone="foto"><span class="tag">Dalam</span><b>Spot foto neon</b><span>Tulisan tagline menyala di dinding kanan</span></button>
+    <button class="zone" type="button" id="z-dapur" data-zone="dapur"><span class="tag">Belakang</span><b>Dapur terbuka & toilet</b><span>Kompor 2 tungku, plat roti bakar, cuci piring, lemari tertutup</span></button>
+    <button class="zone" type="button" id="z-2b" data-zone="tahap2b"><span class="tag">Bulan 7–9</span><b>Tahap 2b</b><span>+3 meja, +12 kursi, dan kanopi teras (ditampilkan kuning transparan)</span></button>
+  </div>
+  <p class="note">Ukuran dan posisi adalah perkiraan sesuai bab 3 masterplan. Sesuaikan dengan ruko yang kamu sewa: letak pintu toilet, saluran air, dan stop kontak menentukan posisi dapur dan bar.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const canvas = document.getElementById('c');
+  const labelsEl = document.getElementById('labels');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!window.THREE || !THREE.OrbitControls) {
+    document.getElementById('loading').textContent = 'Model 3D gagal dimuat. Muat ulang halaman.';
+    return;
+  }
+
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 200);
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.maxPolarAngle = Math.PI/2 - 0.04;
+  controls.minDistance = 1.5; controls.maxDistance = 45;
+
+  // ---------- helpers ----------
+  const mat = (color, o={}) => new THREE.MeshStandardMaterial(Object.assign({color, roughness:0.8, metalness:0}, o));
+  const root = new THREE.Group(); scene.add(root);
+  const ghost = new THREE.Group(); ghost.visible = false; scene.add(ghost);
+  function box(w,h,d,m,x,y,z,parent=root){
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), m);
+    mesh.position.set(x, y+h/2, z); mesh.castShadow = true; mesh.receiveShadow = true;
+    parent.add(mesh); return mesh;
+  }
+  function cyl(rt,rb,h,m,x,y,z,parent=root,seg=20){
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg), m);
+    mesh.position.set(x, y+h/2, z); mesh.castShadow = true; mesh.receiveShadow = true;
+    parent.add(mesh); return mesh;
+  }
+  const texJobs = [];
+  function canvasTex(w,h,draw){
+    const c = document.createElement('canvas'); c.width=w; c.height=h;
+    const g = c.getContext('2d'); draw(g, w, h);
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 4;
+    texJobs.push(()=>{ g.clearRect(0,0,w,h); draw(g,w,h); t.needsUpdate = true; });
+    return t;
+  }
+
+  // ---------- palette (scene materials) ----------
+  const C = {
+    wall:'#F1E6D6', wallBrand:'#5B3A29', floor:'#E9E1D5', wood:'#9A6A45', woodDark:'#6E4A30',
+    chair:'#3B2A20', metal:'#9AA0A3', steel:'#C9CED1', concrete:'#B9B2A8', asphalt:'#3A3A3C',
+    ground:'#CFC7BA', yellow:'#F2B705'
+  };
+  const M = {
+    wall: mat(C.wall), wallBrand: mat(C.wallBrand), wood: mat(C.wood,{roughness:.6}), woodDark: mat(C.woodDark,{roughness:.6}),
+    chair: mat(C.chair,{roughness:.7}), metal: mat(C.metal,{metalness:.6,roughness:.35}), steel: mat(C.steel,{metalness:.7,roughness:.25}),
+    concrete: mat(C.concrete), asphalt: mat(C.asphalt,{roughness:.95}), ground: mat(C.ground), black: mat('#1E1E1E',{roughness:.5}),
+    white: mat('#F7F7F4',{roughness:.4}), glass: mat('#BFD9E0',{roughness:.1,metalness:.1,transparent:true,opacity:.45}),
+    neighbor: mat('#D8D0C4',{transparent:true,opacity:.07,depthWrite:false}),
+    ghost: new THREE.MeshStandardMaterial({color:C.yellow, transparent:true, opacity:.42, roughness:.6, depthWrite:false}),
+    ghostRoof: new THREE.MeshStandardMaterial({color:C.yellow, transparent:true, opacity:.18, roughness:.6, depthWrite:false, side:THREE.DoubleSide}),
+    led: new THREE.MeshStandardMaterial({color:'#FFF4DE', emissive:'#FFE7B8', emissiveIntensity:.6}),
+  };
+
+  // ---------- ground, road, parking ----------
+  const W = 4, D = 10, H = 3.6;            // ruko interior: x -2..2, z 0..-10
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60,60), M.ground);
+  ground.rotation.x = -Math.PI/2; ground.position.set(0,-0.02,-2); ground.receiveShadow = true; root.add(ground);
+  box(30,0.02,5.6,M.asphalt,0,-0.01,9.4);                         // jalan raya
+  for (let x=-13; x<=13; x+=3) box(1.4,0.025,0.12,M.white,x,0,9.4); // marka putus
+  box(8,0.04,3.1,M.concrete,0,0,4.95);                            // parkir motor
+
+  // floor tiles (interior + teras)
+  const tileTex = canvasTex(256,256,(g,w,h)=>{ g.fillStyle='#EDE6DB'; g.fillRect(0,0,w,h); g.strokeStyle='#D7CCBD'; g.lineWidth=4; g.strokeRect(0,0,w,h); });
+  tileTex.wrapS = tileTex.wrapT = THREE.RepeatWrapping; tileTex.repeat.set(W/0.5, D/0.5);
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W,D), new THREE.MeshStandardMaterial({map:tileTex, roughness:.7}));
+  floor.rotation.x = -Math.PI/2; floor.position.set(0,0.01,-D/2); floor.receiveShadow = true; root.add(floor);
+  const terTex = tileTex.clone(); terTex.needsUpdate = true; terTex.repeat.set(4.4/0.5, 3.4/0.5);
+  const teras = new THREE.Mesh(new THREE.PlaneGeometry(4.4,3.4), new THREE.MeshStandardMaterial({map:terTex, color:'#E2D6C4', roughness:.8}));
+  teras.rotation.x = -Math.PI/2; teras.position.set(0,0.03,1.7); teras.receiveShadow = true; root.add(teras);
+  box(4.4,0.04,0.12,M.woodDark,0,0,3.37);                          // tepi teras
+
+  // ---------- walls & facade ----------
+  const wallL = box(0.15,H,D,M.wall,-W/2-0.075,0,-D/2);
+  const wallRMat = mat(C.wall,{transparent:true,opacity:.14,depthWrite:false});
+  const wallR = box(0.15,H,D,wallRMat,W/2+0.075,0,-D/2); wallR.castShadow = false; wallR.userData.noHit = true;
+  box(W+0.3,H,0.15,M.wall,0,0,-D-0.075);                          // dinding belakang
+  box(W+0.3,0.15,0.6,M.wallBrand,0,0,-0.0);                       // ambang
+  // fasad: pilar + header bermerk
+  box(0.25,H,0.3,M.wallBrand,-W/2-0.05,0,0.05);
+  box(0.25,H,0.3,M.wallBrand, W/2+0.05,0,0.05);
+  box(W+0.35,0.7,0.3,M.wallBrand,0,H-0.7,0.05);
+  box(W-0.1,0.28,0.3,M.metal,0,H-1.0,-0.05);                      // gulungan rolling door
+  const signTex = canvasTex(1024,180,(g,w,h)=>{ g.fillStyle='#5B3A29'; g.fillRect(0,0,w,h);
+    g.fillStyle='#F2B705'; g.font='800 96px "Bricolage Grotesque", sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText('WARKOP NAIK KELAS', w/2, h/2+4); });
+  const signMat = new THREE.MeshStandardMaterial({map:signTex, emissive:'#ffffff', emissiveMap:signTex, emissiveIntensity:.15});
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(W+0.1,0.6), signMat); sign.position.set(0,H-0.35,0.21); root.add(sign);
+
+  // neighbors (konteks, transparan)
+  const edgeMat = new THREE.LineBasicMaterial({color:'#9C8F80', transparent:true, opacity:.45});
+  [-1,1].forEach(s=>{ const n = box(4,H+0.4,D+0.2,M.neighbor,s*(W/2+2.2),0,-D/2); n.castShadow=false; n.receiveShadow=false; n.userData.noHit=true;
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(n.geometry), edgeMat); e.position.copy(n.position); root.add(e); e.userData.noHit=true; });
+
+  // ---------- LED lights (ceiling panels) ----------
+  [-1.6,-4.4,-7.0].forEach(z=>{ const p = box(0.6,0.04,0.6,M.led,0,H-0.25,z); p.castShadow=false; });
+  box(0.6,0.04,0.6,M.led,0,H-0.25,-9.0).castShadow=false;
+  [-1.1,1.1].forEach(x=>{ const p=box(0.35,0.04,0.35,M.led,x,H-1.05,0.45); p.castShadow=false; });
+
+  // ---------- BAR & KASIR ----------
+  // counter parallel to left wall; barista stands between counter and wall
+  box(0.55,1.0,2.2,M.wallBrand,-1.05,0,-1.45);
+  box(0.65,0.05,2.3,M.wood,-1.05,1.0,-1.45);
+  box(0.55,0.85,1.8,M.woodDark,-1.8,0,-1.45);                     // back counter (rak bawah)
+  box(0.6,0.04,1.9,M.wood,-1.8,0.85,-1.45);
+  cyl(0.17,0.17,0.45,M.steel,-1.8,0.89,-0.85);                    // water boiler
+  cyl(0.04,0.04,0.12,M.black,-1.62,1.05,-0.85);
+  box(0.09,0.16,0.02,M.black,-0.95,1.05,-1.9).rotation.x=-0.5;    // HP POS
+  box(0.18,0.08,0.14,M.white,-0.95,1.05,-2.25);                   // printer
+  box(0.22,0.28,0.22,M.metal,-1.8,0.89,-1.95);                    // blender base
+  cyl(0.09,0.07,0.25,M.glass,-1.8,1.17,-1.95);
+  // kulkas showcase
+  box(0.62,1.85,0.62,M.white,-1.65,0,-2.95);
+  const fridgeGlass = box(0.5,1.5,0.02,M.glass,-1.65,0.2,-2.63); fridgeGlass.castShadow=false;
+  for (let i=0;i<4;i++){ box(0.46,0.03,0.5,M.metal,-1.65,0.4+i*0.35,-2.95); }
+  // renteng sachet di dinding kiri, belakang bar
+  const sachetColors = ['#C0392B','#1F6FB2','#E67E22','#F1C40F','#2E8B57','#8E44AD','#D35400','#2C3E50','#E84393','#16A085'];
+  for (let i=0;i<10;i++){
+    const z = -0.55 - i*0.17;
+    const m = mat(sachetColors[i],{roughness:.4});
+    for (let k=0;k<6;k++){ box(0.012,0.12,0.13,m,-1.99,1.95-k*0.13,z); }
+    box(0.02,0.02,0.15,M.metal,-1.99,2.0,z);
+  }
+  box(0.04,0.03,1.8,M.metal,-1.98,2.08,-1.33);
+  // menu board di atas renteng
+  const menuTex = canvasTex(1024,512,(g,w,h)=>{
+    g.fillStyle='#1F1915'; g.fillRect(0,0,w,h);
+    g.fillStyle='#F2B705'; g.font='800 64px "Bricolage Grotesque", sans-serif'; g.fillText('MENU', 48, 86);
+    const items=[['Kopi sachet','4K'],['Es teh jumbo','5K'],['Indomie telor','12K'],['Magelangan','15K'],['Burjo','7K']];
+    g.font='600 44px "Figtree", sans-serif';
+    items.forEach((it,i)=>{ g.fillStyle='#F3E9DC'; g.fillText(it[0],48,160+i*68); g.textAlign='right'; g.fillText(it[1], w-48, 160+i*68); g.textAlign='left'; });
+  });
+  const menu = new THREE.Mesh(new THREE.PlaneGeometry(1.7,0.85), new THREE.MeshStandardMaterial({map:menuTex, emissive:'#ffffff', emissiveMap:menuTex, emissiveIntensity:.2}));
+  menu.rotation.y = Math.PI/2; menu.position.set(-1.98,2.75,-1.4); root.add(menu);
+
+  // ---------- MEJA BAR DINDING + COLOKAN (kiri) ----------
+  box(0.45,0.05,2.7,M.wood,-1.78,1.0,-4.65);
+  [-3.4,-5.9].forEach(z=>box(0.05,1.0,0.05,M.black,-1.65,0,z));
+  [-3.75,-4.4,-5.05,-5.7].forEach(z=>{
+    cyl(0.18,0.18,0.05,M.chair,-1.25,0.72,z); cyl(0.03,0.03,0.72,M.black,-1.25,0,z); cyl(0.17,0.17,0.02,M.black,-1.25,0,z);
+    box(0.02,0.07,0.1,M.white,-1.99,1.12,z);                       // stop kontak
+    box(0.012,0.06,0.04,M.yellow,-1.99,1.12,z);
+  });
+
+  // ---------- AREA DUDUK (kanan) ----------
+  function chair(x,z,rot,m=M.chair,parent=root){
+    const g = new THREE.Group(); g.position.set(x,0,z); g.rotation.y = rot; parent.add(g);
+    box(0.42,0.04,0.42,m,0,0.44,0,g);
+    [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].forEach(([a,b])=>box(0.035,0.44,0.035,m===M.ghost?m:M.black,a,0,b,g));
+    box(0.42,0.42,0.04,m,0,0.48,-0.19,g);
+    return g;
+  }
+  function table(x,z,size=0.8,m=M.wood,parent=root,seats=4){
+    box(size,0.04,size,m,x,0.74,z,parent);
+    box(0.06,0.74,0.06,m===M.ghost?m:M.black,x,0,z,parent);
+    box(0.45,0.03,0.45,m===M.ghost?m:M.black,x,0,z,parent);
+    const o = size/2+0.27;
+    chair(x, z+o, Math.PI, m===M.wood?M.chair:m, parent);
+    chair(x, z-o, 0, m===M.wood?M.chair:m, parent);
+    if (seats===4){ chair(x+o, z, -Math.PI/2, m===M.wood?M.chair:m, parent); chair(x-o, z, Math.PI/2, m===M.wood?M.chair:m, parent); }
+  }
+  table(0.95,-3.7); table(0.95,-5.6);
+  // asbak & sendok-garpu kecil di meja
+  [[0.95,-3.7],[0.95,-5.6]].forEach(([x,z])=>cyl(0.05,0.06,0.04,M.metal,x+0.2,0.78,z+0.2));
+
+  // spot foto neon (dinding kanan)
+  const neonTex = canvasTex(1024,300,(g,w,h)=>{
+    g.fillStyle='rgba(0,0,0,0)'; g.clearRect(0,0,w,h);
+    g.shadowColor='#F2B705'; g.shadowBlur=26; g.fillStyle='#FFD34D'; g.textAlign='center'; g.textBaseline='middle';
+    g.font='800 92px "Bricolage Grotesque", sans-serif'; g.fillText('NONGKRONG', w/2, h*0.33); g.fillText('NAIK KELAS', w/2, h*0.72);
+  });
+  box(0.04,1.0,2.3,mat('#2A1D15'),1.97,1.45,-4.65);
+  const neonMat = new THREE.MeshStandardMaterial({map:neonTex, transparent:true, emissive:'#FFC93C', emissiveMap:neonTex, emissiveIntensity:.8});
+  const neon = new THREE.Mesh(new THREE.PlaneGeometry(2.2,0.66), neonMat); neon.rotation.y = -Math.PI/2; neon.position.set(1.94,1.95,-4.65); root.add(neon);
+
+  // kipas angin dinding
+  function fan(x,z,ry){ const g=new THREE.Group(); g.position.set(x,2.65,z); g.rotation.y=ry; root.add(g);
+    cyl(0.22,0.22,0.06,M.white,0,0,0,g).rotation.x=Math.PI/2; box(0.08,0.08,0.18,M.white,0,-0.04,-0.12,g); return g; }
+  fan(-1.85,-4.65,Math.PI/2); fan(1.85,-6.9,-Math.PI/2);
+
+  // wastafel pelanggan (kanan)
+  box(0.45,0.15,0.5,M.white,1.75,0.82,-7.65); box(0.1,0.82,0.1,M.white,1.85,0,-7.65);
+  const mirror = new THREE.Mesh(new THREE.PlaneGeometry(0.45,0.6), mat('#CFE3EA',{metalness:.6,roughness:.1}));
+  mirror.rotation.y=-Math.PI/2; mirror.position.set(1.98,1.55,-7.65); root.add(mirror);
+  // tempat sampah tertutup
+  cyl(0.16,0.14,0.5,M.wallBrand,1.75,0,-7.15); cyl(0.17,0.17,0.04,M.black,1.75,0.5,-7.15);
+  cyl(0.16,0.14,0.5,M.wallBrand,-0.5,0,-0.4);
+
+  // ---------- DAPUR TERBUKA (belakang) ----------
+  box(2.4,1.0,0.5,M.wallBrand,-0.8,0,-8.05);                      // counter pemisah / pass
+  box(2.5,0.05,0.6,M.wood,-0.8,1.0,-8.05);
+  box(2.6,0.88,0.6,M.white,-0.7,0,-9.62);                         // meja dapur belakang
+  box(2.7,0.05,0.65,M.steel,-0.7,0.88,-9.62);
+  box(0.7,0.12,0.45,M.black,-1.35,0.93,-9.6);                     // kompor 2 tungku
+  [-1.55,-1.15].forEach(x=>cyl(0.11,0.11,0.03,M.metal,x,1.05,-9.6));
+  cyl(0.16,0.12,0.12,M.black,-1.15,1.08,-9.6);                    // wajan
+  box(0.5,0.03,0.35,M.black,-0.6,0.93,-9.6);                      // plat roti bakar
+  box(0.55,0.2,0.4,M.steel,0.1,0.75,-9.6);                        // bak cuci
+  cyl(0.02,0.02,0.3,M.steel,0.1,0.93,-9.8);
+  cyl(0.17,0.17,0.3,M.white,-0.05,0.93,-8.05+0.0);                // rice cooker di pass
+  cyl(0.17,0.17,0.32,M.steel,-1.6,1.03,-8.05);                    // panci burjo
+  box(0.6,0.5,0.4,M.white,-1.0,2.1,-9.75);                        // lemari gantung
+  box(0.6,0.5,0.4,M.white,-0.3,2.1,-9.75);
+  box(0.5,1.9,0.55,M.woodDark,-1.7,0,-8.85);                      // lemari stok tertutup
+  cyl(0.18,0.18,0.55,mat('#4A6FA5'),-0.2,0,-8.75);                // tabung gas
+  const ex = box(0.4,0.4,0.05,M.metal,0.4,2.6,-9.97); ex.castShadow=false; // exhaust
+  // toilet (pojok kanan belakang)
+  box(0.1,2.4,1.9,M.wall,0.75,0,-9.0);
+  box(1.25,2.4,0.1,M.wall,1.38,0,-8.1).scale.set(1,1,1);
+  box(0.8,2.1,0.04,M.woodDark,1.3,0,-8.04);                       // pintu toilet
+  cyl(0.18,0.2,0.4,M.white,1.4,0,-9.6);
+
+  // ---------- TERAS ----------
+  table(-1.1,1.15); table(1.1,1.15);
+  [[-1.1,1.15],[1.1,1.15]].forEach(([x,z])=>cyl(0.06,0.07,0.04,M.metal,x,0.78,z));
+
+  // ---------- PARKIR MOTOR ----------
+  const motorColors=['#B83227','#1B1B1B','#2F5D8A','#C9C9C9','#B83227','#1B1B1B','#6D6D6D','#2F5D8A'];
+  function motor(x,z,color){
+    const g = new THREE.Group(); g.position.set(x,0,z); root.add(g);
+    const m = mat(color,{roughness:.4,metalness:.3});
+    [-0.62,0.62].forEach(dz=>{ const w = new THREE.Mesh(new THREE.TorusGeometry(0.24,0.07,10,24), M.black); w.rotation.y=Math.PI/2; w.position.set(0,0.31,dz); w.castShadow=true; g.add(w); });
+    box(0.28,0.32,1.1,m,0,0.38,0,g); box(0.3,0.1,0.6,M.black,0,0.72,0.15,g); box(0.24,0.45,0.18,m,0,0.55,-0.55,g);
+    box(0.62,0.04,0.04,M.black,0,1.02,-0.6,g);
+    return g;
+  }
+  motorColors.forEach((c,i)=>motor(-3.15+i*0.9,4.95,c));
+
+  // street lamp
+  cyl(0.06,0.08,4.6,M.black,4.2,0,6.6); box(0.9,0.06,0.12,M.black,3.8,4.55,6.6);
+  const lampHead = box(0.35,0.08,0.25,M.led,3.45,4.47,6.6); lampHead.castShadow=false;
+
+  // ---------- GHOST: Tahap 2b ----------
+  table(-0.9,-6.95,0.8,M.ghost,ghost); table(0.95,-6.95,0.8,M.ghost,ghost);
+  table(0,2.55,0.8,M.ghost,ghost);
+  [-2.2,2.2].forEach(x=>{ box(0.08,2.8,0.08,M.ghost,x,0,3.3,ghost); });
+  const roof = new THREE.Mesh(new THREE.PlaneGeometry(4.6,3.5), M.ghostRoof);
+  roof.rotation.x = -Math.PI/2 + 0.12; roof.position.set(0,2.95,1.65); ghost.add(roof);
+
+  // ---------- lights ----------
+  const hemi = new THREE.HemisphereLight('#FFF6E8','#8C7B68',0.75); scene.add(hemi);
+  const sun = new THREE.DirectionalLight('#FFF1DC',0.95);
+  sun.position.set(7,12,8); sun.castShadow = true; sun.shadow.mapSize.set(2048,2048);
+  Object.assign(sun.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:1,far:40}); sun.shadow.bias=-0.0005;
+  sun.target.position.set(0,0,-3); scene.add(sun, sun.target);
+  const warm = [];
+  [[0,-1.6],[0,-4.4],[0,-7.0],[0,-9.0],[-1.1,0.45],[1.1,0.45]].forEach(([x,z],i)=>{
+    const p = new THREE.PointLight('#FFC98A',0,7,2); p.position.set(x, i<4?H-0.45:H-1.25, z); scene.add(p); warm.push(p);
+  });
+  const neonLight = new THREE.PointLight('#FFC93C',0,3.5,2); neonLight.position.set(1.4,1.95,-4.65); scene.add(neonLight);
+  const streetLight = new THREE.PointLight('#FFD9A0',0,12,2); streetLight.position.set(3.45,4.3,6.6); scene.add(streetLight);
+
+  // ---------- labels ----------
+  const labelDefs = [
+    ['Jalan raya',[ -5.5,0.2,9.4],'minor'],
+    ['Parkir motor 8–10',[0,1.25,4.95],''],
+    ['Teras · 8 kursi',[0,1.45,1.15],''],
+    ['Bar & kasir',[-1.2,1.75,-1.45],''],
+    ['Kulkas showcase',[-1.65,2.0,-2.95],'minor'],
+    ['Meja bar + colokan',[-1.6,1.45,-4.65],''],
+    ['Area duduk · 8 kursi',[0.95,1.45,-4.65],''],
+    ['Spot foto neon',[1.9,2.55,-4.65],''],
+    ['Wastafel',[1.75,1.35,-7.65],'minor'],
+    ['Dapur terbuka',[-0.8,1.65,-9.0],''],
+    ['Toilet',[1.4,2.55,-9.1],'minor'],
+    ['+3 meja, +12 kursi',[0,1.35,-6.95],'ghost'],
+    ['Kanopi teras',[0,3.2,2.2],'ghost'],
+    ['4 m',[0,0.05,-10.35],'dim'],
+    ['10 m',[2.45,0.05,-5],'dim'],
+  ];
+  const labels = labelDefs.map(([t,p,cls])=>{
+    const el = document.createElement('div'); el.className = 'lbl' + (cls && cls!=='minor'?' '+cls:''); el.textContent = t; labelsEl.appendChild(el);
+    return {el, pos:new THREE.Vector3(...p), cls};
+  });
+  let showLabels = true;
+  const v = new THREE.Vector3();
+  // occlusion: a label hides when a solid object sits between it and the camera (checked only after the camera moves)
+  const ray = new THREE.Raycaster(); const hitTargets = [];
+  root.traverse(o=>{ if (o.isMesh && !o.userData.noHit && !(o.material && o.material.transparent)) hitTargets.push(o); });
+  const lastCam = new THREE.Matrix4(); let lastCheck = 0;
+  function updateOcclusion(now){
+    if (now - lastCheck < 120 || lastCam.equals(camera.matrixWorld)) return;
+    lastCheck = now; lastCam.copy(camera.matrixWorld);
+    const cp = camera.position;
+    labels.forEach(l=>{
+      if (l.cls==='dim' || l.cls==='ghost'){ l.occluded=false; return; }
+      const dir = l.pos.clone().sub(cp); const dist = dir.length(); dir.normalize();
+      ray.set(cp, dir); ray.far = dist - 0.35;
+      l.occluded = ray.intersectObjects(hitTargets, false).length > 0;
+    });
+  }
+  function placeLabels(w,h){
+    const narrow = w < 600;
+    labels.forEach(l=>{
+      const hidden = !showLabels || (l.cls==='ghost' && !ghost.visible) || l.occluded || (narrow && (l.cls==='minor' || l.cls==='dim'));
+      if (hidden){ l.el.hidden = true; return; }
+      v.copy(l.pos).project(camera);
+      const off = v.z > 1 || v.x < -1.1 || v.x > 1.1 || v.y < -1.1 || v.y > 1.1;
+      l.el.hidden = off;
+      if (!off){ const x=(v.x+1)/2*w, y=(1-v.y)/2*h; l.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,${l.cls==='dim'?'-50%':'calc(-100% - 6px)'})`; }
+    });
+  }
+
+  // ---------- day / night ----------
+  let night = false;
+  function applyMode(){
+    const day = !night;
+    scene.background = new THREE.Color(day ? '#DCD3C6' : '#110D0B');
+    scene.fog = new THREE.Fog(day ? '#DCD3C6' : '#110D0B', 28, 70);
+    hemi.intensity = day ? 0.55 : 0.12; sun.intensity = day ? 0.8 : 0.0; sun.castShadow = day;
+    warm.forEach(p=>p.intensity = day ? 0.0 : 1.35);
+    neonLight.intensity = day ? 0 : 1.6; streetLight.intensity = day ? 0 : 1.4;
+    M.led.emissiveIntensity = day ? 0.5 : 2.2; neonMat.emissiveIntensity = day ? 0.9 : 2.4;
+    signMat.emissiveIntensity = day ? 0.15 : 0.9; renderer.toneMappingExposure = 1;
+    stage.classList.toggle('night', night);
+  }
+
+  // ---------- camera views ----------
+  const views = {
+    iso:    {pos:[8.5,9.5,8.0],  target:[0,0.4,-3.0], scale:true},
+    top:    {pos:[0,24,-2.35],   target:[0,0,-2.5],   scale:true},
+    street: {pos:[0.6,1.8,10.8], target:[0,1.3,-3.5], scale:true},
+    inside: {pos:[1.5,1.5,-7.4], target:[-1.2,1.0,-0.8]},
+    teras:  {pos:[4.5,4.2,7.2],  target:[0,0.6,1.6], scale:true},
+    bar:    {pos:[1.6,2.4,1.3],  target:[-1.4,1.0,-1.6]},
+    mabar:  {pos:[0.9,2.3,-2.2], target:[-1.7,0.9,-4.8]},
+    duduk:  {pos:[-0.9,2.6,-1.6],target:[1.0,0.6,-4.8]},
+    foto:   {pos:[-1.2,1.7,-3.2],target:[1.9,1.8,-4.65]},
+    dapur:  {pos:[0.4,3.0,-5.4], target:[-0.6,0.8,-9.2]},
+    tahap2b:{pos:[6.5,8.5,1.5],  target:[0,0.4,-3.0], scale:true},
+  };
+  let tween = null;
+  function flyTo(name){
+    const vw = views[name]; if (!vw) return;
+    const tgt = new THREE.Vector3(...vw.target);
+    const pos = new THREE.Vector3(...vw.pos);
+    if (vw.scale && camera.aspect < 1){ pos.sub(tgt).multiplyScalar(1.55).add(tgt); }
+    if (reduceMotion){ camera.position.copy(pos); controls.target.copy(tgt); controls.update(); return; }
+    tween = {t0:performance.now(), dur:750, p0:camera.position.clone(), t0v:controls.target.clone(), p1:pos, t1:tgt};
+  }
+  function stepTween(now){
+    if (!tween) return;
+    let k = Math.min(1,(now-tween.t0)/tween.dur); const e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
+    camera.position.lerpVectors(tween.p0,tween.p1,e); controls.target.lerpVectors(tween.t0v,tween.t1,e);
+    if (k>=1) tween = null;
+  }
+
+  // ---------- UI wiring ----------
+  const viewBtns = [...document.querySelectorAll('[data-view]')];
+  function setViewBtn(name){ viewBtns.forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.view===name))); }
+  viewBtns.forEach(b=>b.addEventListener('click',()=>{ setViewBtn(b.dataset.view); flyTo(b.dataset.view); }));
+  const tNight = document.getElementById('t-night'), tGhost = document.getElementById('t-ghost'), tLabel = document.getElementById('t-label');
+  tNight.addEventListener('click',()=>{ night=!night; tNight.setAttribute('aria-pressed',String(night)); applyMode(); });
+  function setGhost(on){ ghost.visible=on; tGhost.setAttribute('aria-pressed',String(on)); }
+  tGhost.addEventListener('click',()=>setGhost(!ghost.visible));
+  tLabel.addEventListener('click',()=>{ showLabels=!showLabels; tLabel.setAttribute('aria-pressed',String(showLabels)); });
+  document.querySelectorAll('[data-zone]').forEach(b=>b.addEventListener('click',()=>{
+    const z=b.dataset.zone; if (z==='tahap2b') setGhost(true);
+    setViewBtn(null); flyTo(z); stage.scrollIntoView({behavior: reduceMotion?'auto':'smooth', block:'center'});
+  }));
+  controls.addEventListener('start',()=>{ tween=null; });
+
+  // ---------- size & loop ----------
+  let cw=0, ch=0;
+  function resize(){
+    const r = stage.getBoundingClientRect(); cw = Math.max(1,r.width); ch = Math.max(1,r.height);
+    renderer.setSize(cw,ch,false); camera.aspect = cw/ch; camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+  applyMode();
+  { const vw=views.iso, tgt=new THREE.Vector3(...vw.target), pos=new THREE.Vector3(...vw.pos);
+    if (camera.aspect<1) pos.sub(tgt).multiplyScalar(1.55).add(tgt);
+    camera.position.copy(pos); controls.target.copy(tgt); controls.update(); }
+  document.getElementById('loading').hidden = true;
+
+  function frame(now){
+    stepTween(now); controls.update(); renderer.render(scene,camera); updateOcclusion(now); placeLabels(cw,ch);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // re-draw canvas textures once web fonts arrive
+  // redraw text textures once the web fonts have arrived
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>texJobs.forEach(j=>j()));
+})();
+</script>
+</body></html>
