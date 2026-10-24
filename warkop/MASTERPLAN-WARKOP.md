@@ -39,13 +39,13 @@
 | **Konsep** | Warkop Kuningan **autentik** (kopi sachet, Indomie, burjo, magelangan, harga murah, buka sampai larut) di **tempat yang bersih, rapi, terang, dan nyaman** untuk nongkrong Gen Z. |
 | **Positioning** | "Rasa & harga warkop asli, tempatnya naik kelas." |
 | **Target pasar** | Gen Z 16–27 th (pelajar SMA/SMK, mahasiswa, pekerja muda), ojol, pekerja shift, komunitas game/bola/motor. |
-| **Ukuran tempat** | Kios kecil ± 3 × 8 m + teras, 20 kursi. |
+| **Ukuran tempat** | Ruko 1 lantai ± 4 × 10 m + teras (sewa **Rp 2,5 juta/bulan**), mulai 20 kursi, bisa ditambah sampai ± 32 kursi. |
 | **Jam buka** | 10.00–01.00 (Jumat–Sabtu sampai 02.00). Naik ke 24 jam setelah stabil. |
 | **Tim** | **Owner ikut kerja** (kasir & kontrol jam ramai) + 2 crew. |
-| **Modal** | **Rp 50 juta** (sudah termasuk sewa 6 bulan dan dana cadangan Rp 9,2 juta). |
+| **Modal** | **Rp 50 juta** (sudah termasuk sewa ruko 6 bulan Rp 15 juta dan dana cadangan Rp 5,4 juta). |
 | **Rata-rata transaksi** | Rp 15.000 per nota. |
-| **Titik impas (BEP)** | ± **47 transaksi/hari** (omzet ± Rp 700 ribu/hari). |
-| **Target stabil (bulan 7+)** | 80 transaksi/hari → omzet ± Rp 36 juta/bulan, laba bersih ± **Rp 8 juta/bulan** (sudah termasuk penghasilan owner). |
+| **Titik impas (BEP)** | ± **52 transaksi/hari** (omzet ± Rp 781 ribu/hari). |
+| **Target stabil (bulan 7+)** | 80 transaksi/hari → omzet ± Rp 36 juta/bulan, laba bersih ± **Rp 6,7 juta/bulan** (sudah termasuk penghasilan owner); naik ke ± Rp 9 juta saat 90 transaksi/hari. |
 | **Balik modal** | ± **bulan ke-9** (skenario moderat dengan masa ramp-up). |
 
 **Strategi kunci:**
@@ -53,6 +53,7 @@
 2. **Yang dijual adalah tempatnya**: bersih setiap jam, terang, colokan & WiFi kencang, spot foto, musik pas, nyaman untuk mabar dan nongkrong lama.
 3. **Owner turun tangan langsung**: menghemat gaji serta menjaga kebersihan, kualitas, dan uang.
 4. **Upgrade kenyamanan tempat dari laba**, dan **dana cadangan tidak disentuh** untuk belanja.
+5. **Manfaatkan ruang ruko**: sewa Rp 2,5 juta adalah biaya tetap terbesar ke-2 setelah gaji, jadi ruangnya harus terisi. Mulai 20 kursi, tambah meja bertahap sampai ± 32 kursi.
 
 **3 kunci sukses:**
 1. **Lokasi** dekat kantong anak muda (sekolah, kampus, kos, perumahan) dan ramai di sore–malam.
@@ -121,7 +122,7 @@ Opsi nama (cek dulu ketersediaan di PDKI/DJKI dan nama akun IG/TikTok):
 
 ## 2. RISET PASAR & PEMILIHAN LOKASI
 
-> Dengan modal terbatas, **lokasi adalah keputusan paling mahal kalau salah**. Lebih baik kios kecil di lokasi ramai anak muda daripada kios besar di lokasi sepi.
+> Dengan modal terbatas, **lokasi adalah keputusan paling mahal kalau salah**. Lebih baik ruko sederhana di lokasi ramai anak muda daripada ruko bagus di lokasi sepi.
 
 ### 2.1 Kriteria Lokasi Ideal
 - Di **jalan utama atau jalan kolektor** yang ramai motor, bukan gang buntu.
@@ -130,7 +131,7 @@ Opsi nama (cek dulu ketersediaan di PDKI/DJKI dan nama akun IG/TikTok):
 - Terlihat dari 2 arah jalan.
 - Lingkungan menerima usaha buka malam (minta izin RT/RW sejak awal).
 - Listrik minimal 2.200 VA, air lancar, ada saluran pembuangan.
-- **Sewa ≤ Rp 1,5 juta/bulan** (± 4% dari target omzet).
+- **Sewa ruko ± Rp 2,5 juta/bulan** (± 7% dari target omzet; usahakan tidak lebih dari 10%). Ruko yang sudah ada toilet, keramik, dan listrik ≥ 2.200 VA menghemat biaya renovasi.
 
 ### 2.2 Cara Validasi Lokasi (wajib, jangan pakai feeling)
 1. **Hitung lalu lintas**: duduk di depan lokasi 3 hari (1 hari kerja, Jumat, Sabtu), catat jumlah orang/motor yang lewat setiap jam pada 11–14, 14–18, 18–22, 22–01. Catat berapa yang terlihat anak muda.
@@ -153,8 +154,8 @@ Opsi nama (cek dulu ketersediaan di PDKI/DJKI dan nama akun IG/TikTok):
 | **Total** | **100** | | |
 
 ### 2.4 Negosiasi Sewa (penting untuk modal Rp 50 juta)
-- Target: **bayar per 6 bulan** (Rp 7,2 juta), bukan langsung 1–2 tahun. Tawarkan bukti keseriusan (renovasi rapi, kontrak tertulis).
-- Jika pemilik **wajib bayar 1 tahun** (Rp 14,4 juta): kurangi biaya lain (lihat bab 6.3), jangan pakai dana cadangan.
+- Target: **bayar per 6 bulan** (Rp 15 juta), bukan langsung 1–2 tahun. Tawarkan bukti keseriusan (renovasi rapi, kontrak tertulis, bayar tepat waktu).
+- Jika pemilik **wajib bayar 1 tahun** (Rp 30 juta): modal Rp 50 juta **tidak cukup** tanpa tambahan dana. Lihat pilihan di bab 6.3.
 - Minta **masa renovasi gratis 2–4 minggu**.
 - Minta **hak perpanjangan** dengan kenaikan maksimal 10%, supaya tidak "diusir" setelah ramai.
 - Pastikan dalam kontrak: boleh renovasi ringan, pasang papan nama, buka malam (dan 24 jam nanti); siapa yang menanggung perbaikan besar.
@@ -166,7 +167,7 @@ Opsi nama (cek dulu ketersediaan di PDKI/DJKI dan nama akun IG/TikTok):
 
 > Di konsep ini, **tempat adalah produk utamanya**. Setiap rupiah renovasi diarahkan ke 4 hal: **bersih, terang, rapi, nyaman.**
 
-### 3.1 Zonasi (kios 3 × 8 m + teras)
+### 3.1 Zonasi (ruko ± 4 × 10 m + teras)
 ```
             JALAN RAYA
  ─────────────────────────────
@@ -182,16 +183,17 @@ Opsi nama (cek dulu ketersediaan di PDKI/DJKI dan nama akun IG/TikTok):
  |  + meja bar dinding       |
  |    colokan, 4 stool       | ← spot mabar & nugas
  |  + dinding neon tulisan   | ← spot foto
+ |  (ruang tambah 3 meja)    | ← diisi di Tahap 2b
  |---------------------------|
  |  DAPUR TERBUKA (kompor,   |
  |  plat, kulkas, cuci)      | ← terlihat bersih dari depan
  ─────────────────────────────
-   (toilet: pakai fasilitas kios/ruko jika ada)
+   (toilet ruko: wajib selalu bersih)
 ```
 
 ### 3.2 Prinsip Desain "Bersih, Terang, Rapi, Nyaman"
 - **Bar di depan dengan renteng sachet tertata rapi** (disusun per merek & warna): ciri khas warkop Kuningan yang dibuat lebih estetik.
-- **Cat 2 warna brand** (misal krem + cokelat). Warna terang membuat tempat kecil terasa luas dan terlihat bersih.
+- **Cat 2 warna brand** (misal krem + cokelat). Warna terang membuat ruangan terasa luas dan terlihat bersih.
 - **Lantai mudah dipel** (keramik/acian dicat epoxy) dan **dinding bawah dilapisi cat yang bisa dilap** (anti noda).
 - **Lampu LED putih hangat** (3000–4000K) yang cukup terang. Tempat terang = terlihat bersih & aman.
 - **Dapur terbuka & rapi**: pelanggan bisa melihat dapur bersih; ini membangun kepercayaan.
@@ -301,7 +303,7 @@ Tidak menambah menu baru ala kafe, cukup **varian Indomie & topping** yang sedan
 | | Plat pemanggang roti bakar (di atas kompor) | 500.000 |
 | | Wajan & alat gorengan | 400.000 |
 | | Rice cooker 5 L | 450.000 |
-| | Kulkas showcase 1 pintu | 3.800.000 |
+| | Kulkas showcase 1 pintu (bekas kondisi baik) | 2.800.000 |
 | | Cool box es batu × 2 | 500.000 |
 | | Peralatan masak: panci, wajan, saringan, pisau, talenan | 800.000 |
 | | Peralatan saji 40 set: mangkok, piring, gelas, sendok | 700.000 |
@@ -317,7 +319,7 @@ Tidak menambah menu baru ala kafe, cukup **varian Indomie & topping** yang sedan
 | | APAR 3 kg | 350.000 |
 
 ### 5.2 Tips Hemat Modal tanpa Turun Kualitas
-- **Kulkas showcase**: beli baru jika mampu (garansi kompresor, hemat listrik). Kalau bekas, cek dingin selama 1 jam & suara kompresor.
+- **Kulkas showcase**: anggaran Rp 2,8 jt untuk unit **bekas kondisi baik** (cek dingin selama 1 jam, suara kompresor halus, minta garansi toko). Kalau ada dana lebih, beli baru (± Rp 3,8 jt): lebih awet & hemat listrik.
 - **Furniture, counter, rak**: pesan ke tukang las/kayu lokal, atau beli bekas kafe yang tutup (cek marketplace & grup FB jual-beli lokal).
 - **Peralatan saji**: beli di grosir alat dapur, bukan toko retail.
 - **Renovasi DIY**: cat dikerjakan sendiri bersama teman. Upah tukang hanya untuk listrik & plumbing (**jangan DIY instalasi listrik**).
@@ -331,9 +333,9 @@ Tidak menambah menu baru ala kafe, cukup **varian Indomie & topping** yang sedan
 |---|---|---|---|---|
 | **Tahap 1** | Buka | Tempat bersih, terang, colokan, WiFi, spot foto | Rp 50 jt (modal) | Konsep inti berjalan |
 | **Tahap 2a** | Bulan 4–6 | **TV 43" untuk nobar**, neon box papan nama, freezer (stok es & bahan) | ± Rp 6 jt | Malam nobar ramai, lebih terlihat di malam hari |
-| **Tahap 2b** | Bulan 7–9 | **Kanopi teras + 2–3 meja teras**, upgrade WiFi lebih kencang, tambah colokan & stool | ± Rp 7 jt | Kapasitas naik ± 50%, nyaman saat hujan |
+| **Tahap 2b** | Bulan 7–9 | **Tambah 3 meja + 12 kursi** di ruang ruko yang masih kosong, kanopi teras, upgrade WiFi, tambah colokan | ± Rp 7 jt | Kapasitas naik ± 60%, nyaman saat hujan |
 | **Tahap 2c** | Bulan 9–12 | Tambah 1–2 crew, **buka 24 jam** (ciri khas warkop Kuningan) | Gaji crew | Tangkap pasar subuh, pagi & begadang |
-| **Tahap 3** | Tahun 2 | Ruko lebih besar dengan **ruang ber-AC bebas asap rokok** untuk nugas, atau cabang ke-2 | Rp 80–130 jt (laba + KUR) | Konsep penuh |
+| **Tahap 3** | Tahun 2 | **Ruang ber-AC bebas asap rokok** untuk nugas (sekat sebagian ruko / lantai 2), atau cabang ke-2 | Rp 80–130 jt (laba + KUR) | Konsep penuh |
 
 > Aturan upgrade: **upgrade hanya jika** (1) 2 bulan berturut-turut di atas BEP, (2) dana cadangan tetap utuh, dan (3) uang sewa periode berikutnya sudah tersisih.
 
@@ -344,38 +346,37 @@ Tidak menambah menu baru ala kafe, cukup **varian Indomie & topping** yang sedan
 ### 6.1 Rincian Investasi Awal
 | Kategori | Jumlah | % |
 |---|---|---|
-| A. Sewa kios 6 bulan di muka (Rp 1,2 jt/bulan) | 7.200.000 | 14,4% |
-| B. Renovasi ringan (cat DIY, stop kontak & listrik, lampu, counter bar, wastafel) | 5.000.000 | 10,0% |
+| A. Sewa ruko 6 bulan di muka (Rp 2,5 jt/bulan) | 15.000.000 | 30,0% |
+| B. Renovasi ringan (cat DIY, stop kontak & listrik, lampu, counter bar, wastafel) | 4.000.000 | 8,0% |
 | C. Peralatan bar minuman | 2.700.000 | 5,4% |
-| D. Peralatan dapur | 9.750.000 | 19,5% |
+| D. Peralatan dapur (kulkas showcase bekas kondisi baik) | 8.750.000 | 17,5% |
 | E. Furniture & kenyamanan (meja, kursi, meja bar, rak, kipas) | 4.900.000 | 9,8% |
 | F. Sistem (printer, CCTV, WiFi, speaker, APAR) | 2.050.000 | 4,1% |
-| G. Branding (logo, papan nama, neon spot foto, menu board, seragam, stiker) | 2.700.000 | 5,4% |
+| G. Branding (logo, spanduk papan nama, neon spot foto, menu board, seragam, stiker) | 2.200.000 | 4,4% |
 | H. Perizinan & administrasi | 500.000 | 1,0% |
-| I. Stok bahan awal | 4.000.000 | 8,0% |
-| J. Marketing pra-launch & grand opening | 2.000.000 | 4,0% |
-| K. **Dana cadangan / modal kerja** | 9.200.000 | 18,4% |
+| I. Stok bahan awal (belanja 2–3 hari sekali) | 3.000.000 | 6,0% |
+| J. Marketing pra-launch & grand opening | 1.500.000 | 3,0% |
+| K. **Dana cadangan / modal kerja** | 5.400.000 | 10,8% |
 | **TOTAL** | **50.000.000** | **100%** |
 
-> **Dana cadangan Rp 9,2 juta adalah "pelampung".** Dipakai hanya untuk menutup kekurangan biaya operasional di bulan-bulan awal (bulan 1 diproyeksikan masih rugi tipis) atau keadaan darurat (alat rusak), bukan untuk belanja alat tambahan.
+> **Dana cadangan Rp 5,4 juta adalah "pelampung".** Karena sewa ruko memakan 30% modal, cadangan ini lebih tipis dari ideal. Pakai **hanya** untuk menutup kekurangan biaya operasional di bulan-bulan awal (bulan 1 diproyeksikan rugi ± Rp 1,7 juta) atau keadaan darurat (alat rusak), bukan untuk belanja alat tambahan. Isi kembali sampai Rp 10 juta dari laba secepatnya.
+
+**Agar sewa ruko tetap masuk dalam Rp 50 juta:** renovasi lebih kecil (ruko biasanya sudah ada keramik, toilet & listrik), kulkas showcase bekas kondisi baik, spanduk dulu sebelum papan nama permanen, stok awal lebih kecil, dan marketing awal lebih banyak organik.
 
 ### 6.2 Jika Uangnya Benar-Benar Hanya Rp 50 Juta
 - Jangan pakai **seluruh** Rp 50 juta untuk usaha kalau itu satu-satunya tabungan keluarga. Idealnya ada **dana hidup pribadi 3 bulan** di luar modal ini, karena di awal laba belum bisa diambil.
 - Kalau tidak ada dana hidup terpisah: tetap jalankan, tapi **owner tidak mengambil uang usaha** sebelum bulan ke-3 dan hidup sehemat mungkin.
 
-### 6.3 Jika Pemilik Kios Minta Bayar 1 Tahun (Rp 14,4 juta, +Rp 7,2 juta)
-Tutup selisihnya dengan:
-| Penghematan | Hemat |
+### 6.3 Jika Pemilik Ruko Minta Bayar 1 Tahun (Rp 30 juta, +Rp 15 juta)
+Selisih Rp 15 juta **tidak bisa** ditutup hanya dengan berhemat tanpa mengorbankan konsep "tempat naik kelas" atau dana cadangan. Pilihannya:
+| Pilihan | Catatan |
 |---|---|
-| Kulkas showcase bekas yang kondisinya baik | ± Rp 1,5 jt |
-| Furniture bekas / bangku kayu panjang | ± Rp 1,5 jt |
-| Stok awal lebih kecil (belanja 2–3 hari sekali) | ± Rp 1,5 jt |
-| Tunda blender, neon spot foto & kipas kedua ke bulan ke-2 | ± Rp 1,6 jt |
-| Kurangi marketing awal, maksimalkan konten organik | ± Rp 0,7 jt |
-| Papan nama spanduk dulu, bukan papan permanen | ± Rp 0,4 jt |
-| **Total** | **± Rp 7,2 jt** |
+| **Cari ruko lain** yang mau dibayar per 6 bulan | Pilihan terbaik. Banyak pemilik ruko di pinggiran mau per 6 bulan untuk penyewa yang meyakinkan. |
+| **Negosiasi** bayar 6 bulan + 6 bulan berikutnya dengan cek/perjanjian tertulis | Tunjukkan rencana usaha (dokumen ini) supaya pemilik yakin. |
+| **Tambah modal Rp 15 juta** dari keluarga/partner | Wajib perjanjian tertulis; jangan dari pinjol. |
+| **Ruko/kios lebih kecil** di lokasi yang sama ramainya (Rp 1,2–1,5 jt/bulan) | Biaya tetap turun ± Rp 1–1,3 jt/bulan dan titik impas turun ke ± 47–48 transaksi/hari. |
 
-Dana cadangan **tetap Rp 9,2 juta**.
+**Jangan** menutup selisih dengan memakai dana cadangan atau memangkas kebersihan & kenyamanan tempat: itu justru inti konsepnya.
 
 ### 6.4 Opsi Tambahan Dana (opsional, nanti)
 | Sumber | Kapan cocok | Catatan |
@@ -406,7 +407,7 @@ Dana cadangan **tetap Rp 9,2 juta**.
 ### 7.2 Biaya Tetap Bulanan
 | Biaya | Per Bulan |
 |---|---|
-| Sewa (Rp 1,2 jt/bulan) | 1.200.000 |
+| Sewa ruko (Rp 2,5 jt/bulan) | 2.500.000 |
 | Gaji 2 crew (contoh Rp 2,5 jt/orang) | 5.000.000 |
 | Uang makan & bonus target | 800.000 |
 | Listrik (2.200 VA) | 1.000.000 |
@@ -416,14 +417,15 @@ Dana cadangan **tetap Rp 9,2 juta**.
 | POS & aplikasi (versi gratis) | 0 |
 | Kebersihan & perawatan alat | 300.000 |
 | Lain-lain / tak terduga | 400.000 |
-| Penyusutan alat (± Rp 19,4 jt ÷ 48 bulan) | 400.000 |
-| **TOTAL** | **11.200.000** |
+| Penyusutan alat (± Rp 18,4 jt ÷ 48 bulan) | 400.000 |
+| **TOTAL** | **12.500.000** |
 
 > **Gaji:** Rp 2,5 jt adalah contoh. **Sesuaikan dengan UMK kabupaten/kotamu**, karena UMK antar daerah bisa berbeda lebih dari 2 kali lipat. Kalau UMK lebih tinggi, naikkan sel gaji di Excel dan lihat dampaknya ke BEP.
 
 ### 7.3 Titik Impas (BEP)
-- **Omzet BEP ± Rp 21 juta/bulan ≈ Rp 700 ribu/hari ≈ 47 transaksi/hari.**
-- Dengan buka 15 jam, cukup **± 3 transaksi per jam** untuk tidak rugi. Satu rombongan anak muda 4 orang sudah 4 transaksi.
+- **Omzet BEP ± Rp 23,4 juta/bulan ≈ Rp 781 ribu/hari ≈ 52 transaksi/hari.**
+- Dengan buka 15 jam, cukup **± 3–4 transaksi per jam** untuk tidak rugi. Satu rombongan anak muda 4 orang sudah 4 transaksi.
+- Dibanding sewa Rp 1,2 jt, sewa ruko Rp 2,5 jt menaikkan titik impas ± 5 transaksi/hari. Ruang ruko yang lebih luas harus dimanfaatkan untuk menampung lebih banyak pelanggan.
 
 ### 7.4 Tiga Skenario (kondisi stabil)
 | Indikator | Pesimis | Moderat | Optimis |
@@ -433,40 +435,40 @@ Dana cadangan **tetap Rp 9,2 juta**.
 | **Omzet/bulan** | Rp 23,1 jt | **Rp 36,0 jt** | Rp 52,8 jt |
 | HPP (46%) | Rp 10,6 jt | Rp 16,6 jt | Rp 24,3 jt |
 | Laba kotor | Rp 12,5 jt | Rp 19,4 jt | Rp 28,5 jt |
-| Biaya tetap | Rp 11,2 jt | Rp 11,2 jt | Rp 11,2 jt |
+| Biaya tetap | Rp 12,5 jt | Rp 12,5 jt | Rp 12,5 jt |
 | Pajak + MDR | Rp 0,2 jt | Rp 0,2 jt | Rp 0,3 jt |
-| **Laba bersih/bulan** (= penghasilan owner) | **Rp 1,1 jt** | **Rp 8,0 jt** | **Rp 17,0 jt** |
-| Net margin | 4,9% | 22,2% | 32,1% |
-| Balik modal (kondisi stabil) | ± 33 bulan | ± 6 bulan | ± 2,9 bulan |
+| **Laba bersih/bulan** (= penghasilan owner) | **-Rp 0,2 jt** (rugi tipis) | **Rp 6,7 jt** | **Rp 15,7 jt** |
+| Net margin | -0,8% | 18,6% | 29,7% |
+| Balik modal (kondisi stabil) | Tidak balik modal | ± 7 bulan | ± 3,1 bulan |
 
-> Skenario pesimis adalah tanda bahaya: penghasilan owner hanya ± Rp 1,1 jt. Jika setelah 4–6 bulan masih di level ini, jalankan langkah perbaikan di bab 16.2.
+> Skenario pesimis (55 transaksi/hari) berarti **rugi tipis** dan owner tidak mendapat penghasilan. Jika setelah 4–6 bulan masih di level ini, jalankan langkah perbaikan di bab 16.2.
 
 ### 7.5 Proyeksi 12 Bulan Pertama (skenario moderat dengan ramp-up)
 | Bulan | Trx/hari | Omzet | Laba Bersih | Kas Kumulatif vs Modal |
 |---|---|---|---|---|
-| 1 | 45 | 20,3 jt | -0,4 jt | -48,8 jt |
-| 2 | 55 | 24,8 jt | 2,0 jt | -45,2 jt |
-| 3 | 60 | 27,0 jt | 3,2 jt | -40,4 jt |
-| 4 | 65 | 29,3 jt | 4,4 jt | -34,4 jt |
-| 5 | 70 | 31,5 jt | 5,6 jt | -27,2 jt |
-| 6 | 75 | 33,8 jt | 6,8 jt | -18,8 jt |
-| 7 | 80 | 36,0 jt | 8,0 jt | -10,4 jt |
-| 8 | 80 | 36,0 jt | 8,0 jt | -2,0 jt |
-| **9** | 85 | 38,3 jt | 9,2 jt | **+7,6 jt (balik modal)** |
-| 10 | 85 | 38,3 jt | 9,2 jt | +17,3 jt |
-| 11 | 90 | 40,5 jt | 10,4 jt | +28,1 jt |
-| 12 | 90 | 40,5 jt | 10,4 jt | +38,9 jt |
-| **Total th-1** | | **Rp 396,0 jt** | **Rp 76,9 jt** | |
+| 1 | 45 | 20,3 jt | -1,7 jt | -48,8 jt |
+| 2 | 55 | 24,8 jt | 0,7 jt | -45,2 jt |
+| 3 | 60 | 27,0 jt | 1,9 jt | -40,4 jt |
+| 4 | 65 | 29,3 jt | 3,1 jt | -34,4 jt |
+| 5 | 70 | 31,5 jt | 4,3 jt | -27,2 jt |
+| 6 | 75 | 33,8 jt | 5,5 jt | -18,8 jt |
+| 7 | 80 | 36,0 jt | 6,7 jt | -11,7 jt |
+| 8 | 80 | 36,0 jt | 6,7 jt | -4,6 jt |
+| **9** | 85 | 38,3 jt | 7,9 jt | **+3,7 jt (balik modal)** |
+| 10 | 85 | 38,3 jt | 7,9 jt | +12,1 jt |
+| 11 | 90 | 40,5 jt | 9,1 jt | +21,6 jt |
+| 12 | 90 | 40,5 jt | 9,1 jt | +31,1 jt |
+| **Total th-1** | | **Rp 396,0 jt** | **Rp 61,3 jt** | |
 
-*Kas kumulatif = laba bersih + penyusutan (+ sewa pada bulan 1–6 yang sudah dibayar di muka), dikurangi modal Rp 50 juta. Proyeksi ini belum memasukkan upgrade Tahap 2; kanopi & meja teras tambahan (Tahap 2b) dan buka 24 jam (Tahap 2c) diharapkan menaikkan jumlah transaksi.*
+*Kas kumulatif = laba bersih + penyusutan (+ sewa pada bulan 1–6 yang sudah dibayar di muka), dikurangi modal Rp 50 juta. Proyeksi ini belum memasukkan upgrade Tahap 2; tambahan meja & kanopi (Tahap 2b) dan buka 24 jam (Tahap 2c) diharapkan menaikkan jumlah transaksi.*
 
-> **Penting:** sewa bulan 7–12 (Rp 7,2 juta) jatuh tempo di bulan ke-6. **Sisihkan Rp 1,2 juta/bulan ke rekening sewa** sejak bulan pertama.
+> **Penting:** sewa bulan 7–12 (**Rp 15 juta**) jatuh tempo di bulan ke-6. **Sisihkan Rp 2,5 juta/bulan ke rekening sewa** sejak bulan pertama. Ini yang paling sering membuat usaha kecil kaget.
 
 ### 7.6 Aturan Pengelolaan Uang (wajib disiplin)
 1. **Pisahkan rekening**: rekening usaha ≠ rekening pribadi. QRIS masuk ke rekening usaha.
-2. **Owner menggaji diri sendiri secara tetap**: bulan 1–3 maksimal Rp 1,5 jt/bulan (kalau perlu), bulan 4+ Rp 3–4 jt/bulan, sisanya tetap di usaha. Jangan ambil uang laci sesuka hati.
+2. **Owner menggaji diri sendiri secara tetap**: bulan 1–3 maksimal Rp 1,5 jt/bulan (kalau perlu), bulan 4+ Rp 2,5–3,5 jt/bulan, sisanya tetap di usaha. Jangan ambil uang laci sesuka hati.
 3. **Urutan pemakaian laba bersih bulanan:**
-   1. Sisihkan sewa periode berikutnya (Rp 1,2 jt/bulan).
+   1. Sisihkan sewa periode berikutnya (Rp 2,5 jt/bulan).
    2. Isi kembali dana cadangan sampai Rp 10 jt.
    3. Gaji owner.
    4. Sisa → dana upgrade Tahap 2 (TV nobar, kanopi teras).
@@ -753,14 +755,15 @@ Dana cadangan **tetap Rp 9,2 juta**.
 | Risiko | Dampak | Pencegahan / Mitigasi |
 |---|---|---|
 | Lokasi sepi / salah lokasi | Sangat tinggi | Validasi lokasi (bab 2); sewa per 6 bulan supaya bisa pindah tanpa rugi besar; alat mudah dibawa |
-| Kehabisan modal di bulan awal | Tinggi | Dana cadangan Rp 9,2 jt, owner tidak ambil uang sebelum bulan 3, tidak membeli alat tambahan sebelum BEP |
+| Kehabisan modal di bulan awal | Tinggi | Dana cadangan Rp 5,4 jt (tipis), owner tidak ambil uang sebelum bulan 3, tidak membeli alat tambahan sebelum BEP, idealnya ada dana hidup pribadi terpisah |
+| Uang sewa 6 bulan berikutnya (Rp 15 jt) tidak siap | Tinggi | Rekening khusus sewa, setor Rp 2,5 jt setiap bulan sejak bulan pertama |
 | **Standar bersih menurun** setelah beberapa bulan | Tinggi | Checklist per jam, bonus kebersihan, sidak owner, foto kondisi tempat tiap tutup |
 | Owner kelelahan (kerja 10+ jam/hari) | Tinggi | 1 hari libur/minggu dengan part-timer, tambah crew saat > 85 transaksi/hari |
 | Kebocoran kas & stok | Tinggi | POS, "no struk no masak", stok opname, CCTV, QRIS, owner hadir di jam ramai |
 | Pelanggan nongkrong lama tapi belanja sedikit | Sedang | Tawarkan pesanan kedua secara ramah tiap ± 1,5 jam, paket rombongan, tetap ramah (nongkrong lama = tempat terlihat ramai) |
 | Harga bahan naik (telur, cabai, minyak) | Sedang | Update HPP bulanan, beli grosir, 2 supplier, sesuaikan harga Rp 1.000 |
 | Crew keluar mendadak | Sedang | Part-timer cadangan, SOP tertulis, owner bisa semua posisi |
-| Pemilik kios tidak memperpanjang | Sedang | Hak perpanjangan di kontrak; bangun pelanggan via IG/WA supaya bisa ikut pindah |
+| Pemilik ruko tidak memperpanjang | Sedang | Hak perpanjangan di kontrak; bangun pelanggan via IG/WA supaya bisa ikut pindah |
 | Kompetitor meniru / perang harga | Sedang | Bersaing di kebersihan, kenyamanan & komunitas, bukan harga termurah |
 | Keluhan warga (bising, parkir, sampah) | Sedang | Izin RT/RW, volume musik kecil setelah 23.00, atur parkir, area depan selalu bersih |
 | Keributan / pelanggan mabuk | Sedang | Aturan tempat tertulis (dilarang miras & judi), crew & owner tegas tapi sopan, hubungan baik dengan warga & aparat |
@@ -808,7 +811,7 @@ Dana cadangan **tetap Rp 9,2 juta**.
 - [ ] Jalankan program rutin: promo pelajar, happy hour ojol, turnamen mabar, Jumat berkah.
 - [ ] Kejar 50 review Google.
 - [ ] Evaluasi crew bulan ke-1 & ke-2 (termasuk nilai kebersihan).
-- [ ] Cek: sudah > 47 transaksi/hari (BEP)? Jika belum, lihat bab 16.2.
+- [ ] Cek: sudah > 52 transaksi/hari (BEP)? Jika belum, lihat bab 16.2.
 - [ ] Mulai menabung untuk Tahap 2a (TV nobar, neon box, freezer).
 
 ---
@@ -818,7 +821,7 @@ Dana cadangan **tetap Rp 9,2 juta**.
 ### 16.1 KPI Utama
 | KPI | Target | Cara ukur |
 |---|---|---|
-| Transaksi per hari | ≥ 47 (BEP) bulan 1–2; ≥ 80 bulan 7+ | POS |
+| Transaksi per hari | ≥ 52 (BEP) bulan 1–3; ≥ 80 bulan 7+ | POS |
 | Rata-rata nilai transaksi | ≥ Rp 15.000 | POS |
 | HPP aktual | ≤ 46% | Belanja ÷ omzet + stok opname |
 | Biaya tenaga kerja crew | ≤ 20% omzet | Gaji ÷ omzet |
@@ -830,14 +833,15 @@ Dana cadangan **tetap Rp 9,2 juta**.
 | Repeat customer | ≥ 40% transaksi | Kartu stamp |
 | Porsi QRIS | ≥ 50% transaksi | POS |
 | Follower IG/TikTok | +200/bulan | Insight medsos |
-| Dana cadangan | Selalu ≥ Rp 8 jt | Saldo rekening cadangan |
+| Dana cadangan | Selalu ≥ Rp 5 jt (target Rp 10 jt) | Saldo rekening cadangan |
+| Tabungan sewa | Rp 2,5 jt × bulan berjalan | Saldo rekening sewa |
 
 ### 16.2 Jika Penjualan di Bawah Target
 1. **Cek traffic**: apakah anak muda sekitar tahu kita ada? → voucher ke sekolah/kampus/kos, spanduk lebih besar, iklan radius dekat.
 2. **Cek konversi**: banyak yang lewat tapi tidak mampir? → tampilan depan lebih terang, menu board besar dengan harga jelas di depan, musik terdengar dari luar.
 3. **Cek retensi**: sudah coba tapi tidak balik? → tanya alasan, perbaiki rasa/kecepatan/kebersihan, aktifkan kartu stamp & turnamen.
 4. **Cek jam**: jam mana yang sepi? → promo khusus jam itu, atau kurangi jam buka untuk hemat biaya.
-5. Jika setelah **6 bulan** (akhir kontrak sewa pertama) masih di bawah BEP dengan semua upaya di atas → **pindah lokasi** saat kontrak habis (alat dibawa; kerugian utama hanya renovasi ringan ± Rp 5 jt).
+5. Jika setelah **6 bulan** (akhir kontrak sewa pertama) masih di bawah BEP dengan semua upaya di atas → **pindah lokasi** saat kontrak habis (alat dibawa; kerugian utama hanya renovasi ringan ± Rp 4 jt).
 
 ---
 
@@ -845,11 +849,11 @@ Dana cadangan **tetap Rp 9,2 juta**.
 
 | Periode | Fokus | Target |
 |---|---|---|
-| **Bulan 1–3** | Bertahan | Tembus BEP (47 trx/hari), SOP & standar bersih berjalan, pelanggan tetap mulai terbentuk |
+| **Bulan 1–3** | Bertahan | Tembus BEP (52 trx/hari), SOP & standar bersih berjalan, pelanggan tetap mulai terbentuk |
 | **Bulan 4–6** | Stabil + Tahap 2a | 70–75 trx/hari; beli TV nobar, neon box, freezer dari laba |
-| **Bulan 7–9** | Naik kelas + Tahap 2b | Balik modal (± bulan 9); pasang kanopi teras + tambah meja, upgrade WiFi |
+| **Bulan 7–9** | Naik kelas + Tahap 2b | Balik modal (± bulan 9); tambah 3 meja + 12 kursi, kanopi teras, upgrade WiFi |
 | **Bulan 10–12** | Tahap 2c | Tambah crew, **buka 24 jam**, omzet ≥ Rp 45 jt/bulan |
-| **Tahun 2** | Konsep penuh | Ajukan KUR (usaha sudah ≥ 6 bulan, ada NIB & laporan POS); pindah/perluas ke ruko 4 × 10 m dengan 36–40 kursi + **ruang ber-AC bebas asap rokok**, atau buka cabang ke-2; daftar merek |
+| **Tahun 2** | Konsep penuh | Ajukan KUR (usaha sudah ≥ 6 bulan, ada NIB & laporan POS); tambah **ruang ber-AC bebas asap rokok** di ruko (sekat sebagian / lantai 2), atau buka cabang ke-2; daftar merek |
 | **Tahun 3** | Sistem & skala | 2–3 outlet dengan standar bersih yang sama (buku SOP), belanja grosir terpusat, pertimbangkan kemitraan setelah 3 outlet terbukti profit (butuh STPW & prospektus sesuai aturan waralaba) |
 
 **Diversifikasi pendapatan (tanpa mengubah konsep):**
