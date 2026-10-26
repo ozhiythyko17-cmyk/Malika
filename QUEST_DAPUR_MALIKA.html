@@ -1,0 +1,612 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<title>Quest Dapur Malika</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: one phone-width column — player card, next quest, then a zig-zag quest path per world (Duolingo-style), bottom sheet for each quest. Dark-first: arang & bara. */
+:root {
+  --bg: #15110e;          /* arang */
+  --bg2: #1d1814;
+  --surface: #241e19;
+  --raise: #2e2620;
+  --ink: #f6eee6;
+  --muted: #b5a698;
+  --line: #3c322a;
+  --bara: #ff7a35;        /* bara api: aksi utama */
+  --bara-deep: #c44f14;
+  --kunyit: #f6c341;      /* XP & hadiah */
+  --daun: #7ccc84;        /* selesai */
+  --daun-deep: #3e8c4a;
+  --lock: #4a4038;
+  --shadow: rgba(0,0,0,.45);
+  --f-game: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f4f1ea; --bg2: #ebe6dc; --surface: #ffffff; --raise: #f7f3ec; --ink: #261d16; --muted: #6e6156; --line: #e0d8cc;
+    --bara: #e5621d; --bara-deep: #b4470e; --kunyit: #c48d00; --daun: #2f8a3f; --daun-deep: #22692f; --lock: #cfc6ba; --shadow: rgba(60,40,20,.18);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f4f1ea; --bg2: #ebe6dc; --surface: #ffffff; --raise: #f7f3ec; --ink: #261d16; --muted: #6e6156; --line: #e0d8cc;
+  --bara: #e5621d; --bara-deep: #b4470e; --kunyit: #c48d00; --daun: #2f8a3f; --daun-deep: #22692f; --lock: #cfc6ba; --shadow: rgba(60,40,20,.18);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15.5px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.app { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 120px; }
+h1, h2, h3, .game { font-family: var(--f-game); font-weight: 400; letter-spacing: 0.01em; margin: 0; text-wrap: balance; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--kunyit); outline-offset: 3px; border-radius: 8px; }
+.muted { color: var(--muted); }
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* top bar */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.brand { font-family: var(--f-game); font-size: 1.15rem; color: var(--bara); }
+.sync { font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.sync::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--sync, var(--muted)); }
+
+/* player card */
+.player { background: linear-gradient(160deg, var(--raise), var(--surface)); border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 10px 30px var(--shadow); }
+.player-row { display: flex; align-items: center; gap: 14px; }
+.avatar { flex: none; width: 64px; height: 64px; border-radius: 18px; display: grid; place-items: center; background: radial-gradient(circle at 50% 70%, var(--bara), var(--bara-deep)); font-family: var(--f-game); font-size: 1.9rem; color: #fff; box-shadow: inset 0 -5px 0 rgba(0,0,0,.25); }
+.who { min-width: 0; }
+.who .lvl { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--kunyit); }
+.who h1 { font-size: 1.7rem; line-height: 1.1; }
+.xpbar { margin-top: 14px; }
+.xpbar .track { height: 14px; border-radius: 999px; background: var(--bg2); overflow: hidden; border: 1px solid var(--line); }
+.xpbar .fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--kunyit), var(--bara)); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.xpbar .meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+.chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.chip { background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; text-align: center; min-width: 0; }
+.chip b { display: block; font-family: var(--f-game); font-size: 1.3rem; line-height: 1.2; }
+.chip span { font-size: 0.72rem; color: var(--muted); }
+
+/* next quest */
+.next { margin-top: 16px; border-radius: 20px; padding: 18px; background: var(--surface); border: 2px solid var(--bara); position: relative; }
+.next .tag { display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bara); }
+.next h2 { font-size: 1.5rem; margin-top: 4px; }
+.next p { margin: 6px 0 14px; color: var(--muted); }
+.btn-big { display: block; width: 100%; border: 0; border-radius: 14px; padding: 14px 18px; background: var(--bara); color: #fff; font-family: var(--f-game); font-size: 1.2rem; letter-spacing: 0.02em; cursor: pointer; box-shadow: 0 5px 0 var(--bara-deep); transition: transform .08s, box-shadow .08s; }
+.btn-big:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--bara-deep); }
+.btn-big[disabled] { background: var(--lock); box-shadow: 0 5px 0 var(--line); color: var(--muted); cursor: not-allowed; }
+.btn-big.green { background: var(--daun-deep); box-shadow: 0 5px 0 #1d4a24; }
+.xp-pill { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-game); color: var(--kunyit); font-size: 1rem; }
+
+/* daily */
+.daily { margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px 18px; }
+.daily-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.daily h3 { font-size: 1.2rem; }
+.streak { font-family: var(--f-game); color: var(--bara); }
+.daily ul { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
+.check { display: flex; align-items: flex-start; gap: 10px; padding: 9px 10px; border-radius: 12px; background: var(--bg2); cursor: pointer; border: 1px solid transparent; }
+.check:hover { border-color: var(--line); }
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+.box { flex: none; width: 24px; height: 24px; border-radius: 8px; border: 2px solid var(--muted); display: grid; place-items: center; margin-top: 1px; transition: background .15s, border-color .15s; }
+.check input:checked + .box { background: var(--daun); border-color: var(--daun); }
+.check input:checked + .box::after { content: ""; width: 6px; height: 11px; border: solid var(--bg); border-width: 0 3px 3px 0; transform: rotate(45deg) translate(-1px, -1px); }
+.check input:checked ~ .lbl { color: var(--muted); text-decoration: line-through; }
+.check input:focus-visible + .box { outline: 3px solid var(--kunyit); outline-offset: 2px; }
+.lbl { min-width: 0; }
+.lbl small { display: block; color: var(--muted); font-size: 0.8rem; }
+
+/* map */
+.section-title { display: flex; justify-content: space-between; align-items: baseline; margin: 30px 0 4px; }
+.section-title h2 { font-size: 1.45rem; }
+.world { margin-top: 26px; }
+.world-banner { border-radius: 18px; padding: 14px 16px; background: var(--wc, var(--raise)); color: #fff; display: flex; gap: 12px; align-items: center; box-shadow: inset 0 -5px 0 rgba(0,0,0,.2); }
+.world.locked .world-banner { background: var(--lock); color: var(--muted); box-shadow: none; }
+.world-banner .wn { flex: none; width: 46px; height: 46px; border-radius: 14px; background: rgba(0,0,0,.2); display: grid; place-items: center; font-family: var(--f-game); font-size: 1.4rem; }
+.world-banner .wt { min-width: 0; flex: 1; }
+.world-banner h3 { font-size: 1.2rem; line-height: 1.15; }
+.world-banner small { display: block; opacity: .85; font-size: 0.8rem; font-weight: 600; }
+.world-banner .wp { flex: none; font-family: var(--f-game); font-size: 1.05rem; }
+.path { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 22px 0 6px; }
+.node-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; transform: translateX(var(--x, 0)); width: 150px; }
+.node { position: relative; width: 70px; height: 70px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; font-family: var(--f-game); font-size: 1.5rem; color: #fff; background: var(--wc, var(--bara)); box-shadow: 0 6px 0 rgba(0,0,0,.3); transition: transform .1s; }
+.node:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,.3); }
+.node.done { background: var(--daun-deep); }
+.node.done::after { content: ""; width: 14px; height: 26px; border: solid #fff; border-width: 0 6px 6px 0; transform: rotate(45deg) translate(-3px, -3px); position: absolute; }
+.node.done span { display: none; }
+.node.locked { background: var(--lock); color: var(--muted); box-shadow: 0 6px 0 rgba(0,0,0,.15); }
+.node.current { box-shadow: 0 6px 0 rgba(0,0,0,.3), 0 0 0 6px color-mix(in srgb, var(--kunyit) 45%, transparent); animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 6px 0 rgba(0,0,0,.3), 0 0 0 12px color-mix(in srgb, var(--kunyit) 10%, transparent); } }
+.node.boss { width: 88px; height: 88px; border-radius: 26px; font-size: 1.05rem; }
+.node.boss span { line-height: 1; }
+.lock-ico { width: 18px; height: 16px; border-radius: 4px; background: currentColor; position: relative; margin-top: 8px; }
+.lock-ico::before { content: ""; position: absolute; left: 3px; top: -10px; width: 8px; height: 10px; border: 3px solid currentColor; border-bottom: 0; border-radius: 8px 8px 0 0; }
+.node-label { font-size: 0.82rem; font-weight: 700; text-align: center; line-height: 1.25; }
+.node-label small { display: block; color: var(--kunyit); font-family: var(--f-game); font-weight: 400; font-size: 0.85rem; }
+.node-wrap.locked .node-label { color: var(--muted); }
+.node-wrap.locked .node-label small { color: var(--muted); }
+
+/* badges */
+.badges { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
+.badge { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: 0.66rem; font-weight: 700; color: var(--muted); line-height: 1.2; min-width: 0; }
+.medal { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-game); font-size: 1.2rem; background: var(--bg2); border: 2px dashed var(--line); color: var(--muted); }
+.badge.got { color: var(--ink); }
+.badge.got .medal { border: 3px solid var(--kunyit); background: var(--wc); color: #fff; box-shadow: 0 0 0 3px color-mix(in srgb, var(--kunyit) 25%, transparent); }
+
+/* sheet */
+.backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 20; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; max-width: 600px; margin: 0 auto; max-height: 88%; overflow-y: auto; background: var(--surface); border-radius: 24px 24px 0 0; border: 1px solid var(--line); border-bottom: 0; padding: 10px max(18px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px)); box-shadow: 0 -10px 40px var(--shadow); animation: up .25s cubic-bezier(.2,.8,.2,1); }
+@keyframes up { from { transform: translateY(40px); opacity: .4; } }
+.grab { width: 44px; height: 5px; border-radius: 5px; background: var(--line); margin: 0 auto 12px; }
+.sheet-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.sheet .wtag { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wc2, var(--bara)); }
+.sheet h2 { font-size: 1.65rem; margin-top: 2px; }
+.x { flex: none; width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg2); cursor: pointer; font-size: 1.3rem; line-height: 1; }
+.why { background: var(--bg2); border-radius: 14px; padding: 12px 14px; margin: 14px 0; }
+.why b { font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: block; }
+.steps-h { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; }
+.steps-h h3 { font-size: 1.05rem; }
+.sheet ul { list-style: none; padding: 0; margin: 8px 0 14px; display: grid; gap: 6px; }
+.tip { border-left: 4px solid var(--kunyit); padding: 8px 12px; margin: 0 0 16px; font-size: 0.92rem; background: color-mix(in srgb, var(--kunyit) 10%, transparent); border-radius: 0 10px 10px 0; }
+.tip b { color: var(--kunyit); }
+.locked-msg { background: var(--bg2); border-radius: 14px; padding: 14px; text-align: center; color: var(--muted); margin-bottom: 12px; }
+.undo { display: block; margin: 10px auto 0; background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 0.85rem; }
+
+/* toast + level up */
+.toast { position: fixed; left: 50%; top: calc(18px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); z-index: 40; background: var(--kunyit); color: #2a1c00; font-family: var(--f-game); font-size: 1.3rem; padding: 8px 18px; border-radius: 999px; box-shadow: 0 8px 24px var(--shadow); animation: pop .35s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { from { transform: translateX(-50%) scale(.6); opacity: 0; } }
+.modal { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.6); }
+.modal-card { width: min(380px, 100%); background: var(--surface); border-radius: 24px; padding: 26px 22px 20px; text-align: center; border: 2px solid var(--kunyit); animation: pop2 .4s cubic-bezier(.2,1.5,.4,1); }
+@keyframes pop2 { from { transform: scale(.7); opacity: 0; } }
+.modal-card .big { font-family: var(--f-game); font-size: 2.2rem; color: var(--kunyit); line-height: 1.1; }
+.modal-card h2 { font-size: 1.5rem; margin: 8px 0 6px; }
+.modal-card p { color: var(--muted); margin: 0 0 18px; }
+.medal-xl { width: 96px; height: 96px; margin: 0 auto 10px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-game); font-size: 2.4rem; color: #fff; border: 5px solid var(--kunyit); background: var(--wc, var(--bara)); }
+canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+/* settings */
+.settings { margin-top: 34px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px 18px; }
+.settings h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.row:first-of-type { border-top: 0; }
+.row p { margin: 0; font-size: 0.9rem; }
+.row small { display: block; color: var(--muted); font-size: 0.8rem; }
+.switch { flex: none; width: 52px; height: 30px; border-radius: 999px; border: 0; background: var(--lock); position: relative; cursor: pointer; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .15s; }
+.switch[aria-checked="true"] { background: var(--daun-deep); }
+.switch[aria-checked="true"]::after { left: 25px; }
+.btn-sm { flex: none; border: 1px solid var(--line); background: var(--bg2); border-radius: 10px; padding: 7px 12px; cursor: pointer; font-size: 0.85rem; font-weight: 700; }
+.btn-sm.danger { border-color: var(--bara); color: var(--bara); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">Quest Dapur Malika</div>
+    <div class="sync" id="sync">Menyiapkan…</div>
+  </div>
+
+  <section class="player" aria-label="Status pemain">
+    <div class="player-row">
+      <div class="avatar" id="avatar">1</div>
+      <div class="who">
+        <div class="lvl" id="lvl-no">Level 1</div>
+        <h1 id="lvl-name">Calon Juragan</h1>
+      </div>
+    </div>
+    <div class="xpbar">
+      <div class="track" role="progressbar" aria-label="XP menuju level berikutnya" id="xp-track" aria-valuemin="0" aria-valuemax="100"><div class="fill" id="xp-fill"></div></div>
+      <div class="meta tnum"><span id="xp-now">0 XP</span><span id="xp-next">150 XP ke level 2</span></div>
+    </div>
+    <div class="chips">
+      <div class="chip"><b class="tnum" id="c-quest">0</b><span>quest selesai</span></div>
+      <div class="chip"><b class="tnum" id="c-badge">0/10</b><span>lencana</span></div>
+      <div class="chip"><b class="tnum" id="c-streak">0</b><span>hari beruntun</span></div>
+    </div>
+  </section>
+
+  <section class="next" id="next" aria-live="polite"></section>
+
+  <section class="daily" id="daily" hidden aria-label="Misi harian"></section>
+
+  <div class="section-title"><h2>Lencana</h2><span class="muted" style="font-size:.85rem">1 per dunia</span></div>
+  <div class="badges" id="badges"></div>
+
+  <div class="section-title"><h2>Peta petualangan</h2><span class="muted" style="font-size:.85rem">10 dunia</span></div>
+  <div id="map"></div>
+
+  <section class="settings" aria-label="Pengaturan">
+    <h3>Pengaturan</h3>
+    <div class="row">
+      <p>Mode bebas<small>Buka semua quest tanpa harus urut. Cocok kalau ada langkah yang sudah kamu kerjakan duluan.</small></p>
+      <button class="switch" id="free" role="switch" aria-checked="false" aria-label="Mode bebas"></button>
+    </div>
+    <div class="row">
+      <p>Ulang dari awal<small>Menghapus semua progres, XP, dan lencana.</small></p>
+      <button class="btn-sm danger" id="reset" type="button">Reset</button>
+    </div>
+  </section>
+</div>
+
+<div id="layer"></div>
+
+<script>
+/* ======================= DATA QUEST ======================= */
+const WORLDS = [
+  { id: "w1", name: "Riset Wilayah", when: "Minggu −6", color: "#7a5cc4", short: "Riset", quests: [
+    { id: "pilih-area", t: "Pilih area jualan", xp: 40, why: "Lokasi menentukan berapa banyak orang yang bisa pesan. Kamu tidak butuh pinggir jalan, yang penting dekat banyak pembeli.",
+      steps: ["Buka GoFood, GrabFood, dan ShopeeFood dari 2–3 calon lokasi", "Catat area yang banyak kantor, kos, atau kampus dalam radius 3 km", "Pilih 1 area utama dan 1 cadangan"], tip: "Cek aplikasi jam 12 siang: area yang banyak toko 'ramai' tandanya permintaan tinggi." },
+    { id: "kompetitor", t: "Mata-mata kompetitor", xp: 50, why: "Tahu harga dan menu laris pesaing bikin kamu bisa tampil beda dan tidak asal pasang harga.",
+      steps: ["Cari 10 toko nasi bakar atau ayam bakar terdekat di aplikasi", "Catat harga, menu terlaris, rating, dan kualitas fotonya", "Baca ulasan bintang 1–3: apa keluhan pembeli?", "Tulis 3 hal yang bisa kamu lakukan lebih baik"], tip: "Pesan 2 menu kompetitor terlaris. Rasakan porsi, rasa, dan kemasannya." },
+    { id: "nama-brand", t: "Beri nama brand", xp: 40, why: "Nama yang mudah diingat dan dicari bikin orang gampang pesan ulang.",
+      steps: ["Buat 5 calon nama", "Cek nama belum dipakai di aplikasi ojol dan Instagram", "Tanya 5 orang mana yang paling mudah diingat", "Amankan username Instagram dan TikTok"], tip: "Nama yang langsung menyebut menu (misal 'Nasi Bakar …') lebih mudah muncul di pencarian." },
+    { id: "modal", t: "Kunci modal", xp: 50, why: "Modal yang jelas mencegah usaha berhenti di tengah jalan karena kehabisan uang.",
+      steps: ["Buka spreadsheet HPP_Proyeksi, sheet Modal Awal, sesuaikan harga di kotamu", "Tentukan sumber dana (tabungan, partner, pinjaman)", "Sisihkan dana cadangan minimal 2 bulan biaya tetap", "Buka rekening khusus usaha"], tip: "Target modal skenario dasar ±Rp33,5 juta. Beli alat bekas bisa menghemat 30–50%." },
+    { id: "boss-1", boss: true, t: "Keputusan GO!", xp: 120, why: "Bos pertama: berkomitmen. Setelah ini kamu resmi memulai.",
+      steps: ["Baca master plan sekali dari awal sampai akhir", "Tentukan tanggal target buka (±6 minggu dari sekarang)", "Ceritakan rencana ke keluarga atau partner dan minta dukungan"] },
+  ]},
+  { id: "w2", name: "Markas Dapur", when: "Minggu −5", color: "#3d7fb8", short: "Markas", quests: [
+    { id: "survei-kontrakan", t: "Berburu kontrakan", xp: 50, why: "Kontrakan yang salah (tanpa ventilasi, listrik kecil) bikin repot dan bisa diusir tetangga.",
+      steps: ["Survei minimal 3 kontrakan di area pilihan", "Cek air, daya listrik, jendela atau ventilasi", "Pastikan motor driver mudah parkir di depan", "Tanya langsung: boleh dipakai usaha masak?"], tip: "Bawa meteran. Ukur apakah denah U (freezer, meja, kompor) muat." },
+    { id: "deal-sewa", t: "Deal sewa", xp: 50, why: "Izin tertulis melindungimu kalau nanti ada komplain.",
+      steps: ["Negosiasi harga dan sistem bayar (bulanan lebih aman di awal)", "Minta izin tertulis pemilik untuk usaha masak", "Foto kondisi ruangan sebelum dipakai"], tip: "Kalau pemilik minta bayar 6–12 bulan di muka, ambil dari dana cadangan dan catat." },
+    { id: "rt-rw", t: "Kenalan RT/RW", xp: 30, why: "Tetangga yang kenal kamu lebih memaklumi dan bisa jadi pelanggan pertama.",
+      steps: ["Datang ke RT, lapor rencana usaha", "Simpan nomor kontak RT/RW", "Tanya aturan buang sampah dan jam tenang"] },
+    { id: "nib", t: "Urus NIB", xp: 40, why: "NIB syarat daftar aplikasi ojol, izin PIRT, dan halal.",
+      steps: ["Daftar akun di oss.go.id", "Isi data usaha dan pilih kegiatan usaha makanan/minuman", "Unduh dan simpan file NIB"], tip: "Gratis. Kalau bingung, minta bantuan di kantor kecamatan atau PLUT UMKM." },
+    { id: "boss-2", boss: true, t: "Kunci markas di tangan", xp: 120, why: "Bos kedua: kamu punya tempat dan identitas usaha resmi.",
+      steps: ["Kunci kontrakan sudah diterima", "NIB sudah terbit", "Rekening usaha aktif"] },
+  ]},
+  { id: "w3", name: "Bangun Dapur", when: "Minggu −4", color: "#c8632a", short: "Dapur", quests: [
+    { id: "rapikan", t: "Rapikan ruangan", xp: 40, why: "Dapur bersih dan terang membuat kerja cepat dan lolos pengecekan PIRT.",
+      steps: ["Bersihkan total lantai, dinding, plafon", "Pasang keramik dinding di area kompor (opsional)", "Cek instalasi listrik dan pasang lampu terang"] },
+    { id: "exhaust", t: "Pasang exhaust & ventilasi", xp: 50, why: "Asap adalah musuh nomor satu dapur bakar di kontrakan.",
+      steps: ["Pasang exhaust fan di atas kompor dan grill", "Pastikan ada aliran udara silang (jendela atau lubang angin)", "Tes: nyalakan kompor dan bakar 1 potong ayam, asap harus keluar"], tip: "Pakai panggangan gas atau griddle, jangan arang di dalam ruangan." },
+    { id: "belanja-alat", t: "Belanja alat", xp: 60, why: "Alat yang tepat = masak cepat. Alat bekas yang bagus = modal hemat.",
+      steps: ["Pakai daftar di sheet Modal Awal sebagai daftar belanja", "Cari freezer dan meja stainless bekas di marketplace", "Beli kompor, grill, rice cooker, peralatan masak", "Beli APAR 3 kg"], tip: "Cek freezer bekas: nyalakan 1 jam, harus sudah dingin." },
+    { id: "tata-layout", t: "Tata layout U", xp: 50, why: "Alur satu arah bikin 2 orang tidak saling tabrak saat jam sibuk.",
+      steps: ["Susun alat sesuai denah: belakang masak, kiri prep, kanan packing", "Sisakan jalur jalan ±180 cm di tengah", "Taruh rak pickup di samping pintu"] },
+    { id: "boss-3", boss: true, t: "Dapur siap tempur", xp: 150, why: "Bos ketiga: dapur fisik selesai.",
+      steps: ["Semua alat dites dan berfungsi", "APAR terpasang dan kamu tahu cara pakainya", "Foto dapur 'sebelum vs sesudah' untuk konten"] },
+  ]},
+  { id: "w4", name: "Lab Resep", when: "Minggu −3", color: "#b8862a", short: "Resep", quests: [
+    { id: "bumbu-dasar", t: "Kuasai bumbu dasar", xp: 60, why: "3 bumbu dasar dipakai di hampir semua menu. Masak sekali, pakai berkali-kali.",
+      steps: ["Masak bumbu kuning untuk ungkep ayam", "Masak bumbu merah untuk isian dan sambal", "Masak bumbu putih + santan untuk nasi gurih", "Catat takaran tiap bumbu dan tes daya tahannya di kulkas"] },
+    { id: "nasi-bakar", t: "Nasi bakar 4 varian", xp: 60, why: "Nasi bakar adalah menu paling untung dan paling mudah disiapkan duluan.",
+      steps: ["Masak ayam suwir, tongkol, cumi asin, teri pete masing-masing 2 kali", "Timbang nasi 150 g dan isian 30–50 g", "Bungkus daun pisang dan bakar sampai wangi", "Foto hasil terbaik tiap varian"] },
+    { id: "ayam-bakar", t: "Ayam bakar 3 bumbu", xp: 60, why: "Paket ayam adalah menu dengan omzet terbesar.",
+      steps: ["Ungkep ayam ¼ ekor dengan bumbu kuning", "Uji olesan kecap, madu pedas, dan taliwang", "Catat waktu bakar sampai matang dan cantik", "Buat sambal dan lalapan pendamping"] },
+    { id: "kartu-resep", t: "Kartu resep", xp: 40, why: "Rasa harus sama walaupun yang masak beda orang.",
+      steps: ["Tulis gramasi tiap menu", "Tambahkan foto hasil jadi", "Tempel di dinding dapur"] },
+    { id: "hpp-asli", t: "Hitung HPP asli", xp: 50, why: "Harga jual yang salah = capek tapi tidak untung.",
+      steps: ["Belanja bahan dan catat harga sebenarnya", "Masukkan ke kalkulator HPP di master plan atau spreadsheet", "Tetapkan harga jual di aplikasi (sudah termasuk komisi ±20%)"], tip: "Targetnya untung kotor ±Rp11.000 per order." },
+    { id: "boss-4", boss: true, t: "Resep terkunci", xp: 150, why: "Bos keempat: produkmu siap dijual.",
+      steps: ["Setiap menu rasanya konsisten 3 kali berturut-turut", "HPP dan harga jual sudah final"] },
+  ]},
+  { id: "w5", name: "Uji Rasa & Branding", when: "Minggu −2", color: "#c24a6b", short: "Brand", quests: [
+    { id: "tes-rasa", t: "Tes rasa 20 orang", xp: 60, why: "Lebih baik dapat kritik dari tetangga daripada bintang 1 dari pembeli.",
+      steps: ["Bagikan sampel ke tetangga, teman, anak kos", "Minta nilai 1–10 dan komentar singkat", "Perbaiki 2 masukan yang paling sering muncul"] },
+    { id: "tes-kemasan", t: "Tes kemasan", xp: 40, why: "Makanan bocor atau dingin = ulasan buruk.",
+      steps: ["Simulasi pengiriman 20 menit naik motor", "Cek: tidak bocor, nasi masih hangat, sambal aman", "Pilih kemasan final dan catat supplier-nya"] },
+    { id: "logo", t: "Logo & stiker", xp: 40, why: "Kemasan bermerek terlihat profesional dan mudah diingat.",
+      steps: ["Buat logo sederhana (Canva cukup)", "Cetak stiker segel kemasan", "Cetak kartu terima kasih + ajakan memberi ulasan"] },
+    { id: "foto-menu", t: "Foto menu kece", xp: 60, why: "Foto adalah alasan nomor satu orang klik menu di aplikasi.",
+      steps: ["Foto siang hari dekat jendela, tanpa flash", "Close-up, tampakkan isian dan porsi", "1 foto per menu, rasio kotak 1:1"], tip: "Belah nasi bakar sedikit supaya isiannya terlihat." },
+    { id: "sosmed", t: "Nyalakan sosmed", xp: 30, why: "Kumpulkan calon pembeli sebelum buka.",
+      steps: ["Lengkapi profil Instagram dan TikTok", "Posting 3 konten 'segera buka' (proses masak, dapur, menu)"] },
+    { id: "boss-5", boss: true, t: "Siap tampil", xp: 120, why: "Bos kelima: brand dan produk siap dipamerkan.",
+      steps: ["Semua foto menu dan logo sudah jadi", "Kemasan lolos tes kirim"] },
+  ]},
+  { id: "w6", name: "Buka Toko Online", when: "Minggu −1", color: "#2f8a7a", short: "Toko", quests: [
+    { id: "daftar-app", t: "Daftar 3 aplikasi", xp: 80, why: "Makin banyak aplikasi, makin banyak kesempatan dapat order.",
+      steps: ["Daftar GoFood lewat GoBiz", "Daftar GrabFood lewat GrabMerchant", "Daftar ShopeeFood", "Upload foto menu, deskripsi, dan jam buka 10.00–21.00"], tip: "Siapkan KTP, NIB, rekening usaha, foto menu, dan foto tempat." },
+    { id: "wa-bisnis", t: "Setup WhatsApp Business", xp: 30, why: "Order lewat WA tanpa komisi, untung lebih besar.",
+      steps: ["Buat katalog menu dengan harga WA", "Pasang pesan sambutan otomatis", "Siapkan label pelanggan (baru, langganan)"] },
+    { id: "pirt-halal", t: "Ajukan PIRT & halal", xp: 50, why: "Label halal dan PIRT menaikkan kepercayaan pembeli.",
+      steps: ["Ajukan SPP-IRT lewat OSS", "Daftar sertifikat halal self-declare (BPJPH)", "Simpan bukti pengajuan"] },
+    { id: "helper", t: "Rekrut & latih helper", xp: 50, why: "Kamu tidak bisa masak, packing, dan balas chat sekaligus di jam sibuk.",
+      steps: ["Rekrut 1 helper", "Latih SOP kebersihan dan packing", "Latihan bersama selama 1 hari penuh"] },
+    { id: "simulasi", t: "Simulasi jam sibuk", xp: 60, why: "Lebih baik kacau saat latihan daripada saat order sungguhan.",
+      steps: ["Buat 10 pesanan pura-pura berturut-turut", "Catat waktu tiap pesanan, target ≤ 12 menit", "Cari titik macet dan perbaiki"] },
+    { id: "boss-6", boss: true, t: "Grand Opening", xp: 200, why: "Bos keenam: toko resmi buka!",
+      steps: ["Toko aktif di semua aplikasi", "Promo pembukaan sudah diatur", "Tombol 'Buka toko' ditekan untuk pertama kali"] },
+  ]},
+  { id: "w7", name: "Soft Launch", when: "Bulan 1", color: "#d0582c", short: "Launch", daily: true, quests: [
+    { id: "order-1", t: "Order pertama", xp: 80, why: "Momen bersejarah. Layani dengan sempurna.",
+      steps: ["Terima order dalam kurang dari 1 menit", "Packing rapi dengan stiker dan kartu terima kasih", "Foto pesanan pertama untuk kenang-kenangan"] },
+    { id: "voucher", t: "Sebar voucher 3 km", xp: 50, why: "Pelanggan pertama biasanya datang dari sekitar dapur.",
+      steps: ["Cetak 200 brosur atau voucher WhatsApp", "Sebar ke kos, kantor, dan perumahan sekitar", "Titip di warung atau pos ronda"] },
+    { id: "ulasan-20", t: "Kumpulkan 20 ulasan", xp: 60, why: "Toko baru dengan banyak ulasan bagus naik di pencarian.",
+      steps: ["Sisipkan kartu ajakan ulasan di setiap pesanan", "Balas semua ulasan dengan ramah", "Capai 20 ulasan"] },
+    { id: "buku-7", t: "Pembukuan 7 hari", xp: 50, why: "Tanpa catatan, kamu tidak tahu untung atau rugi.",
+      steps: ["Catat omzet dan belanja setiap malam selama 7 hari", "Bandingkan dengan proyeksi bulan 1"] },
+    { id: "boss-7", boss: true, t: "Tembus 15 order/hari", xp: 150, why: "Bos ketujuh: target bulan pertama.",
+      steps: ["Rata-rata 15 order/hari selama 1 minggu", "Rating toko ≥ 4,5"] },
+  ]},
+  { id: "w8", name: "Lewati BEP", when: "Bulan 2–3", color: "#5f8a2f", short: "BEP", quests: [
+    { id: "menu-eng", t: "Menu engineering", xp: 60, why: "Fokus ke menu yang laku dan untung, buang yang membebani.",
+      steps: ["Lihat data penjualan per menu sebulan", "Kelompokkan: Star, Plowhorse, Puzzle, Dog", "Hapus 1 menu 'Dog', perbaiki foto 1 menu 'Puzzle'"] },
+    { id: "loyal-wa", t: "Program pelanggan setia", xp: 50, why: "Pelanggan lama lebih murah dipertahankan daripada cari pelanggan baru.",
+      steps: ["Simpan nomor semua pembeli WhatsApp", "Jalankan program 'beli 10 gratis 1'", "Kirim info menu atau promo seminggu sekali"] },
+    { id: "konten", t: "Konten rutin 4 minggu", xp: 50, why: "Konsisten lebih penting daripada viral.",
+      steps: ["Buat 3 konten per minggu", "Lakukan selama 4 minggu berturut-turut"], tip: "Video nasi bakar dibuka dan asap mengepul paling disukai." },
+    { id: "rombongan", t: "Pesanan rombongan", xp: 60, why: "Satu order nasi kotak bisa setara satu hari penjualan biasa.",
+      steps: ["Tawarkan nasi kotak ke kantor, arisan, pengajian", "Dapatkan 1 order minimal 20 kotak"] },
+    { id: "boss-8", boss: true, t: "Tembus BEP", xp: 200, why: "Bos kedelapan: usahamu mulai menghidupi diri sendiri.",
+      steps: ["Rata-rata ≥ 18 order/hari selama sebulan", "Laba bersih bulan ini positif"] },
+  ]},
+  { id: "w9", name: "Ekspansi Brand", when: "Bulan 4–6", color: "#3c6fd0", short: "Ekspansi", quests: [
+    { id: "helper-2", t: "Rekrut helper ke-2", xp: 50, why: "Di atas 50 order/hari, satu orang khusus grill dan satu khusus packing.",
+      steps: ["Rekrut helper kedua", "Latih pakai kartu resep dan SOP"] },
+    { id: "brand-2", t: "Buka brand ke-2", xp: 80, why: "Satu dapur, dua toko di aplikasi = muncul dua kali di pencarian.",
+      steps: ["Tentukan nama dan menu fokus (misal khusus ayam bakar)", "Foto menu dan daftarkan di aplikasi", "Pastikan bahannya sama dengan brand pertama"] },
+    { id: "supplier", t: "Negosiasi supplier", xp: 50, why: "Volume sudah besar, saatnya minta harga lebih baik.",
+      steps: ["Minta penawaran dari 2–3 supplier ayam", "Negosiasi harga langganan", "Update HPP di kalkulator"] },
+    { id: "rating-47", t: "Rating 4,7", xp: 60, why: "Rating tinggi = lebih sering direkomendasikan aplikasi.",
+      steps: ["Analisis 10 ulasan terakhir yang kurang bagus", "Perbaiki penyebab utamanya", "Capai rating ≥ 4,7"] },
+    { id: "boss-9", boss: true, t: "50 order/hari", xp: 200, why: "Bos kesembilan: dapur kecil, omzet besar.",
+      steps: ["Rata-rata 50 order/hari selama 1 bulan"] },
+  ]},
+  { id: "w10", name: "Juragan", when: "Bulan 7–12", color: "#b0832a", short: "Juragan", quests: [
+    { id: "balik-modal", t: "Balik modal", xp: 150, why: "Semua uang yang kamu tanam sudah kembali.",
+      steps: ["Hitung laba kumulatif sejak buka", "Laba kumulatif ≥ modal awal"], tip: "Di skenario dasar, ini terjadi sekitar bulan ke-7." },
+    { id: "brand-3", t: "Brand ke-3 atau catering", xp: 80, why: "Tambah sumber omzet dari dapur yang sama.",
+      steps: ["Pilih: brand rice bowl, nasi kotak, atau catering mingguan", "Uji coba 1 bulan"] },
+    { id: "sop", t: "Dapur jalan tanpa kamu", xp: 60, why: "Juragan sejati bisa libur tanpa dapur kacau.",
+      steps: ["Lengkapi SOP tertulis semua posisi", "Coba libur 1 hari penuh, dapur tetap jalan"] },
+    { id: "darurat", t: "Dana darurat", xp: 50, why: "Melindungi usaha dari kejadian tak terduga.",
+      steps: ["Sisihkan 5–10% laba setiap bulan", "Kumpulkan setara 3 bulan biaya tetap"] },
+    { id: "boss-10", boss: true, t: "Juragan Dapur", xp: 300, why: "Bos terakhir. Kamu sudah menamatkan game ini!",
+      steps: ["Rata-rata 90 order/hari", "Tulis rencana dapur kedua"] },
+  ]},
+];
+const DAILY = [
+  ["belanja", "Belanja bahan segar", "Ayam, sayur, daun pisang"],
+  ["prep", "Prep selesai sebelum jam 10", "Nasi, ungkep, sambal, nasi bakar siap bakar"],
+  ["buka", "Buka toko tepat waktu", "Semua aplikasi jam 10.00"],
+  ["ulasan", "Balas semua ulasan baru", "Terima kasih atau minta maaf + solusi"],
+  ["catat", "Catat omzet & belanja", "Sebelum tidur"],
+  ["bersih", "Bersihkan dapur", "Lantai, meja, kompor"],
+];
+const DAILY_XP = 5, DAILY_BONUS = 10;
+const LEVELS = [
+  [0, "Calon Juragan"], [150, "Perintis Dapur"], [400, "Tukang Racik"], [750, "Koki Bakar"], [1150, "Pejuang Order"],
+  [1650, "Juragan Muda"], [2250, "Juragan Dapur"], [3000, "Raja Nasi Bakar"],
+];
+WORLDS.forEach((w, wi) => w.quests.forEach((q, qi) => { q.w = wi; q.qi = qi; }));
+const ALL = WORLDS.flatMap(w => w.quests);
+const QMAP = Object.fromEntries(ALL.map(q => [q.id, q]));
+
+/* ======================= STATE ======================= */
+const LS = "dapur-malika-quest-v1";
+const blank = () => ({ v: 1, done: {}, steps: {}, free: false, daily: { date: "", done: {} }, dailyXp: 0, streak: 0, lastFull: "" });
+let S = blank();
+try { const s = JSON.parse(localStorage.getItem(LS) || "null"); if (s && s.v === 1) S = Object.assign(blank(), s); } catch (e) {}
+let db = null, ref = null, writing = Promise.resolve(), timer = null, dirty = false;
+
+const today = () => new Date().toLocaleDateString("sv");
+const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toLocaleDateString("sv"); };
+
+function persist() {
+  try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+  if (!ref) return;
+  dirty = true;
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    const body = JSON.parse(JSON.stringify(S));
+    writing = writing.then(() => ref.set(body)).then(() => { dirty = false; setSync("akun"); }).catch(() => setSync("lokal"));
+  }, 600);
+}
+function setSync(mode) {
+  const el = document.getElementById("sync");
+  if (mode === "akun") { el.textContent = "Tersimpan di akun"; el.style.setProperty("--sync", "var(--daun)"); }
+  else { el.textContent = "Tersimpan di perangkat ini"; el.style.setProperty("--sync", "var(--kunyit)"); }
+}
+
+/* ======================= LOGIC ======================= */
+const isDone = id => !!S.done[id];
+const worldDone = wi => WORLDS[wi].quests.every(q => isDone(q.id));
+const bossOf = wi => WORLDS[wi].quests.find(q => q.boss);
+function worldOpen(wi) { return S.free || wi === 0 || isDone(bossOf(wi - 1).id); }
+function questOpen(q) {
+  if (S.free) return true;
+  if (!worldOpen(q.w)) return false;
+  if (q.boss) return WORLDS[q.w].quests.every(x => x.boss || isDone(x.id));
+  return true;
+}
+function totalXp() { return ALL.reduce((s, q) => s + (isDone(q.id) ? q.xp : 0), 0) + (S.dailyXp || 0); }
+function levelOf(xp) { let i = 0; LEVELS.forEach(([t], k) => { if (xp >= t) i = k; }); return i; }
+function nextQuest() { return ALL.find(q => !isDone(q.id) && questOpen(q)) || null; }
+function stepsOf(q) { return q.steps.map((_, i) => !!S.steps[q.id + "." + i]); }
+const dailyOn = () => S.free || isDone("boss-6");
+
+/* ======================= RENDER ======================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ZIG = [0, 46, 70, 46, 0, -46, -70, -46];
+
+function render() {
+  const xp = totalXp(), li = levelOf(xp), cur = LEVELS[li][0], nxt = LEVELS[li + 1];
+  $("avatar").textContent = li + 1;
+  $("lvl-no").textContent = "Level " + (li + 1);
+  $("lvl-name").textContent = LEVELS[li][1];
+  const pctv = nxt ? Math.round((xp - cur) / (nxt[0] - cur) * 100) : 100;
+  $("xp-fill").style.width = pctv + "%";
+  $("xp-track").setAttribute("aria-valuenow", pctv);
+  $("xp-now").textContent = xp.toLocaleString("id-ID") + " XP";
+  $("xp-next").textContent = nxt ? (nxt[0] - xp).toLocaleString("id-ID") + " XP ke level " + (li + 2) : "Level maksimal!";
+  $("c-quest").textContent = ALL.filter(q => isDone(q.id)).length + "/" + ALL.length;
+  $("c-badge").textContent = WORLDS.filter((_, i) => isDone(bossOf(i).id)).length + "/10";
+  const streakAlive = S.lastFull === today() || S.lastFull === yesterday();
+  $("c-streak").textContent = streakAlive ? S.streak : 0;
+  $("free").setAttribute("aria-checked", String(!!S.free));
+
+  // next quest
+  const nq = nextQuest();
+  if (nq) {
+    const w = WORLDS[nq.w], st = stepsOf(nq), n = st.filter(Boolean).length;
+    $("next").innerHTML = `<span class="tag">${nq.boss ? "Lawan bos" : "Quest berikutnya"} · Dunia ${nq.w + 1}: ${esc(w.name)}</span>
+      <h2>${esc(nq.t)}</h2><p>${esc(nq.why)}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span class="muted tnum" style="font-size:.85rem">${n}/${st.length} langkah</span><span class="xp-pill">+${nq.xp} XP</span></div>
+      <button class="btn-big" type="button" data-open="${nq.id}">${n ? "Lanjutkan quest" : "Mulai quest"}</button>`;
+  } else {
+    $("next").innerHTML = `<span class="tag">Tamat</span><h2>Semua quest selesai!</h2><p>Kamu sudah jadi Juragan Dapur. Saatnya rencanakan dapur kedua.</p>`;
+  }
+
+  // daily
+  const dEl = $("daily");
+  if (dailyOn()) {
+    if (S.daily.date !== today()) S.daily = { date: today(), done: {} };
+    const n = DAILY.filter(d => S.daily.done[d[0]]).length;
+    dEl.hidden = false;
+    dEl.innerHTML = `<div class="daily-head"><h3>Misi harian</h3><span class="streak tnum">${n}/${DAILY.length}</span></div>
+      <p class="muted" style="margin:4px 0 0;font-size:.85rem">+${DAILY_XP} XP per misi, bonus +${DAILY_BONUS} XP kalau semua selesai. Reset tiap hari.</p>
+      <ul>${DAILY.map(([id, t, s]) => `<li><label class="check" for="d-${id}"><input type="checkbox" id="d-${id}" data-daily="${id}" ${S.daily.done[id] ? "checked" : ""}><span class="box"></span><span class="lbl">${esc(t)}<small>${esc(s)}</small></span></label></li>`).join("")}</ul>`;
+  } else dEl.hidden = true;
+
+  // badges
+  $("badges").innerHTML = WORLDS.map((w, i) => `<div class="badge ${isDone(bossOf(i).id) ? "got" : ""}" style="--wc:${w.color}"><div class="medal">${i + 1}</div>${esc(w.short)}</div>`).join("");
+
+  // map
+  let k = 0;
+  $("map").innerHTML = WORLDS.map((w, wi) => {
+    const open = worldOpen(wi), dn = w.quests.filter(q => isDone(q.id)).length;
+    const nodes = w.quests.map(q => {
+      const x = ZIG[k++ % ZIG.length], done = isDone(q.id), qo = questOpen(q);
+      const cls = done ? "done" : !qo ? "locked" : (nq && nq.id === q.id ? "current" : "");
+      const inner = done ? "<span></span>" : !qo ? `<span class="lock-ico" aria-hidden="true"></span>` : `<span>${q.boss ? "BOS" : q.qi + 1}</span>`;
+      return `<div class="node-wrap ${qo || done ? "" : "locked"}" style="--x:${x}px">
+        <button class="node ${q.boss ? "boss" : ""} ${cls}" type="button" data-open="${q.id}" aria-label="${esc(q.t)}${done ? ", selesai" : !qo ? ", terkunci" : ""}">${inner}</button>
+        <div class="node-label">${esc(q.t)}<small>+${q.xp} XP</small></div></div>`;
+    }).join("");
+    return `<div class="world ${open ? "" : "locked"}" style="--wc:${w.color}">
+      <div class="world-banner"><div class="wn">${wi + 1}</div><div class="wt"><small>Dunia ${wi + 1} · ${esc(w.when)}</small><h3>${esc(w.name)}</h3></div><div class="wp tnum">${dn}/${w.quests.length}</div></div>
+      <div class="path">${nodes}</div></div>`;
+  }).join("");
+}
+
+/* ======================= SHEET ======================= */
+let openId = null;
+function openSheet(id) {
+  const q = QMAP[id]; if (!q) return;
+  openId = id;
+  const w = WORLDS[q.w], done = isDone(id), qo = questOpen(q), st = stepsOf(q), all = st.every(Boolean);
+  let body;
+  if (!qo && !done) {
+    const need = !worldOpen(q.w) ? `Kalahkan bos Dunia ${q.w} dulu.` : "Selesaikan semua quest lain di dunia ini dulu untuk melawan bos.";
+    body = `<div class="locked-msg"><strong>Terkunci.</strong> ${need}<br><span style="font-size:.85rem">Atau nyalakan Mode bebas di Pengaturan.</span></div>`;
+  } else {
+    body = `<div class="steps-h"><h3>Langkah-langkah</h3><span class="muted tnum" id="sc">${st.filter(Boolean).length}/${st.length}</span></div>
+      <ul>${q.steps.map((s, i) => `<li><label class="check" for="s-${i}"><input type="checkbox" id="s-${i}" data-step="${i}" ${st[i] ? "checked" : ""} ${done ? "disabled" : ""}><span class="box"></span><span class="lbl">${esc(s)}</span></label></li>`).join("")}</ul>
+      ${q.tip ? `<p class="tip"><b>Tips:</b> ${esc(q.tip)}</p>` : ""}
+      ${done ? `<button class="btn-big green" type="button" disabled style="background:var(--daun-deep);color:#fff;box-shadow:0 5px 0 #1d4a24">Selesai · +${q.xp} XP</button><button class="undo" type="button" data-undo="${id}">Batalkan selesai</button>`
+             : `<button class="btn-big" type="button" id="claim" ${all ? "" : "disabled"}>${all ? `Klaim +${q.xp} XP` : "Centang semua langkah dulu"}</button>`}`;
+  }
+  $("layer").innerHTML = `<div class="backdrop" data-close></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" style="--wc2:${w.color}">
+      <div class="grab"></div>
+      <div class="sheet-top"><div><div class="wtag">Dunia ${q.w + 1} · ${esc(w.name)} · ${esc(w.when)}</div><h2 id="sh-t">${q.boss ? "Bos: " : ""}${esc(q.t)}</h2></div>
+        <button class="x" type="button" data-close aria-label="Tutup">×</button></div>
+      <div class="why"><b>Kenapa penting</b>${esc(q.why)}</div>
+      ${body}
+    </div>`;
+  const first = $("layer").querySelector(".sheet input:not([disabled]), .sheet .x");
+  first && first.focus({ preventScroll: true });
+}
+function closeSheet() { $("layer").innerHTML = ""; openId = null; }
+
+function claim(id) {
+  const q = QMAP[id], before = levelOf(totalXp());
+  S.done[id] = Date.now();
+  persist(); closeSheet(); render();
+  toast(`+${q.xp} XP`); burst(q.boss ? 160 : 70);
+  const after = levelOf(totalXp());
+  if (q.boss) setTimeout(() => modal(`<div class="medal-xl" style="--wc:${WORLDS[q.w].color}">${q.w + 1}</div><div class="big">Bos kalah!</div><h2>Lencana ${esc(WORLDS[q.w].name)}</h2><p>${q.w < 9 ? `Dunia ${q.w + 2}: ${esc(WORLDS[q.w + 1].name)} terbuka.` : "Kamu menamatkan Quest Dapur Malika!"}${after > before ? `<br>Naik ke level ${after + 1}: <strong>${LEVELS[after][1]}</strong>` : ""}</p><button class="btn-big" type="button" data-modal-close>Lanjut</button>`), 450);
+  else if (after > before) setTimeout(() => modal(`<div class="big">Naik level!</div><h2>Level ${after + 1}: ${LEVELS[after][1]}</h2><p>Terus kerjakan quest untuk jadi Raja Nasi Bakar.</p><button class="btn-big" type="button" data-modal-close>Mantap</button>`), 450);
+}
+
+function toast(t) { const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 1500); }
+function modal(html) { const d = document.createElement("div"); d.className = "modal"; d.innerHTML = `<div class="modal-card" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(d); d.querySelector("button")?.focus(); }
+
+/* ======================= CONFETTI ======================= */
+const cv = $("fx"), cx = cv.getContext("2d"); let parts = [], raf = 0;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function burst(n) {
+  if (reduced) return;
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  const cols = ["#ff7a35", "#f6c341", "#7ccc84", "#ffffff", "#c24a6b"];
+  for (let i = 0; i < n; i++) parts.push({ x: innerWidth / 2, y: innerHeight * 0.35, vx: (Math.random() - .5) * 12, vy: -Math.random() * 12 - 4, r: Math.random() * 5 + 3, c: cols[i % cols.length], a: Math.random() * 6, life: 0 });
+  if (!raf) raf = requestAnimationFrame(tick);
+}
+function tick() {
+  cx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parts.forEach(p => { p.vy += .35; p.x += p.vx; p.y += p.vy; p.a += .2; p.life++; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+  parts = parts.filter(p => p.y < innerHeight + 20 && p.life < 160);
+  raf = parts.length ? requestAnimationFrame(tick) : (cx.clearRect(0, 0, innerWidth, innerHeight), 0);
+}
+
+/* ======================= EVENTS ======================= */
+document.addEventListener("click", e => {
+  const t = e.target;
+  const o = t.closest("[data-open]"); if (o) { openSheet(o.dataset.open); return; }
+  if (t.closest("[data-close]")) { closeSheet(); return; }
+  if (t.closest("[data-modal-close]")) { t.closest(".modal").remove(); return; }
+  if (t.closest("#claim") && openId) { claim(openId); return; }
+  const u = t.closest("[data-undo]"); if (u) { delete S.done[u.dataset.undo]; persist(); render(); openSheet(u.dataset.undo); return; }
+  if (t.closest("#free")) { S.free = !S.free; persist(); render(); return; }
+  const r = t.closest("#reset");
+  if (r) {
+    if (r.dataset.arm) { S = blank(); persist(); render(); r.textContent = "Reset"; delete r.dataset.arm; toast("Progres direset"); }
+    else { r.dataset.arm = "1"; r.textContent = "Yakin? Ketuk lagi"; setTimeout(() => { if (r.isConnected) { r.textContent = "Reset"; delete r.dataset.arm; } }, 4000); }
+  }
+});
+document.addEventListener("change", e => {
+  const t = e.target;
+  if (t.dataset.step !== undefined && openId) {
+    const q = QMAP[openId];
+    S.steps[openId + "." + t.dataset.step] = t.checked;
+    const st = stepsOf(q), all = st.every(Boolean);
+    $("sc").textContent = st.filter(Boolean).length + "/" + st.length;
+    const b = $("claim"); if (b) { b.disabled = !all; b.textContent = all ? `Klaim +${q.xp} XP` : "Centang semua langkah dulu"; }
+    persist(); render();
+  }
+  if (t.dataset.daily) {
+    const id = t.dataset.daily, was = DAILY.every(d => S.daily.done[d[0]]);
+    S.daily.done[id] = t.checked;
+    S.dailyXp = Math.max(0, (S.dailyXp || 0) + (t.checked ? DAILY_XP : -DAILY_XP));
+    const now = DAILY.every(d => S.daily.done[d[0]]);
+    if (now && !was) {
+      S.dailyXp += DAILY_BONUS;
+      if (S.lastFull !== today()) { S.streak = S.lastFull === yesterday() ? (S.streak || 0) + 1 : 1; S.lastFull = today(); }
+      toast(`Misi harian beres! +${DAILY_BONUS} bonus`); burst(60);
+    } else if (!now && was) S.dailyXp = Math.max(0, S.dailyXp - DAILY_BONUS);
+    else if (t.checked) toast(`+${DAILY_XP} XP`);
+    persist(); render();
+    document.getElementById("d-" + id)?.focus({ preventScroll: true });
+  }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = document.querySelector(".modal"); if (m) m.remove(); else if (openId) closeSheet(); } });
+
+render();
+setSync("lokal");
+
+/* ======================= SYNC KE AKUN ======================= */
+(async () => {
+  const c = window.claude && await window.claude.use("db").catch(() => null);
+  if (!c) return;
+  db = c; ref = db.doc("quest/progress");
+  ref.onSnapshot(snap => {
+    if (snap.metadata.hasPendingWrites || dirty) return;
+    if (snap.exists) {
+      S = Object.assign(blank(), JSON.parse(JSON.stringify(snap.data())));
+      try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+      render();
+      if (openId) openSheet(openId);
+    }
+    setSync("akun");
+  }, () => setSync("lokal"));
+})();
+</script>
+</body></html>
