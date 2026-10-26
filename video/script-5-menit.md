@@ -1,11 +1,11 @@
 # Video Edukasi 5 Menit — "Admin Kamu Resign Jam 2 Pagi"
 
 **Format:** Portrait 9:16 (1080×1920) · **Durasi:** 5:00 · **Gaya:** casual, lucu, bahasa sehari-hari
-**Topik:** AI Agent untuk admin penjualan & customer service (Malika) — dijelaskan untuk pemilik UMKM/online shop
-**Tujuan:** edukasi + share-able + CTA ke Malika
+**Topik:** AI Agent untuk admin penjualan & customer service (Asamerta AI) — dijelaskan untuk pemilik UMKM/online shop
+**Tujuan:** edukasi + share-able + CTA ke Asamerta AI
 **Peran:** 1 host (bisa juga 2 orang: Host + "Pembeli" untuk skit)
 
-> Catatan: angka di bawah bertanda ⚠️ adalah ilustrasi. Ganti dengan data asli toko/Malika sebelum tayang.
+> Catatan: angka di bawah bertanda ⚠️ adalah ilustrasi. Ganti dengan data asli toko/Asamerta AI sebelum tayang.
 
 ---
 
@@ -73,15 +73,15 @@ Teks muncul satu per satu + SFX *pop*:
 ---
 
 ### 2:00–3:00 — SKIT DEMO (BUKTI)
-**Visual:** layar HP (screen recording / mock chat) + host reaksi di pojok (picture-in-picture). Tampilkan percakapan nyata Malika.
+**Visual:** layar HP (screen recording / mock chat) + host reaksi di pojok (picture-in-picture). Tampilkan percakapan nyata Asamerta AI.
 **Skenario (tulis ulang dengan produk asli):**
 
 > **Pembeli (jam 02:07):** kak ready ga yg kemarin di story?
-> **Malika:** Halo kak! 😊 Yang di story kemarin tas sling hitam ya? Ready kak, sisa ⚠️3 pcs. Mau dikirim ke mana? Aku cekin ongkirnya.
+> **Asamerta AI:** Halo kak! 😊 Yang di story kemarin tas sling hitam ya? Ready kak, sisa ⚠️3 pcs. Mau dikirim ke mana? Aku cekin ongkirnya.
 > **Pembeli:** bandung. bisa cod?
-> **Malika:** Bisa kak, COD untuk area Bandung kota. Ongkir ⚠️Rp12.000. Total Rp⚠️159.000. Lanjut aku catat ya?
+> **Asamerta AI:** Bisa kak, COD untuk area Bandung kota. Ongkir ⚠️Rp12.000. Total Rp⚠️159.000. Lanjut aku catat ya?
 > **Pembeli:** lanjut dong
-> **Malika:** Siap! Atas nama siapa & alamat lengkapnya kak?
+> **Asamerta AI:** Siap! Atas nama siapa & alamat lengkapnya kak?
 
 **Host (reaksi, komentator):**
 > "Perhatiin: dia ngerti *'yg kemarin di story'*. Dia tahu stok. Dia tawarin ongkir sendiri. Dan ini jam 2 pagi — kamu lagi mimpi makan bakso."
@@ -126,11 +126,11 @@ Teks muncul satu per satu + SFX *pop*:
 
 ### 4:30–5:00 — RECAP + CTA + LOOP
 **Host (cepat, energik):**
-> "Rekap 10 detik: **Chatbot jawab, AI agent kerja. Serahkan yang berulang, pegang yang butuh hati.** Kalau kamu pengin lihat versi dia buat toko kamu, link ada di bio — **Malika**, AI agent buat admin dan customer service."
+> "Rekap 10 detik: **Chatbot jawab, AI agent kerja. Serahkan yang berulang, pegang yang butuh hati.** Kalau kamu pengin lihat versi dia buat toko kamu, link ada di bio — **Asamerta AI**, AI agent buat admin dan customer service."
 
 **CTA (satu aja, jangan banyak):**
 1. 🔖 "Simpan video ini buat teman kamu yang masih ngetik 'ready kak' manual."
-2. 💬 "Komen: 'MALIKA' — aku kirim contoh alurnya."
+2. 💬 "Komen: 'ASAMERTA' — aku kirim contoh alurnya."
 
 **Loop ending (trik retensi):** akhiri dengan kalimat yang nyambung ke hook —
 > "…dan sekarang jam 2 pagi? Biarin dia yang jawab. *Selamat tidur.*"
@@ -169,6 +169,6 @@ Teks muncul satu per satu + SFX *pop*:
 ## KEBUTUHAN PRODUKSI
 - Host + 1 pemeran pembeli (opsional, bisa suara saja)
 - Props: jam dinding, papan menu kertas, celemek, topi pelayan, masker mata
-- Mock chat Malika (screen record asli lebih kuat)
+- Mock chat Asamerta AI (screen record asli lebih kuat)
 - Editor: CapCut / Premiere; subtitle auto-caption
 - Estimasi durasi syuting: ±2 jam; edit: ±4–6 jam

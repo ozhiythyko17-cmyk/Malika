@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Asamerta AI — motion</title>
+<style>
+@font-face{font-family:"PJS";font-weight:800;src:url("node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-800-normal.woff2") format("woff2")}
+@font-face{font-family:"PJS";font-weight:700;src:url("node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff2") format("woff2")}
+@font-face{font-family:"INT";font-weight:500;src:url("node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"INT";font-weight:600;src:url("node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2") format("woff2")}
+:root{--bg:#0A0F1F;--violet:#7C5CFF;--teal:#19D3C5;--coral:#FF6B81;--amber:#FFC857;--ink:#F4F6FF;--mute:rgba(244,246,255,.62);
+  --glass:rgba(255,255,255,.075);--line:rgba(255,255,255,.16)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;background:#000;overflow:hidden}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-family:"INT",sans-serif;color:var(--ink)}
+.blob{position:absolute;border-radius:50%;filter:blur(130px);opacity:.55}
+#b1{width:900px;height:900px}#b2{width:800px;height:800px}#b3{width:700px;height:700px}
+#grain{position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>")}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,transparent 55%,rgba(0,0,0,.55) 100%)}
+#top{position:absolute;left:60px;right:60px;top:64px;height:56px;display:flex;align-items:center;justify-content:space-between;z-index:30}
+#brand{display:flex;align-items:center;gap:14px;font-family:"PJS";font-weight:800;font-size:38px;letter-spacing:-.5px}
+#brand i{width:38px;height:38px;border-radius:50%;background:conic-gradient(from 200deg,var(--teal),var(--violet),var(--coral),var(--teal))}
+#tag{font-weight:600;font-size:26px;letter-spacing:3px;color:var(--mute);text-transform:uppercase}
+#prog{position:absolute;left:60px;right:60px;top:134px;height:5px;border-radius:5px;background:rgba(255,255,255,.12);z-index:30;overflow:hidden}
+#progf{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--violet),var(--coral))}
+.scene{position:absolute;left:0;top:0;width:1080px;height:1170px;visibility:hidden;opacity:0;transform-origin:50% 50%}
+.abs{position:absolute}
+.h1{font-family:"PJS";font-weight:800;letter-spacing:-3px;line-height:.98;text-align:center;width:1080px;left:0}
+.mask{overflow:hidden;display:block}
+.mask{padding:.04em 0 .16em;margin-bottom:-.12em}
+.mask>span{display:block}
+.grad{background:linear-gradient(95deg,var(--teal),var(--violet) 55%,var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+.glass{background:var(--glass);border:2px solid var(--line);border-radius:44px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.pill{font-family:"INT";font-weight:600;font-size:26px;letter-spacing:3px;text-transform:uppercase;padding:12px 26px;border-radius:99px;background:rgba(255,255,255,.1);border:2px solid var(--line)}
+/* phone */
+#phone{left:230px;top:470px;width:620px;height:640px;border-radius:64px;background:#10172e;border:3px solid rgba(255,255,255,.22);box-shadow:0 40px 120px rgba(0,0,0,.55),0 0 0 14px rgba(255,255,255,.04);overflow:hidden}
+#phhead{position:absolute;left:0;right:0;top:0;height:120px;background:rgba(255,255,255,.06);border-bottom:2px solid var(--line)}
+.hd{position:absolute;left:34px;top:0;height:120px;display:flex;align-items:center;gap:20px}
+.av{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.hd b{font-family:"PJS";font-weight:800;font-size:32px;display:block;line-height:1.1}
+.hd small{font-size:22px;color:var(--mute);font-weight:500}
+.bub{position:absolute;max-width:470px;padding:20px 26px;border-radius:30px;font-weight:500;font-size:30px;line-height:1.25}
+.bl{left:30px;background:rgba(255,255,255,.12);border-bottom-left-radius:8px}
+.br{right:30px;background:linear-gradient(135deg,var(--violet),#5B8CFF);border-bottom-right-radius:8px}
+#inp{position:absolute;left:24px;right:24px;bottom:24px;height:92px;border-radius:46px;background:rgba(255,255,255,.1);border:2px solid var(--line);display:flex;align-items:center;padding:0 22px 0 32px;font-size:29px;font-weight:500}
+#typed{flex:1;white-space:nowrap;overflow:hidden}
+#cur{display:inline-block;width:3px;height:34px;background:var(--ink);vertical-align:middle;margin-left:3px}
+#send{width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+/* cards */
+.card{left:90px;width:900px;height:210px;display:flex;align-items:center;gap:34px;padding:0 44px}
+.card .ic{width:110px;height:110px;border-radius:32px;display:flex;align-items:center;justify-content:center;flex:none}
+.card span{font-family:"PJS";font-weight:800;font-size:54px;letter-spacing:-1px;line-height:1.05}
+/* caption */
+#caps{position:absolute;left:0;top:1262px;width:1080px;height:260px;z-index:40}
+.cap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:960px;text-align:center;visibility:hidden;opacity:0;
+  font-family:"PJS";font-weight:800;font-size:58px;line-height:1.28;letter-spacing:-1px;text-wrap:balance}
+.cap .box{display:inline-block;padding:20px 38px 24px;border-radius:40px;background:rgba(8,12,28,.62);border:2px solid rgba(255,255,255,.12);
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+.w{color:rgba(244,246,255,.55);display:inline-block}
+/* orb */
+#orb{position:absolute;left:480px;top:1130px;width:120px;height:120px;z-index:35;visibility:hidden}
+#orb .core{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0,#9af 12%,var(--violet) 45%,var(--teal) 100%);box-shadow:0 0 60px rgba(124,92,255,.7)}
+#orb .rg{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(124,92,255,.55)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div>
+  <div id="grain"></div><div id="vig"></div>
+
+  <div id="top"><div id="brand"><i></i>asamerta ai</div><div id="tag">Sains Chat</div></div>
+  <div id="prog"><div id="progf"></div></div>
+
+  <!-- S0 hook -->
+  <section class="scene" id="s0">
+    <div class="h1 abs" style="top:150px;font-size:120px">
+      <span class="mask"><span id="h0a">Malu nanya</span></span>
+      <span class="mask"><span id="h0b" class="grad">ke manusia?</span></span>
+    </div>
+    <div id="phone" class="abs">
+      <div id="phhead">
+        <div class="hd" id="hdA"><div class="av" style="background:linear-gradient(135deg,#FFB86B,#FF6B81)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 5-7 8-7s7 2 8 7"/></svg></div>
+          <div><b>Customer Service</b><small>Manusia • online</small></div></div>
+        <div class="hd" id="hdB" style="opacity:0"><div class="av" style="background:radial-gradient(circle at 32% 28%,#fff,#9af 14%,var(--violet) 50%,var(--teal))"></div>
+          <div><b>Asamerta AI</b><small>AI agent • selalu online</small></div></div>
+      </div>
+      <div class="bub bl" id="m0" style="top:150px;opacity:0">Halo kak, ada yang bisa dibantu?</div>
+      <div class="bub br" id="m1" style="top:270px;opacity:0">Ini pertanyaan bodoh nggak ya?</div>
+      <div class="bub bl" id="m2" style="top:390px;opacity:0">Pertanyaan bagus, kak! Aku jawab ya.</div>
+      <div id="inp"><div id="typed"></div><div id="cur"></div>
+        <div id="send"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M3 11.5 21 3l-8.5 18-2-7.5z"/></svg></div></div>
+    </div>
+  </section>
+
+  <!-- S1 not alone -->
+  <section class="scene" id="s1">
+    <div class="h1 abs" style="top:150px;font-size:150px">
+      <span class="mask"><span id="h1a">Kamu nggak</span></span>
+      <span class="mask"><span id="h1b" class="grad">sendirian.</span></span>
+    </div>
+    <div id="grid" class="abs" style="left:100px;top:600px;width:880px;height:480px"></div>
+  </section>
+
+  <!-- S2 examples -->
+  <section class="scene" id="s2">
+    <div class="abs pill" id="s2t" style="left:90px;top:170px">Pertanyaan yang sering ditahan</div>
+    <div class="card glass abs" id="c0" style="top:260px"><div class="ic" style="background:linear-gradient(135deg,var(--amber),#FF9F43)">
+      <svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#10172e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3h8v8l-9 9z"/><circle cx="16" cy="8" r="1.4" fill="#10172e"/></svg></div><span>Ada diskon nggak?</span></div>
+    <div class="card glass abs" id="c1" style="top:510px"><div class="ic" style="background:linear-gradient(135deg,var(--teal),#2AA8FF)">
+      <svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#10172e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M3 10h18"/></svg></div><span>Bisa dicicil nggak?</span></div>
+    <div class="card glass abs" id="c2" style="top:760px;border-color:rgba(255,107,129,.6)"><div class="ic" style="background:linear-gradient(135deg,var(--coral),#FF4D6D)">
+      <svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 9a3 3 0 1 1 4.5 2.6c-1 .6-1.5 1.2-1.5 2.4"/><circle cx="12" cy="18" r=".6" fill="#fff"/></svg></div><span>Ini pertanyaan bodoh nggak ya?</span></div>
+  </section>
+
+  <!-- S3 research -->
+  <section class="scene" id="s3">
+    <div class="abs pill" id="s3a" style="left:90px;top:160px">Riset • 2014</div>
+    <div class="abs" id="s3b" style="left:90px;top:240px;width:900px;font-family:'PJS';font-weight:800;font-size:96px;letter-spacing:-3px;line-height:1">“It’s only a <span class="grad">computer</span>”</div>
+    <div class="abs" id="s3c" style="left:90px;top:440px;font-size:30px;color:var(--mute);font-weight:500">Lucas, Gratch, King &amp; Morency</div>
+    <div class="glass abs" id="s3d" style="left:90px;top:520px;width:900px;height:520px">
+      <div class="abs" style="left:150px;bottom:100px;width:230px;height:280px;display:flex;align-items:flex-end"><div id="bar1" style="width:230px;height:280px;border-radius:26px 26px 8px 8px;background:linear-gradient(180deg,#9AA6D6,#5B6591);transform-origin:bottom"></div></div>
+      <div class="abs" style="left:520px;bottom:100px;width:230px;height:280px;display:flex;align-items:flex-end"><div id="bar2" style="width:230px;height:280px;border-radius:26px 26px 8px 8px;background:linear-gradient(180deg,var(--teal),var(--violet));transform-origin:bottom;box-shadow:0 0 70px rgba(25,211,197,.45)"></div></div>
+      <div class="abs" style="left:60px;width:390px;bottom:34px;text-align:center;font-weight:600;font-size:27px;color:var(--mute)">ngomong ke manusia</div>
+      <div class="abs" style="left:430px;width:390px;bottom:34px;text-align:center;font-weight:600;font-size:27px;color:var(--mute)">ngomong ke sistem otomatis</div>
+      <div class="abs" id="badge" style="left:575px;top:70px;padding:14px 26px;border-radius:99px;background:var(--teal);color:#07201e;font-weight:600;font-size:30px;display:flex;align-items:center;gap:10px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#07201e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>lebih terbuka</div>
+      <div class="abs" style="left:0;right:0;top:20px;text-align:center;font-size:23px;color:var(--mute)"></div>
+    </div>
+    <div class="abs" id="s3e" style="left:90px;top:1056px;font-size:24px;color:var(--mute)">*ilustrasi arah temuan, bukan data angka</div>
+  </section>
+
+  <!-- S4 no judgement -->
+  <section class="scene" id="s4">
+    <div class="abs pill" id="s4t" style="left:90px;top:170px">Yang nggak ada di chatbot</div>
+    <div class="card glass abs" id="r0" style="top:270px;height:230px"><div class="ic" style="background:rgba(255,255,255,.1)">
+      <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 11c3-4 13-4 16 0"/><circle cx="12" cy="16" r="2"/></svg></div><span>alis naik<i class="stk" id="k0"></i></span></div>
+    <div class="card glass abs" id="r1" style="top:550px;height:230px"><div class="ic" style="background:rgba(255,255,255,.1)">
+      <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 13h15a3 3 0 1 1-3 3M3 18h8"/></svg></div><span>helaan napas<i class="stk" id="k1"></i></span></div>
+    <div class="card glass abs" id="r2" style="top:830px;height:230px"><div class="ic" style="background:rgba(255,255,255,.1)">
+      <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg></div><span style="font-size:46px">“hah, gitu aja nanya?”<i class="stk" id="k2"></i></span></div>
+    <style>.stk{position:absolute;left:44px;right:44px;top:50%;height:10px;border-radius:5px;background:var(--coral);transform:scaleX(0);transform-origin:left;box-shadow:0 0 30px rgba(255,107,129,.7)}.card{position:absolute}</style>
+  </section>
+
+  <!-- S5 silent != not interested -->
+  <section class="scene" id="s5">
+    <div class="h1 abs" style="top:170px;font-size:230px"><span class="mask"><span id="h5a">DIAM</span></span></div>
+    <svg class="abs" id="neq" style="left:440px;top:400px" width="200" height="170" viewBox="0 0 200 170" fill="none" stroke="var(--coral)" stroke-width="22" stroke-linecap="round"><path d="M30 60h140M30 115h140" /><path id="neqs" d="M130 15 70 150"/></svg>
+    <div class="h1 abs" style="top:600px;font-size:118px"><span class="mask"><span id="h5b" class="grad">NGGAK MINAT</span></span></div>
+    <div class="abs" id="s5chat" style="left:150px;top:800px;width:780px;height:300px">
+      <div class="bub br" id="q0" style="top:0;font-size:32px;opacity:0">Kak, ini ready?</div>
+      <div class="abs" id="seen" style="right:34px;top:92px;font-size:22px;color:var(--mute);opacity:0">Dibaca 02.14</div>
+      <div class="bub bl" id="dots" style="top:150px;opacity:0;padding:22px 30px;display:flex;gap:10px"><i class="dt"></i><i class="dt"></i><i class="dt"></i></div>
+      <div class="bub bl" id="shy" style="top:150px;opacity:0;font-size:32px;background:rgba(255,200,87,.16);border:2px solid rgba(255,200,87,.5)">…malu nanya</div>
+      <style>.dt{width:16px;height:16px;border-radius:50%;background:var(--ink);display:block}</style>
+    </div>
+  </section>
+
+  <!-- S6 safe space -->
+  <section class="scene" id="s6">
+    <div class="abs pill" id="s6t" style="left:90px;top:170px">Ruang aman, 24 jam</div>
+    <div class="card glass abs" id="v0" style="top:260px;height:200px"><div class="ic" style="background:linear-gradient(135deg,var(--teal),#2AA8FF)"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#07201e" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path class="ck" d="M5 12.5 10 17.5 19 7"/></svg></div><span>Ramah</span></div>
+    <div class="card glass abs" id="v1" style="top:490px;height:200px"><div class="ic" style="background:linear-gradient(135deg,var(--teal),#2AA8FF)"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#07201e" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path class="ck" d="M5 12.5 10 17.5 19 7"/></svg></div><span>Tanpa menghakimi</span></div>
+    <div class="card glass abs" id="v2" style="top:720px;height:200px"><div class="ic" style="background:linear-gradient(135deg,var(--teal),#2AA8FF)"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#07201e" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path class="ck" d="M5 12.5 10 17.5 19 7"/></svg></div><span>24 jam</span></div>
+    <div class="abs glass" id="lock" style="left:90px;top:960px;width:900px;height:130px;display:flex;align-items:center;justify-content:center;gap:24px;border-color:rgba(124,92,255,.7)">
+      <div style="width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,#9af 14%,var(--violet) 50%,var(--teal))"></div>
+      <div style="font-family:PJS;font-weight:800;font-size:46px;letter-spacing:-1px">Asamerta AI <span style="font-weight:700;color:var(--mute);font-size:34px">• asisten admin &amp; CS</span></div></div>
+  </section>
+
+  <!-- S7 human -->
+  <section class="scene" id="s7">
+    <svg class="abs" id="heart" style="left:290px;top:170px" width="500" height="460" viewBox="0 0 100 92"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8FA3"/><stop offset="1" stop-color="#FF3D6B"/></linearGradient></defs>
+      <path d="M50 88C20 66 4 48 4 28 4 14 15 4 28 4c9 0 17 5 22 13C55 9 63 4 72 4c13 0 24 10 24 24 0 20-16 38-46 60z" fill="url(#hg)"/></svg>
+    <div class="h1 abs" style="top:690px;font-size:112px"><span class="mask"><span id="h7a">Urusan hati</span></span><span class="mask"><span id="h7b" class="grad">= manusia</span></span></div>
+    <div class="abs" id="hand" style="left:90px;top:960px;width:900px;height:140px;display:flex;align-items:center;gap:26px">
+      <div class="glass" style="flex:1;height:130px;border-radius:65px;display:flex;align-items:center;gap:18px;padding:0 30px;font-weight:600;font-size:28px">
+        <div style="width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,#9af 14%,var(--violet) 50%,var(--teal));flex:none"></div>“Aku sambungkan ke tim ya, kak.”</div>
+      <svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="var(--amber)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path id="arrow" d="M4 20h56M44 5l16 15-16 15"/></svg>
+      <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#FFB86B,#FF6B81);display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 5-7 8-7s7 2 8 7"/></svg></div>
+    </div>
+  </section>
+
+  <!-- S8 CTA -->
+  <section class="scene" id="s8">
+    <div class="abs glass" id="savebtn" style="left:190px;top:210px;width:700px;height:230px;border-radius:115px;display:flex;align-items:center;justify-content:center;gap:34px;background:linear-gradient(135deg,var(--violet),#5B8CFF);border:none">
+      <svg id="bm" width="86" height="86" viewBox="0 0 24 24" fill="#fff"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/></svg>
+      <span style="font-family:PJS;font-weight:800;font-size:84px;letter-spacing:-2px">Simpan</span></div>
+    <div class="abs" id="cm" style="left:90px;top:560px;width:900px;height:380px">
+      <div class="glass abs" style="left:0;top:0;width:900px;height:380px;padding:40px">
+        <div style="display:flex;align-items:center;gap:20px"><div class="av" style="background:linear-gradient(135deg,#FFB86B,#FF6B81)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 5-7 8-7s7 2 8 7"/></svg></div>
+          <div style="font-weight:600;font-size:30px;color:var(--mute)">Tambah komentar…</div></div>
+        <div id="ctext" style="margin-top:50px;font-family:PJS;font-weight:800;font-size:112px;letter-spacing:-2px;height:130px"></div>
+        <div id="csent" class="abs" style="right:40px;bottom:36px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:28px;opacity:0;color:var(--teal)">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"/></svg>Terkirim</div>
+      </div></div>
+  </section>
+
+  <!-- S9 outro -->
+  <section class="scene" id="s9">
+    <div class="abs" id="lg" style="left:0;top:210px;width:1080px;display:flex;flex-direction:column;align-items:center;gap:34px">
+      <div id="lgo" style="width:300px;height:300px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,#9af 12%,var(--violet) 45%,var(--teal));box-shadow:0 0 140px rgba(124,92,255,.7)"></div>
+      <div class="h1 grad" id="lgt" style="position:static;font-size:150px;width:auto">asamerta ai</div>
+      <div id="lgs" style="font-size:36px;font-weight:600;color:var(--mute);letter-spacing:1px">AI agent untuk admin &amp; customer service</div>
+    </div>
+    <div id="eq" class="abs" style="left:90px;top:960px;width:900px;height:150px;display:flex;align-items:flex-end;justify-content:space-between"></div>
+  </section>
+
+  <div id="orb"><div class="rg" id="rg1"></div><div class="rg" id="rg2"></div><div class="core" id="core"></div></div>
+  <div id="caps"></div>
+</div>
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<script src="out/timings.js"></script>
+<script src="scenes.js"></script>
+</body>
+</html>

@@ -14,7 +14,7 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 | Tempo | Hook cepat (±170 kata/mnt) → edukasi sedang (±145) → skit natural (±140) → CTA cepat lagi. |
 | Jeda | Jeda 0,4 detik sebelum punchline. Biarkan tawa/SFX "bernapas". |
 | Mic | Dekat (proximity), tanpa gema. Rekam di ruangan berkarpet/lemari baju. |
-| Karakter tambahan | **Pembeli** (suara sedikit manja/ngantuk) dan **Malika** (hangat, ramah, tenang) → bedakan warna suara. |
+| Karakter tambahan | **Pembeli** (suara sedikit manja/ngantuk) dan **Asamerta AI** (hangat, ramah, tenang) → bedakan warna suara. |
 
 **Tanda di naskah:** `(…)` = arahan emosi · `[SFX]` = efek suara · `//` = jeda pendek · **tebal** = tekan kata.
 
@@ -47,11 +47,11 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 `[SFX: bunyi jam malam, tik tok]`
 > **Narator (bisik):** "Jam dua lewat tujuh menit."
 > **Pembeli (ngantuk, manja):** "Kak, ready nggak yang kemarin di story?"
-> **Malika (hangat, ramah):** "Halo kak! Yang di story kemarin tas sling hitam ya? Ready kak, sisa tiga pcs. Mau dikirim ke mana? Aku cekin ongkirnya."
+> **Asamerta AI (hangat, ramah):** "Halo kak! Yang di story kemarin tas sling hitam ya? Ready kak, sisa tiga pcs. Mau dikirim ke mana? Aku cekin ongkirnya."
 > **Pembeli:** "Bandung. Bisa COD?"
-> **Malika:** "Bisa kak, COD untuk area Bandung kota. Ongkir dua belas ribu. Total seratus lima puluh sembilan ribu. Lanjut aku catat ya?"
+> **Asamerta AI:** "Bisa kak, COD untuk area Bandung kota. Ongkir dua belas ribu. Total seratus lima puluh sembilan ribu. Lanjut aku catat ya?"
 > **Pembeli (langsung semangat):** "Lanjut dong!"
-> **Malika:** "Siap! Atas nama siapa dan alamat lengkapnya, kak?"
+> **Asamerta AI:** "Siap! Atas nama siapa dan alamat lengkapnya, kak?"
 > **Host (kagum, komentator):** "Perhatiin. Dia ngerti *'yang kemarin di story'*. // Dia tahu stok. // Dia tawarin ongkir sendiri. // Dan ini jam dua pagi — kamu lagi mimpi makan bakso."
 `[SFX: ayam berkokok, ding!]`
 > (bangun, bingung) "Satu pesanan baru… udah tercatat?" // (pelan) "…aku **kerja apa** semalam?"
@@ -73,8 +73,8 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 
 ### [4:30–5:00] RECAP + CTA + LOOP — energik lalu santai
 > (cepat) "Rekap sepuluh detik: **chatbot menjawab, AI agent mengerjakan.** Serahin yang berulang, pegang yang butuh hati."
-> "Pengin lihat versi buat toko kamu? Link ada di bio. **Malika** — AI agent buat admin dan customer service."
-> "Simpan video ini buat temen kamu yang masih ngetik *'ready kak'* manual. // Atau komen **MALIKA**, aku kirim contoh alurnya."
+> "Pengin lihat versi buat toko kamu? Link ada di bio. **Asamerta AI** — AI agent buat admin dan customer service."
+> "Simpan video ini buat temen kamu yang masih ngetik *'ready kak'* manual. // Atau komen **ASAMERTA**, aku kirim contoh alurnya."
 `[Theme song: naik pelan, jadi outro]`
 > (mengantuk, santai) "Dan sekarang jam dua pagi? // Biarin **dia** yang jawab. // Selamat tidur."
 `[SFX: klik lampu mati → ting! → video loop ke hook]`
@@ -83,7 +83,7 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 
 ## 3. THEME SONG
 
-**Judul:** "Santai Aja, Biar Malika"
+**Judul:** "Santai Aja, Biar Asamerta"
 **Genre/vibe:** acoustic pop santai, ukulele + bass lembut + shaker, 100 BPM, kunci C mayor
 **Progresi:** C – G – Am – F (diulang)
 **Struktur:** Bumper 5 dtk (intro) → Verse+Chorus 30 dtk (outro/versi penuh)
@@ -101,14 +101,14 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 > Ada asisten yang tak pernah pergi
 
 **[Chorus]**
-> Santai aja, biar Malika
+> Santai aja, biar Asamerta
 > Dia yang jawab, kamu yang tenang
-> Santai aja, biar Malika
+> Santai aja, biar Asamerta
 > Jualan jalan, kamu bisa tidur panjang
 > La la la… selamat tidur!
 
 **[Outro — dipakai di 4:30]**
-> Santai aja… biar Malika~
+> Santai aja… biar Asamerta~
 > *(ukulele fade out, klik lampu)*
 
 ### Prompt untuk generator lagu (Suno / Udio / sejenis)
@@ -133,7 +133,7 @@ Opsional: minta juga versi **instrumental only** untuk latar video (volume −20
 
 Pilih salah satu:
 1. **Rekam sendiri** (kualitas paling natural, paling viral). Pakai arahan suara di bagian 1.
-2. **AI voice (TTS Indonesia)** — ElevenLabs, Google Cloud TTS (`id-ID`), Azure (`id-ID-ArdiNeural` / `GadisNeural`). Pakai 3 suara berbeda: Host, Pembeli, Malika. Tambah tanda baca/jeda dari naskah supaya intonasinya hidup.
+2. **AI voice (TTS Indonesia)** — ElevenLabs, Google Cloud TTS (`id-ID`), Azure (`id-ID-ArdiNeural` / `GadisNeural`). Pakai 3 suara berbeda: Host, Pembeli, Asamerta AI. Tambah tanda baca/jeda dari naskah supaya intonasinya hidup.
 3. **Voice actor** via freelance (kirim naskah ini + referensi nada).
 
 **Mixing (CapCut/Premiere):** suara dubbing −6 dB · lagu −20 dB (ducking saat bicara) · SFX −14 dB · subtitle auto-caption bahasa Indonesia.
