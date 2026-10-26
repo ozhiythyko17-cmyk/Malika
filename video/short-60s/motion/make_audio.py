@@ -42,9 +42,9 @@ LINES = [
      "Jadi bikin ruang aman: ramah, tanpa menghakimi, 24 jam. Itu kerjaan Asamerta AI."),
     ("Tapi urusan hati, kayak komplain atau pembeli yang lagi sedih, tetap manusia yang pegang.",
      "Tapi urusan hati, kayak komplain atau pembeli yang lagi sedih, tetap manusia yang pegang."),
-    ("Simpan video ini buat temen yang malu nanya. Komen Asamerta, nanti aku kirim contohnya.",
-     "Simpan video ini buat temen yang malu nanya. Komen \"Asamerta\", nanti aku kirim contohnya."),
-    ("Santai aja, biar Asamerta!", "Santai aja, biar Asamerta!"),
+    ("Simpan video ini buat temen yang malu nanya. Komen Asamerta A I, nanti aku kirim contohnya.",
+     "Simpan video ini buat temen yang malu nanya. Komen \"Asamerta AI\", nanti aku kirim contohnya."),
+    ("Santai aja, biar Asamerta A I!", "Santai aja, biar Asamerta AI!"),
 ]
 
 

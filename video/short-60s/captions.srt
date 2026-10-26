@@ -1,84 +1,84 @@
 1
-00:00:00,450 --> 00:00:02,987
+00:00:00,450 --> 00:00:02,990
 Kamu pernah nanya hal memalukan ke chatbot,
 
 2
-00:00:02,987 --> 00:00:05,185
+00:00:02,990 --> 00:00:05,192
 tapi nggak berani nanya ke manusia?
 
 3
-00:00:05,445 --> 00:00:07,475
+00:00:05,452 --> 00:00:07,518
 Tenang. Kamu nggak sendirian,
 
 4
-00:00:07,475 --> 00:00:09,439
+00:00:07,518 --> 00:00:09,517
 dan ini ada penjelasannya.
 
 5
-00:00:09,699 --> 00:00:12,954
+00:00:09,777 --> 00:00:13,088
 Contohnya: ada diskon nggak? Bisa dicicil nggak?
 
 6
-00:00:12,954 --> 00:00:15,458
+00:00:13,088 --> 00:00:15,635
 Atau, ini pertanyaan bodoh nggak ya?
 
 7
-00:00:15,718 --> 00:00:17,289
+00:00:15,895 --> 00:00:17,520
 Riset 2014 menemukan,
 
 8
-00:00:17,289 --> 00:00:20,840
+00:00:17,520 --> 00:00:21,196
 orang cenderung lebih terbuka ke sistem yang nggak
 
 9
-00:00:20,840 --> 00:00:21,864
+00:00:21,196 --> 00:00:22,257
 menghakimi.
 
 10
-00:00:22,124 --> 00:00:25,281
+00:00:22,517 --> 00:00:25,723
 Nggak ada alis naik. Nggak ada helaan napas.
 
 11
-00:00:25,281 --> 00:00:27,584
+00:00:25,723 --> 00:00:28,061
 Nggak ada, "hah, gitu aja nanya?"
 
 12
-00:00:27,844 --> 00:00:31,224
+00:00:28,321 --> 00:00:31,727
 Artinya, pembeli yang diam belum tentu nggak minat.
 
 13
-00:00:31,224 --> 00:00:33,560
+00:00:31,727 --> 00:00:34,080
 Bisa jadi, dia cuma malu bertanya.
 
 14
-00:00:33,820 --> 00:00:37,901
+00:00:34,340 --> 00:00:38,586
 Jadi bikin ruang aman: ramah, tanpa menghakimi,
 
 15
-00:00:37,901 --> 00:00:40,900
+00:00:38,586 --> 00:00:41,706
 24 jam. Itu kerjaan Asamerta AI.
 
 16
-00:00:41,160 --> 00:00:42,350
+00:00:41,966 --> 00:00:43,111
 Tapi urusan hati,
 
 17
-00:00:42,350 --> 00:00:45,232
+00:00:43,111 --> 00:00:45,883
 kayak komplain atau pembeli yang lagi sedih,
 
 18
-00:00:45,232 --> 00:00:47,111
+00:00:45,883 --> 00:00:47,690
 tetap manusia yang pegang.
 
 19
-00:00:47,371 --> 00:00:50,528
+00:00:47,950 --> 00:00:51,195
 Simpan video ini buat temen yang malu nanya.
 
 20
-00:00:50,528 --> 00:00:53,685
-Komen "Asamerta", nanti aku kirim contohnya.
+00:00:51,195 --> 00:00:54,643
+Komen "Asamerta AI", nanti aku kirim contohnya.
 
 21
-00:00:53,945 --> 00:00:56,071
-Santai aja, biar Asamerta!
+00:00:54,903 --> 00:00:57,623
+Santai aja, biar Asamerta AI!
 

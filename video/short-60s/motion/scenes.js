@@ -110,7 +110,7 @@ tl.to("#bm", { y: -16, duration: 0.25, yoyo: true, repeat: 5, ease: "sine.inOut"
 tl.to("#savebtn", { scale: 0.94, duration: 0.12, yoyo: true, repeat: 1 }, at(8, 2.6));
 tl.from("#cm", { autoAlpha: 0, y: 90, scale: 0.94, duration: 0.7, ease: "expo.out" }, at(8, 3.0));
 tl.to("#csent", { autoAlpha: 1, duration: 0.3 }, at(8, 4.35));
-const CTXT = "ASAMERTA";
+const CTXT = "ASAMERTA AI";
 
 /* ---------------- S9 outro ---------------- */
 tl.from("#lgo", { scale: 0, duration: 0.9, ease: "elastic.out(1,.55)" }, at(9, 0.05));
@@ -184,7 +184,7 @@ function update(t) {
   dts.forEach((d, k) => { d.style.transform = `translateY(${-9 * Math.max(0, Math.sin(t * 9 - k * 0.8))}px)`; });
   // S8 comment typing
   const ts8 = t - VS[8];
-  const cn = clamp(Math.floor((ts8 - 3.7) / 0.1), 0, CTXT.length);
+  const cn = clamp(Math.floor((ts8 - 3.4) / 0.09), 0, CTXT.length);
   ctext.textContent = CTXT.slice(0, cn);
   // S9 equalizer (100 bpm)
   const beat = t * 100 / 60;

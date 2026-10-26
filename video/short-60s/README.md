@@ -1,6 +1,6 @@
-# Video 57 detik — "Kenapa orang lebih jujur ke bot?" (Asamerta AI)
+# Video 59 detik — "Kenapa orang lebih jujur ke bot?" (Asamerta AI)
 
-- `asamerta-jujur-ke-bot-57s.mp4` — 1080×1920 portrait, 30 fps. Motion graphics + dubbing Indonesia + caption (maks. 2 baris) + theme song + sound design.
+- `asamerta-jujur-ke-bot.mp4` — 1080×1920 portrait, 30 fps. Motion graphics + dubbing Indonesia + caption (maks. 2 baris) + theme song + sound design.
 - `captions.srt` — CC terpisah (sinkron dengan video).
 
 ## Cara build ulang

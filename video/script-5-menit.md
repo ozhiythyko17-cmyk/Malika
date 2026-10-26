@@ -130,7 +130,7 @@ Teks muncul satu per satu + SFX *pop*:
 
 **CTA (satu aja, jangan banyak):**
 1. 🔖 "Simpan video ini buat teman kamu yang masih ngetik 'ready kak' manual."
-2. 💬 "Komen: 'ASAMERTA' — aku kirim contoh alurnya."
+2. 💬 "Komen: 'ASAMERTA AI' — aku kirim contoh alurnya."
 
 **Loop ending (trik retensi):** akhiri dengan kalimat yang nyambung ke hook —
 > "…dan sekarang jam 2 pagi? Biarin dia yang jawab. *Selamat tidur.*"

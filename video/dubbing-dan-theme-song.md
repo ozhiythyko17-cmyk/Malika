@@ -74,7 +74,7 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 ### [4:30–5:00] RECAP + CTA + LOOP — energik lalu santai
 > (cepat) "Rekap sepuluh detik: **chatbot menjawab, AI agent mengerjakan.** Serahin yang berulang, pegang yang butuh hati."
 > "Pengin lihat versi buat toko kamu? Link ada di bio. **Asamerta AI** — AI agent buat admin dan customer service."
-> "Simpan video ini buat temen kamu yang masih ngetik *'ready kak'* manual. // Atau komen **ASAMERTA**, aku kirim contoh alurnya."
+> "Simpan video ini buat temen kamu yang masih ngetik *'ready kak'* manual. // Atau komen **ASAMERTA AI**, aku kirim contoh alurnya."
 `[Theme song: naik pelan, jadi outro]`
 > (mengantuk, santai) "Dan sekarang jam dua pagi? // Biarin **dia** yang jawab. // Selamat tidur."
 `[SFX: klik lampu mati → ting! → video loop ke hook]`
@@ -83,7 +83,7 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 
 ## 3. THEME SONG
 
-**Judul:** "Santai Aja, Biar Asamerta"
+**Judul:** "Santai Aja, Biar Asamerta AI"
 **Genre/vibe:** acoustic pop santai, ukulele + bass lembut + shaker, 100 BPM, kunci C mayor
 **Progresi:** C – G – Am – F (diulang)
 **Struktur:** Bumper 5 dtk (intro) → Verse+Chorus 30 dtk (outro/versi penuh)
@@ -101,14 +101,14 @@ Melengkapi `script-5-menit.md`. Total durasi suara ±5:00 (≈ 700 kata, tempo �
 > Ada asisten yang tak pernah pergi
 
 **[Chorus]**
-> Santai aja, biar Asamerta
+> Santai aja, biar Asamerta AI
 > Dia yang jawab, kamu yang tenang
-> Santai aja, biar Asamerta
+> Santai aja, biar Asamerta AI
 > Jualan jalan, kamu bisa tidur panjang
 > La la la… selamat tidur!
 
 **[Outro — dipakai di 4:30]**
-> Santai aja… biar Asamerta~
+> Santai aja… biar Asamerta AI~
 > *(ukulele fade out, klik lampu)*
 
 ### Prompt untuk generator lagu (Suno / Udio / sejenis)
