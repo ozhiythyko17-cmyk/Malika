@@ -1,4 +1,5 @@
 """Generate a chill ukulele-style instrumental theme (loopable) with numpy only."""
+import sys
 import wave
 import numpy as np
 
@@ -35,7 +36,8 @@ chords = {
 }
 bass_root = {"C": 36, "G": 43, "Am": 45, "F": 41}
 prog = ["C", "G", "Am", "F"] * 2
-bars = 16
+bars = int(sys.argv[1]) if len(sys.argv) > 1 else 16
+OUT = sys.argv[2] if len(sys.argv) > 2 else "theme-instrumental.wav"
 total = bars * 4 * BEAT + 1.5
 mix = np.zeros(int(total * SR))
 
@@ -70,21 +72,21 @@ for bar in range(bars):
 melody = [(76, 1), (79, 1), (81, 2), (79, 1), (76, 1), (74, 2),
           (72, 1), (74, 1), (76, 2), (74, 1), (72, 1), (67, 2)]
 t = 8 * 4 * BEAT
-for _ in range(2):
+for _ in range(max(2, bars // 4)):
     for m, beats in melody:
+        if t > total - 3:
+            break
         d = beats * BEAT
         tt = np.arange(int(d * SR)) / SR
         env = np.minimum(1, tt / 0.03) * np.exp(-tt * 1.5)
         vib = np.sin(2 * np.pi * hz(m) * tt + 0.15 * np.sin(2 * np.pi * 5 * tt))
         place(mix, vib * env, t, 0.12)
         t += d
-        if t > total - 2:
-            break
 
 mix = mix / np.max(np.abs(mix)) * 0.85
 fade = int(0.6 * SR)
 mix[-fade:] *= np.linspace(1, 0, fade)
 pcm = (mix * 32767).astype(np.int16)
-with wave.open("theme-instrumental.wav", "wb") as w:
+with wave.open(OUT, "wb") as w:
     w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
 print("duration", round(len(mix) / SR, 1), "s")

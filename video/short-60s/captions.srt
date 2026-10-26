@@ -1,0 +1,40 @@
+1
+00:00:00,400 --> 00:00:04,875
+Kamu pernah nanya hal memalukan ke chatbot, tapi nggak berani nanya ke manusia?
+
+2
+00:00:05,055 --> 00:00:09,045
+Tenang. Kamu nggak sendirian, dan ini ada penjelasannya.
+
+3
+00:00:09,225 --> 00:00:14,540
+Contohnya: ada diskon nggak? Bisa dicicil nggak? Atau, ini pertanyaan bodoh nggak ya?
+
+4
+00:00:14,720 --> 00:00:20,727
+Riset 2014 menemukan, orang cenderung lebih terbuka ke sistem yang nggak menghakimi.
+
+5
+00:00:20,907 --> 00:00:25,914
+Nggak ada alis naik. Nggak ada helaan napas. Nggak ada, "hah, gitu aja nanya?"
+
+6
+00:00:26,094 --> 00:00:31,457
+Artinya, pembeli yang diam belum tentu nggak minat. Bisa jadi, dia cuma malu bertanya.
+
+7
+00:00:31,637 --> 00:00:39,268
+Jadi bikin ruang aman: ramah, tanpa menghakimi, 24 jam. Itu kerjaan AI agent seperti Malika.
+
+8
+00:00:39,448 --> 00:00:45,364
+Tapi urusan hati, kayak komplain atau pembeli yang lagi sedih, tetap manusia yang pegang.
+
+9
+00:00:45,544 --> 00:00:51,344
+Simpan video ini buat temen yang malu nanya. Komen "Malika", nanti aku kirim contohnya.
+
+10
+00:00:51,524 --> 00:00:53,689
+Santai aja, biar Malika!
+
