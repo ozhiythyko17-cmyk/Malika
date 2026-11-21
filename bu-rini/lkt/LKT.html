@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LKT - Lembar Konfirmasi Ukuran</title>
+<style>
+:root{--ink:#1d2328;--mut:#5f6b75;--line:#c9d0d6;--fill:#fff6cc;--fillb:#e0b400;--bg:#e9edf0;--acc:#0b5cab}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:13px/1.4 "Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.bar{position:sticky;top:0;z-index:5;display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);box-shadow:0 1px 6px rgba(0,0,0,.12)}
+.bar button{font:inherit;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 16px;cursor:pointer}
+.bar button.p{background:var(--ink);color:#fff;border-color:var(--ink)}
+.page{width:210mm;height:297mm;overflow:hidden;margin:14px auto;background:#fff;padding:12mm 12mm 10mm;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:6px}
+h1{margin:0;font-size:20px;letter-spacing:.02em}
+header small{color:var(--mut);display:block;font-size:11px}
+.id{display:grid;grid-template-columns:1.4fr 1.4fr .8fr;gap:8px;margin:10px 0}
+label.f{display:block;font-size:10.5px;color:var(--mut)}
+.id input{width:100%;font:inherit;border:0;border-bottom:1px solid var(--ink);padding:3px 0;background:transparent;outline:0}
+.intro{font-size:11.5px;color:var(--mut);margin:0 0 8px}
+.intro b{color:var(--ink)}
+.p1main{display:grid;grid-template-columns:118mm 1fr;gap:8mm;align-items:start}
+.legend h3{margin:12px 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.legend p,.legend li{margin:0 0 4px;font-size:11.5px;color:#3c464e}
+.legend ol{margin:0;padding-left:16px}
+.plan{border:1px solid var(--line);padding:4px}
+.plan svg{display:block;width:100%;height:auto}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid var(--line);padding:3px 6px;vertical-align:middle;font-size:11px}
+th{background:#f3f5f7;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.03em}
+td.n{width:20mm;text-align:center}
+td.n span{display:inline-block;min-width:21px;padding:0 5px;height:21px;line-height:18px;border:1.6px solid var(--acc);border-radius:11px;white-space:nowrap;color:var(--acc);font-weight:700;font-size:11px}
+td.s{width:22mm;text-align:center;color:var(--mut)}
+td.k small{display:block;color:var(--mut);font-size:9.5px}
+.in{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.in input{width:100%;min-width:0;font:inherit;font-weight:600;text-align:center;background:var(--fill);border:1.5px solid var(--fillb);border-radius:3px;padding:4px 3px;outline:0}
+.in input:focus{box-shadow:0 0 0 2px rgba(11,92,171,.35)}
+.in.multi input{width:calc(50% - 8px)}
+.in.multi4 input{width:calc(50% - 4px)}
+.in i{font-style:normal;color:var(--mut);font-size:9.5px;width:100%;margin-top:-2px}
+.unit{font-size:10px;color:var(--mut)}
+.bottom{display:grid;grid-template-columns:1.6fr 1fr;gap:8mm;margin-top:10px}
+.note{border:1px solid var(--line);min-height:40mm;padding:5px 7px}
+.note textarea{width:100%;min-height:32mm;border:0;resize:none;font:inherit;outline:0;background:transparent}
+.sign{text-align:center;font-size:11px}
+.sign .box{height:22mm;border-bottom:1px solid var(--ink);margin:4px 0}
+.foot{margin-top:8px;font-size:10px;color:var(--mut)}
+@media (max-width:820px){
+ .page{width:auto;height:auto;overflow:visible;margin:0 0 10px;padding:14px;box-shadow:none}
+ .id,.main
+}
+@media print{
+ @page{size:A4;margin:0}
+ body{background:#fff}.bar{display:none}
+ .page{margin:0;box-shadow:none;width:210mm;height:297mm;padding:11mm 12mm 9mm;overflow:hidden;page-break-after:always;break-after:page}.page:last-of-type{page-break-after:auto;break-after:auto}
+ .p1main{grid-template-columns:118mm 1fr}.id{grid-template-columns:1.4fr 1.4fr .8fr}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="bar"><button id="clr">Kosongkan isian</button><button class="p" id="prt">Cetak / Simpan PDF</button></div>
+<div class="page p1">
+<header>
+  <div><h1>LKT · LEMBAR KONFIRMASI UKURAN</h1><small>Mohon ukur langsung di lokasi dan isi kolom kuning dalam satuan <b>cm</b>. Angka sketsa hanya acuan, belum diverifikasi.</small></div>
+  <small style="text-align:right;white-space:nowrap;margin-left:12px">Puretray · PT Asamerta</small>
+</header>
+<div class="id">
+  <div><label class="f">Nama pemilik bangunan</label><input data-k="nama"></div>
+  <div><label class="f">Lokasi / alamat</label><input data-k="lokasi"></div>
+  <div><label class="f">Tanggal pengukuran</label><input data-k="tgl" placeholder="__ / __ / ____"></div>
+</div>
+
+<div class="p1main">
+  <div class="plan"><svg id="svg" viewBox="-30 -135 690 1070"></svg></div>
+  <div class="legend">
+    <h3>Cara mengisi</h3>
+    <ol>
+      <li>Ukur langsung di lokasi dengan meteran, satuan <b>cm</b>.</li>
+      <li>Isi kolom kuning di halaman 2 sesuai nomor di gambar.</li>
+      <li>Angka sketsa hanya acuan, belum diverifikasi.</li>
+      <li>Jika berbeda dari sketsa, tulis di kolom catatan.</li>
+    </ol>
+    <h3>Arah mata angin</h3>
+    <p>Selatan di atas, Utara di bawah, Timur di kiri, Barat di kanan.</p>
+    <h3>Pintu di dinding barat</h3>
+    <p>Ada dua pintu terpisah: pintu A (atas) dan pintu B (bawah), dipisah satu tiang.</p>
+    <h3>Saluran air / grill</h3>
+    <p>Posisi dan lebarnya perkiraan dari sketsa. Jarak saluran kanan ke tiang no. 5 sebesar 1 keramik.</p>
+  </div>
+</div>
+</div>
+<div class="page p2">
+<header><div><h1>LKT · ISIAN UKURAN</h1><small>Isi kolom kuning dalam satuan <b>cm</b>. Nomor sesuai gambar pada halaman 1.</small></div><small style="text-align:right;white-space:nowrap;margin-left:12px">Puretray · PT Asamerta</small></header>
+<div style="height:8px"></div>
+<table>
+    <thead><tr><th>No</th><th>Yang diukur</th><th>Sketsa (cm)</th><th style="width:58mm">Ukuran sebenarnya (cm)</th></tr></thead>
+    <tbody>
+      <tr><td class="n"><span>1</span></td><td class="k">Lebar bersih dari dinding lorong ke dinding barat<small>muka dinding ke muka dinding</small></td><td class="s">250</td><td><div class="in"><input data-k="u1" inputmode="decimal" aria-label="Ukuran 1"></div></td></tr>
+      <tr><td class="n"><span>2</span></td><td class="k">Dinding selatan ke muka tiang baris pertama<small>diukur sampai muka tiang</small></td><td class="s">357</td><td><div class="in"><input data-k="u2" inputmode="decimal" aria-label="Ukuran 2"></div></td></tr>
+      <tr><td class="n"><span>3</span></td><td class="k">Dinding selatan ke tepi bawah pintu A<small>sampai batas tiang baris kedua</small></td><td class="s">620</td><td><div class="in"><input data-k="u3" inputmode="decimal" aria-label="Ukuran 3"></div></td></tr>
+      <tr><td class="n"><span>4</span></td><td class="k">Jarak antar tiang<small>muka ke muka, tiang tengah ke tiang kanan</small></td><td class="s">175</td><td><div class="in"><input data-k="u4" inputmode="decimal" aria-label="Ukuran 4"></div></td></tr>
+      <tr><td class="n"><span>5</span></td><td class="k">Ukuran tiang tengah dan kanan<small>lebar × tebal</small></td><td class="s">45 × 45</td><td><div class="in multi"><input data-k="u5a" inputmode="decimal" aria-label="Lebar tiang"><input data-k="u5b" inputmode="decimal" aria-label="Tebal tiang"></div></td></tr>
+      <tr><td class="n"><span>6</span></td><td class="k">Tonjolan tiang tepi dari muka dinding<small>lebar sepanjang dinding tetap 45</small></td><td class="s">± 10</td><td><div class="in multi4"><input data-k="u6a" inputmode="decimal" aria-label="Tiang timur atas"><input data-k="u6b" inputmode="decimal" aria-label="Tiang timur bawah"><input data-k="u6c" inputmode="decimal" aria-label="Tiang di antara pintu A dan B"><input data-k="u6d" inputmode="decimal" aria-label="Tiang utara"><i>timur atas · timur bawah · antara pintu · utara</i></div></td></tr>
+      <tr><td class="n"><span>7</span></td><td class="k">Tiang no. 5 ke tepi pintu A<small>dari ujung tiang ke tepi pintu, sejajar dinding barat</small></td><td class="s">–</td><td><div class="in"><input data-k="u7" inputmode="decimal" aria-label="Ukuran 7"></div></td></tr>
+      <tr><td class="n"><span>8</span></td><td class="k">Lebar pintu A (atas, sisi selatan)<small>bukaan bersih, tepi ke tepi</small></td><td class="s">–</td><td><div class="in"><input data-k="u8" inputmode="decimal" aria-label="Ukuran 8"></div></td></tr>
+      <tr><td class="n"><span>9</span></td><td class="k">Lebar pintu B (bawah, sisi utara)<small>bukaan bersih, tepi ke tepi</small></td><td class="s">–</td><td><div class="in"><input data-k="u9" inputmode="decimal" aria-label="Ukuran 9"></div></td></tr>
+      <tr><td class="n"><span>10</span></td><td class="k">Lebar ruang, dinding timur (kiri) ke dinding barat (kanan)<small>muka dinding ke muka dinding</small></td><td class="s">–</td><td><div class="in"><input data-k="u10" inputmode="decimal" aria-label="Ukuran 10"></div></td></tr>
+      <tr><td class="n"><span>11</span></td><td class="k">Lebar lorong<small>muka dinding timur ke muka dinding lorong</small></td><td class="s">–</td><td><div class="in"><input data-k="u11" inputmode="decimal" aria-label="Ukuran 11"></div></td></tr>
+      <tr><td class="n"><span>12</span></td><td class="k">Lebar saluran air / grill<small>tepi ke tepi, kiri dan kanan</small></td><td class="s">±12–16</td><td><div class="in"><input data-k="u12" inputmode="decimal" aria-label="Ukuran u12"></div></td></tr>
+      <tr><td class="n"><span>13a</span> <span>13b</span></td><td class="k">Dinding selatan ke saluran (grill)<small>dari muka dalam dinding ke tepi saluran terdekat: atas (a) · bawah (b)</small></td><td class="s">–</td><td><div class="in multi"><input data-k="u13a" inputmode="decimal" aria-label="Saluran atas"><input data-k="u13b" inputmode="decimal" aria-label="Saluran bawah"></div></td></tr>
+      <tr><td class="n"><span>14a</span> <span>14b</span></td><td class="k">Dinding ke saluran samping<small>timur ke saluran kiri (a) · barat ke saluran kanan (b)</small></td><td class="s">–</td><td><div class="in multi"><input data-k="u14a" inputmode="decimal" aria-label="Saluran kiri"><input data-k="u14b" inputmode="decimal" aria-label="Saluran kanan"></div></td></tr>
+      <tr><td class="n"><span>15</span></td><td class="k">Saluran kanan ke muka tiang no. 5<small>tepi saluran ke muka tiang</small></td><td class="s">1 keramik</td><td><div class="in"><input data-k="u15" inputmode="decimal" aria-label="Ukuran u15"></div></td></tr>
+      <tr><td class="n"><span>16</span></td><td class="k">Ukuran 1 keramik lantai<small>panjang sisi keramik (cm)</small></td><td class="s">–</td><td><div class="in"><input data-k="u16" inputmode="decimal" aria-label="Ukuran u16"></div></td></tr>
+      <tr><td class="n"><span>17</span></td><td class="k">Lebar lorong utara<small>muka dinding timur ke muka dinding lorong utara</small></td><td class="s">–</td><td><div class="in"><input data-k="u17" inputmode="decimal" aria-label="Ukuran u17"></div></td></tr>
+    </tbody>
+  </table>
+<p class="foot">Nomor di gambar sesuai nomor di tabel. Di dinding barat ada dua pintu terpisah: pintu A (atas) dan pintu B (bawah), dipisah satu tiang. Arah mata angin: Selatan di atas, Utara di bawah, Timur di kiri, Barat di kanan.</p>
+<div class="bottom">
+  <div class="note"><label class="f">Catatan pemilik (bila ada perbedaan dengan sketsa)</label><textarea data-k="cat"></textarea></div>
+  <div class="sign">Pemilik bangunan<div class="box"></div><input data-k="ttd" style="width:100%;border:0;text-align:center;font:inherit;outline:0;background:transparent" placeholder="nama terang">
+</div>
+</div>
+
+<script>
+(function(){
+var INK='#1d2328',ACC='#0b5cab',ns='http://www.w3.org/2000/svg',svg=document.getElementById('svg'),h='';
+function el(s){h+=s}
+function wall(x1,y1,x2,y2,d){el('<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+INK+'" stroke-width="15" stroke-linecap="square"'+(d?' stroke-dasharray="14 12" opacity=".45" stroke-linecap="butt" stroke-width="6"':'')+'/>')}
+function col(x,y,w,hh){el('<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+hh+'" fill="#dfe4e8" stroke="'+INK+'" stroke-width="3"/>')}
+function thin(x1,y1,x2,y2){el('<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+ACC+'" stroke-width="1.6"/>')}
+function tick(x,y){el('<line x1="'+(x-7)+'" y1="'+(y+7)+'" x2="'+(x+7)+'" y2="'+(y-7)+'" stroke="'+ACC+'" stroke-width="2.4"/>')}
+function bubble(x,y,n){el('<circle cx="'+x+'" cy="'+y+'" r="21" fill="#fff" stroke="'+ACC+'" stroke-width="3"/><text x="'+x+'" y="'+(y+9)+'" text-anchor="middle" font-size="'+(String(n).length>2?15:(n>9?21:26))+'" font-weight="700" fill="'+ACC+'" font-family="Arial,sans-serif">'+n+'</text>')}
+function dimH(x1,x2,y,n,ext){ if(ext)thin(x1,y,x1,ext[0]),thin(x2,y,x2,ext[1]);thin(x1,y,x2,y);tick(x1,y);tick(x2,y);bubble((x1+x2)/2,y,n)}
+function dimV(y1,y2,x,n,ext){ if(ext)thin(x,y1,ext[0],y1),thin(x,y2,ext[1],y2);thin(x,y1,x,y2);tick(x,y1);tick(x,y2);bubble(x,(y1+y2)/2,n)}
+function txt(x,y,s,sz,w,anc){el('<text x="'+x+'" y="'+y+'" font-size="'+(sz||22)+'" font-weight="'+(w||400)+'" text-anchor="'+(anc||'middle')+'" fill="'+INK+'" font-family="Arial,sans-serif">'+s+'</text>')}
+/* dinding */
+wall(0,-90,0,905);
+wall(235,-110,235,0);
+wall(235,0,500,0);
+wall(500,0,500,538);
+wall(500,538,500,620,1);
+wall(500,743,500,800);
+wall(235,800,500,800);
+wall(235,800,235,895);
+/* saluran air / grill */
+var G=[[7.5,44,485,12],[7.5,530,485,12],[92.5,44,16,498],[391.5,44,16,498]];
+G.forEach(function(g){el('<rect x="'+g[0]+'" y="'+g[1]+'" width="'+g[2]+'" height="'+g[3]+'" fill="#e6eaed" stroke="#7b8791" stroke-width="4"/>')});
+G.forEach(function(g){el('<rect x="'+g[0]+'" y="'+g[1]+'" width="'+g[2]+'" height="'+g[3]+'" fill="#e6eaed"/>')});
+txt(300,34,'SALURAN AIR / GRILL',17,600);
+/* tiang */
+col(7.5,357,10,45);col(7.5,620,10,45);
+col(227.5,357,45,45);col(227.5,620,45,45);col(227.5,782.5,45,10);
+col(447.5,357,45,45);col(482.5,620,10,45);
+/* label */
+txt(125,-20,'LORONG',24,600);
+txt(375,200,'AREA HOTLINE',24,600);
+txt(0,-140,'',1);
+txt(130,-118,'PINTU SELATAN',20,700);
+el('<path d="M130 -100 L130 -75 M130 -100 l-6 10 M130 -100 l6 10" stroke="'+INK+'" stroke-width="3" fill="none"/>');
+el('<circle cx="585" cy="-72" r="36" fill="none" stroke="'+INK+'" stroke-width="3"/><path d="M549 -72 L621 -72 M585 -108 L585 -36" stroke="'+INK+'" stroke-width="1.6" fill="none" opacity=".5"/><path d="M585 -108 L585 -50" stroke="'+INK+'" stroke-width="4" fill="none"/><path d="M572 -62 L585 -34 L598 -62 Z" fill="'+INK+'"/>');
+txt(585,-118,'S',26,700);txt(585,-3,'U',26,700);txt(528,-63,'T',26,700);txt(642,-63,'B',26,700);
+/* ukuran bertanda */
+dimH(242.5,492.5,-62,1,[-8,-8]);
+dimH(7.5,227.5,-62,11);
+dimV(0,357,545,2,[505,505]);
+dimV(0,620,600,3,[560,560]);
+dimH(272.5,447.5,335,4,[357,357]);
+dimV(357,402,425,5,[447.5,447.5]);
+/* 6: tonjolan */
+(function(){var pts=[];
+ pts.forEach(function(p){});
+ el('<g stroke="'+ACC+'" stroke-width="2"><line x1="40" y1="330" x2="14" y2="355"/><line x1="40" y1="595" x2="14" y2="624"/><line x1="418" y1="643" x2="481" y2="643"/><line x1="185" y1="745" x2="240" y2="781"/></g>');
+ bubble(52,322,6);bubble(52,587,6);bubble(397,643,6);bubble(170,725,6);})();
+dimH(7.5,227.5,860,17);
+txt(120,905,'PINTU / LORONG UTARA',16,600);
+dimV(402,538,468,7,[468,492.5]);
+/* 12: lebar saluran; 13: dinding selatan ke saluran; 14: dinding ke saluran kiri/kanan */
+el('<line x1="391.5" y1="120" x2="407.5" y2="120" stroke="'+ACC+'" stroke-width="2"/>');tick(391.5,120);tick(407.5,120);
+el('<line x1="399.5" y1="120" x2="399.5" y2="104" stroke="'+ACC+'" stroke-width="2"/>');bubble(399.5,82,12);
+dimV(7.5,44,50,'13a');
+dimV(7.5,530,200,'13b');
+dimH(7.5,92.5,250,'14a');
+dimH(407.5,492.5,250,'14b');
+dimH(407.5,447.5,300,15,[357,357]);
+dimV(538,620,530,8,[500,500]);
+dimV(665,743,530,9,[500,500]);
+txt(425,594,'PINTU A',20,700);txt(425,738,'PINTU B',20,700);
+wall(500,665,500,743,1);
+dimH(7.5,492.5,705,10);
+svg.innerHTML=h;
+
+/* isian tersimpan */
+var KEY='lkt-v7',inputs=[].slice.call(document.querySelectorAll('[data-k]'));
+function load(){try{var d=JSON.parse(localStorage.getItem(KEY)||'{}');inputs.forEach(function(i){if(d[i.dataset.k]!=null)i.value=d[i.dataset.k]})}catch(e){}}
+function save(){try{var d={};inputs.forEach(function(i){d[i.dataset.k]=i.value});localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+inputs.forEach(function(i){i.addEventListener('input',save)});load();
+document.getElementById('prt').onclick=function(){window.print()};
+document.getElementById('clr').onclick=function(){if(confirm('Kosongkan semua isian?')){inputs.forEach(function(i){i.value=''});save()}};
+})();
+</script>
+</body>
+</html>
