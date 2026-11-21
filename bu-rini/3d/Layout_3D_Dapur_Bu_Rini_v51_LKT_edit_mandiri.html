@@ -829,7 +829,7 @@ function cabinetTable(g,w,d,h,nDoors,openFirst=true){
   const lx=w/2-0.04,lz=d/2-0.05;[[-lx,-lz],[lx,-lz],[-lx,lz],[lx,lz]].forEach(([x,z])=>tubeLeg(g,x,z,bodyY0+0.01,0.022));
 }
 function wallRack(g,w,d,h){ // rak 2 tingkat menempel di meja/kabinet: tiang tabung berdiri dari permukaan meja, rak tidak melayang
-  const ys=[h+0.45,h+0.85],sd=0.3,zb=-d/2+0.15,zBack=-d/2+0.04,zFront=-d/2+sd-0.04;
+  const ys=[h+0.30,h+0.60],sd=0.3,zb=-d/2+0.15,zBack=-d/2+0.04,zFront=-d/2+sd-0.04;
   ys.forEach(y=>{
     RB(g,w,0.025,sd,0.004,M.ss,0,y,zb);
     B(g,w,0.035,0.01,M.ss,0,y+0.012,-d/2+sd);
@@ -929,8 +929,8 @@ const BUILD={
   B(g,0.08,0.12,0.06,mat({color:0xf3f3f3,roughness:.4}),0.18,h+0.28,-d/2+0.06); // dispenser sabun
  },
  cupboard(g,it){const {w,d}=it,h=0.85;cabinetTable(g,w,d,h,3,true);wallRack(g,w,d,h);
-  for(let i=0;i<4;i++){C(g,0.1,0.1,0.14,M.ssPolish,-w/2+0.25+i*0.45,h+0.535,-d/2+0.15,20);}
-  for(let i=0;i<3;i++)B(g,0.32,0.06,0.24,M.ssPolish,-w/2+0.35+i*0.55,h+0.9,-d/2+0.15,false);
+  for(let i=0;i<4;i++){C(g,0.1,0.1,0.14,M.ssPolish,-w/2+0.25+i*0.45,h+0.3825,-d/2+0.15,20);}
+  for(let i=0;i<3;i++)B(g,0.32,0.06,0.24,M.ssPolish,-w/2+0.35+i*0.55,h+0.6425,-d/2+0.15,false);
   B(g,0.45,0.02,0.3,mat({color:0xf6f2e6,roughness:.85}),0.35,h+0.01,0.05);},
  undercounter(g,it){ // Crown TZ: 2 pintu solid, alur pegangan, bay kompresor dengan display & ventilasi di kanan
   const {w,d}=it,h=0.85;
@@ -949,14 +949,14 @@ const BUILD={
   [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>tubeLeg(g,a*(w/2-0.05),b*(d/2-0.06),0.1,0.022));
   RB(g,w,0.08,0.025,0.006,M.ss,0,h+0.04,-d/2+0.0125);
   wallRack(g,w,d,h);
-  for(let i=0;i<5;i++){const m=mat({color:[0xe9e4d4,0xd8eedf,0xf1dccb][i%3],roughness:.6});RB(g,0.24,0.13,0.18,0.02,m,-w/2+0.25+i*0.33,h+0.53,-d/2+0.15);}
-  for(let i=0;i<4;i++)C(g,0.08,0.08,0.16,M.ssPolish,-w/2+0.3+i*0.4,h+0.94,-d/2+0.15,18);},
+  for(let i=0;i<5;i++){const m=mat({color:[0xe9e4d4,0xd8eedf,0xf1dccb][i%3],roughness:.6});RB(g,0.24,0.13,0.18,0.02,m,-w/2+0.25+i*0.33,h+0.3775,-d/2+0.15);}
+  for(let i=0;i<4;i++)C(g,0.08,0.08,0.16,M.ssPolish,-w/2+0.3+i*0.4,h+0.6925,-d/2+0.15,18);},
  checker(g,it){const {w,d}=it,h=0.85;cabinetTable(g,w,d,h,2,false);wallRack(g,w,d,h);
   // rel tiket pesanan + lampu penghangat (khas meja checker/pass)
-  rodX(g,w-0.1,0.008,M.ssPolish,0,h+0.4,-d/2+0.31);
-  for(let i=0;i<6;i++){const t=B(g,0.075,0.1,0.002,mat({color:0xfdfdf8,roughness:.9}),-w/2+0.18+i*0.2,h+0.35,-d/2+0.315,false);t.rotation.z=(Math.random()-.5)*0.12;}
-  RB(g,w-0.2,0.05,0.14,0.01,M.ssDark,0,h+0.73,-d/2+0.32);
-  B(g,w-0.3,0.01,0.08,mat({color:0x220,emissive:0xff8a3a,emissiveIntensity:.8}),0,h+0.704,-d/2+0.33,false);
+  rodX(g,w-0.1,0.008,M.ssPolish,0,h+0.26,-d/2+0.31);
+  for(let i=0;i<6;i++){const t=B(g,0.075,0.1,0.002,mat({color:0xfdfdf8,roughness:.9}),-w/2+0.18+i*0.2,h+0.21,-d/2+0.315,false);t.rotation.z=(Math.random()-.5)*0.12;}
+  RB(g,w-0.2,0.05,0.14,0.01,M.ssDark,0,h+0.555,-d/2+0.32);
+  B(g,w-0.3,0.01,0.08,mat({color:0x220,emissive:0xff8a3a,emissiveIntensity:.8}),0,h+0.53,-d/2+0.33,false);
   for(let i=0;i<4;i++){C(g,0.12,0.11,0.012,M.white,-w/2+0.25+i*0.3,h+0.007,0.08,24);C(g,0.06,0.08,0.03,M.food,-w/2+0.25+i*0.3,h+0.025,0.08,14);}
   for(let i=0;i<6;i++)C(g,0.13,0.13,0.012,M.white,-w/2+0.15,h+0.01+i*0.014,-0.15,24);},
  kwali(g,it){ // Crown MKR-2T1S: 2 kerah wajan menonjol berlapis enamel, water bowl berkaki corong di tengah, splash tinggi + 1 keran di tengah, panel kontrol trapesium hitam berlis kuning
@@ -1747,7 +1747,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v50';
+const EDIT={step:5},KEY='rini-layout-v51';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
