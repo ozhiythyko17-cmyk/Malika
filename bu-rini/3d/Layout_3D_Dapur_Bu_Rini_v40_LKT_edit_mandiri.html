@@ -533,18 +533,18 @@ function getCss(v){return getComputedStyle(document.documentElement).getProperty
 // px,pz,pr = posisi tengah dan putaran untuk alat lain; dir = arah muka alat di dunia (x,z).
 const ITEMS=[
  {no:1, name:'Showcase Chiller 2 Pintu', brand:'Crown LG-800', size:'112 × 60 × 208,5 cm', qty:1, price:17482500, zone:'cold', px:2.585, pz:8.445, pr:Math.PI, dir:[0,-1], w:1.12, d:0.60, kind:'showcase'},
- {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:2.10, pz:0.35, pr:0, dir:[0,1], w:0.70, d:0.55, kind:'handwash'},
- {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:0.575, pz:4.05, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
+ {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:0.45, pz:0.45, pr:Math.PI/2, dir:[1,0], w:0.70, d:0.55, kind:'handwash'},
+ {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:1.775, pz:2.57, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
  {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:8.95, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
- {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:0.575, pz:5.75, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
+ {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:1.775, pz:4.77, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
  {no:7, name:'Kwali Range High Pressure', brand:'Crown MKR-2T1S', size:'180 × 80 cm, 2 tungku + water bowl', qty:1, price:22825000, zone:'hot', hot:true, c:4.95, dir:[-1,0], w:1.80, d:0.80, kind:'kwali'},
  {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, c:1.855, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
  {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:2.985, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
  {no:10, name:'Kompor 6 Tungku + Oven', brand:'GETRA RBJ-6', size:'105 × 80 cm', qty:1, price:24000000, zone:'hot', hot:true, c:0.60, dir:[-1,0], w:1.05, d:0.80, kind:'sixburner'},
- {no:11, name:'Meja Piring Kotor', brand:'Crown (Fotec)', size:'110 × 80 cm, lubang di sisi kiri', qty:1, price:3250000, zone:'wash', px:0.575, pz:2.50, pr:Math.PI/2, dir:[1,0], w:1.10, d:0.80, kind:'dirty'},
- {no:12, name:'Sink 3 Bak', brand:'Crown (Fotec)', size:'180 × 80 cm, 3 keran', qty:1, price:12500000, zone:'wash', px:0.575, pz:1.00, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.80, kind:'sink3'},
+ {no:11, name:'Meja Piring Kotor', brand:'Crown (Fotec)', size:'110 × 80 cm, lubang di sisi kiri', qty:1, price:3250000, zone:'wash', px:0.575, pz:1.40, pr:Math.PI/2, dir:[1,0], w:1.10, d:0.80, kind:'dirty'},
+ {no:12, name:'Sink 3 Bak', brand:'Crown (Fotec)', size:'180 × 80 cm, 3 keran', qty:1, price:12500000, zone:'wash', px:0.575, pz:2.90, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.80, kind:'sink3'},
  {no:13, name:'Deep Fryer Listrik 2 Basket', brand:'GETRA EF-89', size:'di atas meja no. 9', qty:1, price:2500000, zone:'hot', hot:true, c:2.985, dir:[-1,0], w:0.57, d:0.44, kind:'fryer', onTop:0.87},
- {no:14, name:'Kompor Stock Pot', brand:'GETRA SP-1DX', size:'60 × 62 cm', qty:1, price:4200000, zone:'hot', px:2.80, pz:0.385, pr:0, dir:[0,1], w:0.60, d:0.62, kind:'stockpot'}
+ {no:14, name:'Kompor Stock Pot', brand:'GETRA SP-1DX', size:'60 × 62 cm', qty:1, price:4200000, zone:'hot', px:2.30, pz:0.385, pr:0, dir:[0,1], w:0.60, d:0.62, kind:'stockpot'}
 ];
 const RW=4.275, RD=6.2, RH=3.4, RK=8.745; // RD = titik tengah tampilan; RK = muka dalam dinding utara. Lebar bersih 4,125 m (9,25 keramik 40 cm + 2 grill 21 cm). Inti dapur sampai z 6,20 (grill utara tepat di sisi selatan pintu A); sesudahnya pintu A, tiang pintu A, pintu B, dinding utara (tambahan di luar 6,20 m) // dapur: x ke barat (5,0 m dari as dinding timur), z ke utara (6,2 m dari as dinding selatan sampai tiang pintu A)
 const ORW=8, ORD=7.5;           // bingkai lama area hot line (dipakai grup HW)
@@ -1331,7 +1331,7 @@ const gasOut=new THREE.Group(),gasIn=new THREE.Group();gasGrp.add(gasOut);gasGrp
     cyl(gasIn,pipeIn,'z',0.14,x,IY+0.2,IZ-0.07);           // ke inlet alat, dari bawah
   });
   // cabang ke kompor stock pot di dinding selatan (x lokal 7,1; z lokal 6,075)
-  cyl(gasIn,pipeIn,'x',0.2,7.0,IY,IZ);cyl(gasIn,pipeIn,'z',IZ-6.1,7.1,IY,(IZ+6.1)/2);cyl(gasIn,pipeIn,'y',0.2,7.1,IY+0.1,6.1);B(gasIn,0.06,0.06,0.06,valveM,7.1,IY+0.08,6.1,false);
+  cyl(gasIn,pipeIn,'x',0.2,7.0,IY,IZ);cyl(gasIn,pipeIn,'z',IZ-5.6,7.1,IY,(IZ+5.6)/2);cyl(gasIn,pipeIn,'y',0.2,7.1,IY+0.1,5.6);B(gasIn,0.06,0.06,0.06,valveM,7.1,IY+0.08,5.6,false);
   // pipa dalam tampil menembus alat (x-ray) supaya terlihat walau di balik badan alat
   const xr=on=>{[pipeIn,valveM].forEach(m=>{});gasIn.traverse(o=>{if(o.isMesh){o.material.depthTest=!on;o.renderOrder=on?20:0;o.material.needsUpdate=true;}});};
   const tG=document.getElementById('tGas');
@@ -1668,7 +1668,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v39';
+const EDIT={step:5},KEY='rini-layout-v40';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
