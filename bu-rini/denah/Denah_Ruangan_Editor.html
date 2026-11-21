@@ -82,7 +82,7 @@ const INIT=[
  W(162.5,882,427.5,882),               // dinding utara (tambahan di luar 6,20 m)
  W(162.5,882,162.5,977),               // dinding lorong utara, kembaran dinding lorong selatan
  // saluran air / grill (lebar ± 21 cm): selatan 1,5 keramik dari dinding selatan; utara tepat di sisi selatan pintu A; kiri 2 keramik dari dinding timur; kanan 2¼ keramik dari dinding barat
- G(7.5,67.5,322.5,21.25),G(7.5,598.75,322.5,21.25),G(87.5,67.5,21.25,552.5),G(308.75,67.5,21.25,552.5),
+ G(7.5,67.5,412.5,21.25),G(7.5,598.75,412.5,21.25),G(87.5,67.5,21.25,552.5),G(308.75,67.5,21.25,552.5),
  T(200,60,'saluran air / grill',12,0,{c:'#7b8791'}),
  // kolom 45 x 45
  K(7.5,357,TD,45),K(155,357),K(375,357),
@@ -114,8 +114,8 @@ const INIT=[
 let objs=[],hist=[],redo=[],sel=null,tool='select',snap=true,ortho=true,showGrid=false;
 let idc=1;const uid=()=> 'o'+(idc++);
 function load(a){objs=JSON.parse(JSON.stringify(a));objs.forEach(o=>{if(!o.id)o.id=uid();});}
-try{const sv=localStorage.getItem('denah-v12');if(sv)load(JSON.parse(sv));else load(INIT);}catch(e){load(INIT);}
-function save(){try{localStorage.setItem('denah-v12',JSON.stringify(objs));}catch(e){}}
+try{const sv=localStorage.getItem('denah-v13');if(sv)load(JSON.parse(sv));else load(INIT);}catch(e){load(INIT);}
+function save(){try{localStorage.setItem('denah-v13',JSON.stringify(objs));}catch(e){}}
 function push(){hist.push(JSON.stringify(objs));if(hist.length>150)hist.shift();redo=[];updUndo();}
 function updUndo(){document.getElementById('bUndo').disabled=!hist.length;document.getElementById('bRedo').disabled=!redo.length;}
 function undo(){if(!hist.length)return;redo.push(JSON.stringify(objs));objs=JSON.parse(hist.pop());sel=null;draw();save();updUndo();fillProps();}

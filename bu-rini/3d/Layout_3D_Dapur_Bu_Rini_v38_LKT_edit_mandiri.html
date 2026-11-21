@@ -663,7 +663,7 @@ function drain(cx,cz,w,len,alongX){
   d.rotation.x=-Math.PI/2;if(alongX)d.rotation.z=Math.PI/2;d.position.set(cx,0.004,cz);d.receiveShadow=true;ROOM.add(d);
 }
 [0.98125,3.19375].forEach(x=>drain(x,3.4375,0.2125,5.525,false));
-[0.78125,6.09375].forEach(z=>drain(1.6875,z,0.2125,3.225,true));
+[0.78125,6.09375].forEach(z=>drain(2.1375,z,0.2125,4.125,true));   // grill selatan dan utara nyambung dari dinding timur ke dinding barat
 
 const WALL_T=0.15;
 const walls={W:new THREE.Group(),E:new THREE.Group(),S:new THREE.Group(),C:new THREE.Group(),N:new THREE.Group()};
@@ -1668,7 +1668,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v37';
+const EDIT={step:5},KEY='rini-layout-v38';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}

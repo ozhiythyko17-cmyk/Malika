@@ -148,7 +148,7 @@ wall(427.5,825,427.5,882);
 wall(162.5,882,427.5,882);
 wall(162.5,882,162.5,977);
 /* saluran air / grill (keramik 40 x 40) */
-var G=[[7.5,67.5,322.5,21.25],[7.5,598.75,322.5,21.25],[87.5,67.5,21.25,552.5],[308.75,67.5,21.25,552.5]];
+var G=[[7.5,67.5,412.5,21.25],[7.5,598.75,412.5,21.25],[87.5,67.5,21.25,552.5],[308.75,67.5,21.25,552.5]];
 G.forEach(function(g){el('<rect x="'+g[0]+'" y="'+g[1]+'" width="'+g[2]+'" height="'+g[3]+'" fill="#e6eaed" stroke="#7b8791" stroke-width="4"/>')});
 G.forEach(function(g){el('<rect x="'+g[0]+'" y="'+g[1]+'" width="'+g[2]+'" height="'+g[3]+'" fill="#e6eaed"/>')});
 txt(200,58,'SALURAN AIR / GRILL',16,600);
@@ -193,7 +193,7 @@ dimH(7.5,420,460,10);
 svg.innerHTML=h;
 
 /* isian tersimpan */
-var KEY='lkt-v9',inputs=[].slice.call(document.querySelectorAll('[data-k]'));
+var KEY='lkt-v10',inputs=[].slice.call(document.querySelectorAll('[data-k]'));
 function load(){try{var d=JSON.parse(localStorage.getItem(KEY)||'{}');inputs.forEach(function(i){if(d[i.dataset.k]!=null)i.value=d[i.dataset.k]})}catch(e){}}
 function save(){try{var d={};inputs.forEach(function(i){d[i.dataset.k]=i.value});localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
 inputs.forEach(function(i){i.addEventListener('input',save)});load();
