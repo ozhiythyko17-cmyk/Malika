@@ -677,13 +677,13 @@ function wallSeg(group,axis,a0,a1,y0,y1,fixed){
   else mesh=B(group,WALL_T,h,len,m,fixed,(y0+y1)/2,(a0+a1)/2,true);
   mesh.castShadow=false;return mesh;
 }
-// dinding barat: penuh sampai z 4,10; di utara tiang 2 lubang atas (y 2,7 sampai plafon): lubang 1 z 4,10-5,15 (axial fan), sekat 5,15-5,30, lubang 2 z 5,30-6,20
+// dinding barat: penuh sampai z 4,10; di utara tiang 2 lubang atas (y 2,7 sampai plafon): lubang 1 z 4,10-5,15 (axial fan), sekat 5,15-5,30, lubang 2 z 5,30-7,02 (sampai ujung utara pintu A)
 // pintu A terbuka z 6,20-7,02 (sesudah kompor 2 tungku dan grill utara), tiang pintu A z 7,02-7,47, pintu B z 7,47-8,25, dinding penuh sampai dinding utara
 wallSeg(walls.W,'z',-WALL_T/2,4.10,0,RH,RW);
 wallSeg(walls.W,'z',4.10,5.15,0,2.7,RW);
 wallSeg(walls.W,'z',5.15,5.30,0,RH,RW);
 wallSeg(walls.W,'z',5.30,6.20,0,2.7,RW);
-wallSeg(walls.W,'z',6.20,7.02,2.15,RH,RW);
+wallSeg(walls.W,'z',6.20,7.02,2.15,2.7,RW);   // di atas pintu A hanya balok (y 2,15-2,7); lubang 2 terbuka di atasnya sampai ujung utara pintu A
 wallSeg(walls.W,'z',7.02,7.47,0,RH,RW);
 wallSeg(walls.W,'z',7.47,8.25,2.15,RH,RW);
 wallSeg(walls.W,'z',8.25,8.82+WALL_T/2,0,RH,RW);
@@ -1344,7 +1344,7 @@ dimTagH('Pipa gas ke 4 alat (lewat bawah kompor)',3.0,0.75,0.95,'dimtag',true,tr
 dimTagH('Hood dipisah 2 unit di kiri-kanan tiang (acuan, pesanan 6 m, belum masuk penawaran)',2.0,2.75,0.55,'dimtag',true,true);
 dimTagH('Ducting BJLS: 3 saluran 35 × 35 cm menyatu ke 1 jalur 50 × 50 cm',1.2,4.1,0.75,'dimtag',true,true);
 dimTagH('Axial fan 20 inci (Ø508 mm), lewat lubang 1',4.625,3.55,-0.8,'dimtag',false,true);
-dimTagH('Lubang 2 (sampai awal pintu A)',5.75,3.1,0.0,'dimtag',true,true);
+dimTagH('Lubang 2 (sampai ujung utara pintu A)',6.15,3.1,0.0,'dimtag',true,true);
 /* ---------- IPAL 2500 L + grease trap 1000 L di halaman belakang area hot line ---------- */
 (function(){
 const T=THREE,V=T.Vector3;
@@ -1553,7 +1553,7 @@ const listEl=document.getElementById('list');const rowEls={};
   listEl.appendChild(grp);
 });
 const note=document.createElement('div');note.className='note';
-note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Inti dapur 6,20 m dari dinding selatan, berakhir di grill utara yang tepat di sisi selatan pintu A. Urutan di dinding barat dari selatan: kompor 2 tungku, grill utara, pintu A, tiang pintu A, pintu B, dinding utara (area dari pintu A ke utara tambahan di luar 6,20 m). Lantai keramik 40 × 40 cm, lebar bersih ±412 cm. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Urutan keramik dari selatan ke utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di utara tiang ada 2 lubang di dinding sampai awal pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
+note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Inti dapur 6,20 m dari dinding selatan, berakhir di grill utara yang tepat di sisi selatan pintu A. Urutan di dinding barat dari selatan: kompor 2 tungku, grill utara, pintu A, tiang pintu A, pintu B, dinding utara (area dari pintu A ke utara tambahan di luar 6,20 m). Lantai keramik 40 × 40 cm, lebar bersih ±412 cm. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Urutan keramik dari selatan ke utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di atas dinding barat ada 2 lubang antara tiang dan pintu A, lubang 2 sampai ujung utara pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
 listEl.appendChild(note);
 const panel=document.getElementById('panel'),sheetLbl=document.getElementById('sheetLbl');
 document.getElementById('panelTop').addEventListener('click',()=>{if(window.innerWidth>760)return;panel.classList.toggle('open');sheetLbl.textContent=panel.classList.contains('open')?'Tutup':'Lihat daftar';});
@@ -1668,7 +1668,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v38';
+const EDIT={step:5},KEY='rini-layout-v39';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
