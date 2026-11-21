@@ -85,13 +85,15 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-
 #labels{position:fixed;inset:0;pointer-events:none;z-index:3}
 .tag{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;border:2px solid #fff;color:#fff;font-weight:700;font-size:12px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;display:grid;place-items:center;box-shadow:0 3px 10px rgba(0,0,0,.22);font-variant-numeric:tabular-nums;transition:transform .15s}
 .tag:hover,.tag.sel{transform:translate(-50%,-100%) scale(1.18)}
+.gaptag{position:absolute;transform:translate(-50%,-50%);font-size:11px;font-weight:700;color:#7a3d00;background:rgba(255,236,200,.95);padding:1px 6px;border-radius:6px;white-space:nowrap;font-variant-numeric:tabular-nums;box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none}
+.ed{display:grid;gap:8px}.edn{font-weight:700;font-size:14px}.edr{display:flex;flex-wrap:wrap;gap:6px;align-items:end}.edr label{display:grid;gap:2px;font-size:11.5px;color:var(--muted)}.edr input,.edr select{width:84px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;font:inherit;background:rgba(255,255,255,.8)}
 .dimtag{position:absolute;transform:translate(-50%,-50%);font-size:12px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.88);padding:3px 8px;border-radius:7px;white-space:nowrap;font-variant-numeric:tabular-nums;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .axis{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);background:#fff;font-size:12px;font-weight:700;display:grid;place-items:center}
 
 /* Walk HUD */
 .hud{display:none}
 body.walk .hud{display:block}
-body.walk #labels .tag,body.walk #labels .dimtag,body.walk #labels .axis{display:none}
+body.walk #labels .tag,body.walk #labels .dimtag,body.walk #labels .axis,body.walk #labels .gaptag{display:none}
 .joy{position:fixed;left:28px;bottom:28px;width:124px;height:124px;border-radius:50%;z-index:6;touch-action:none}
 .joy .knob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .hudbar{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:6;border-radius:999px;padding:6px;display:flex;gap:6px;align-items:center}
@@ -156,6 +158,7 @@ body.walk .panel{display:none!important}
   <button class="chipbtn" id="vIpal">Lihat IPAL</button>
   <button class="chipbtn mbtn" id="mList" aria-pressed="false">☰ Daftar alat</button>
   <button class="chipbtn mbtn" id="mOpt" aria-pressed="false">⚙ Tampilan</button>
+  <button class="chipbtn mbtn" id="mEdit" aria-pressed="false">✎ Ubah posisi</button>
   <button class="chipbtn mbtn" id="mInfo" aria-pressed="false">ℹ Info</button>
 </section>
 
@@ -166,7 +169,19 @@ body.walk .panel{display:none!important}
     <button class="chipbtn" id="tSim" aria-pressed="true">Api &amp; asap</button>
     <button class="chipbtn" id="tWind" aria-pressed="true">Angin</button>
     <button class="chipbtn" id="tGas" aria-pressed="true">Pipa gas</button>
+    <button class="chipbtn" id="tGap" aria-pressed="true">Jarak antar unit</button>
     <button class="chipbtn" id="tIpal" aria-pressed="true">IPAL</button>
+  </div>
+</section>
+
+<section class="pop glass" id="pEdit" aria-label="Ubah posisi alat">
+  <div><h1>Ubah posisi alat</h1><p>Klik alat di model, lalu tarik di lantai, pakai tombol arah, atau isi angka. X = jarak dari as dinding timur, Z = jarak dari as dinding selatan (cm), sama dengan LKT. Jarak antar unit ikut berubah.</p></div>
+  <div class="ed">
+    <div class="edn" id="eName">Belum ada alat dipilih</div>
+    <div class="edr"><label>X (cm)<input type="number" id="eX" step="5"></label><label>Z (cm)<input type="number" id="eZ" step="5"></label><label>Langkah<select id="eStep"><option value="1">1 cm</option><option value="5" selected>5 cm</option><option value="10">10 cm</option><option value="50">50 cm</option></select></label></div>
+    <div class="edr"><button class="chipbtn" data-mv="0,-1">↑ Selatan</button><button class="chipbtn" data-mv="0,1">↓ Utara</button><button class="chipbtn" data-mv="-1,0">← Timur</button><button class="chipbtn" data-mv="1,0">→ Barat</button></div>
+    <div class="edr"><button class="chipbtn" id="eRotL">⟲ Putar 90°</button><button class="chipbtn" id="eRotR">⟳ Putar 90°</button><button class="chipbtn" id="eDl">Unduh JSON</button><button class="chipbtn" id="eRs">Kembalikan semua</button></div>
+    <p class="dim">Perubahan tersimpan otomatis di browser ini. Hood, ducting, pipa gas, dan IPAL tidak ikut bergeser. Tombol panah keyboard juga menggeser alat terpilih.</p>
   </div>
 </section>
 
@@ -1536,7 +1551,7 @@ function select(it,focus){
   Object.values(rowEls).forEach(r=>r.removeAttribute('aria-current'));
   tagEls.forEach(t=>t.el.classList.toggle('sel',t.it===it));
   selected=it;
-  if(!it){info.classList.remove('show');return;}
+  if(!it){info.classList.remove('show');if(typeof updateEditFields==='function')updateEditFields();return;}
   setHighlight(it,true);rowEls[it.no].setAttribute('aria-current','true');
   const col=ZONES[it.zone].color;
   const n=document.getElementById('iNum');n.textContent=it.no;n.style.background=col;
@@ -1547,6 +1562,7 @@ function select(it,focus){
   document.getElementById('iPrice').textContent=it.qty>1?`${rupiah(it.price)} × ${it.qty} = ${rupiah(it.price*it.qty)}`:rupiah(it.price);
   document.getElementById('iZone').textContent=ZONES[it.zone].label;
   info.classList.add('show');
+  if(typeof updateEditFields==='function')updateEditFields();
   if(focus&&mode==='view')focusItem(it);
 }
 document.getElementById('iClose').addEventListener('click',()=>select(null));
@@ -1629,6 +1645,106 @@ function endPointer(e){
 }
 canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',endPointer);
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
+
+/* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
+const EDIT={step:5},KEY='rini-layout-v26';
+const POSE0=new Map();
+const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
+function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
+ITEMS.forEach(it=>{const p=poseNow(it);POSE0.set(it.no,p);it.pose={x:p.x,z:p.z,yaw:p.yaw};});
+function setPose(it,x,z,yaw){
+  const old=it.pose;it.pose={x,z,yaw};
+  const g=it.group,par=g.parent;ROOM.updateMatrixWorld(true);
+  const lp=par.worldToLocal(ROOM.localToWorld(new THREE.Vector3(x,0,z)));
+  g.position.x=lp.x;g.position.z=lp.z;
+  let py=0,p=par;while(p&&p!==scene){py+=p.rotation.y;p=p.parent;}
+  g.rotation.y=yaw-py;g.updateMatrixWorld(true);
+  it.dir=[Math.round(Math.sin(yaw)),Math.round(Math.cos(yaw))];
+  it.anchor.x+=x-old.x;it.anchor.z+=z-old.z;
+}
+function footprint(it){const p=it.pose,d=it.onTop?0.8:it.d,w=it.w;const fx=Math.abs(Math.sin(p.yaw))>0.5;const ex=(fx?d:w)/2,ez=(fx?w:d)/2;return {x0:p.x-ex,x1:p.x+ex,z0:p.z-ez,z1:p.z+ez};}
+const OBST=[{n:'dinding barat',x0:4.925,x1:5.075,z0:0.075,z1:5.38},{n:'dinding timur',x0:-0.075,x1:0.075,z0:0.075,z1:6.2},{n:'dinding selatan',x0:2.275,x1:5.075,z0:-0.075,z1:0.075}]
+  .concat(COLS.map((c,k)=>({n:'tiang'+k,x0:c[0]-c[2]/2,x1:c[0]+c[2]/2,z0:c[1]-c[3]/2,z1:c[1]+c[3]/2})));
+const ovl=(a0,a1,b0,b1)=>Math.min(a1,b1)-Math.max(a0,b0);
+function computeGaps(){
+  const R=ITEMS.filter(i=>!i.onTop).map(i=>Object.assign({id:'i'+i.no},footprint(i)));
+  const all=R.concat(OBST.map((o,k)=>Object.assign({id:'o'+k},o)));
+  const out=[],seen=new Set();
+  R.forEach(a=>{['x+','x-','z+','z-'].forEach(dir=>{
+    let best=null;
+    all.forEach(b=>{if(b===a)return;let gap,mid,from,to;
+      if(dir[0]==='x'){if(ovl(a.z0,a.z1,b.z0,b.z1)<0.05)return;gap=dir==='x+'?b.x0-a.x1:a.x0-b.x1;mid=(Math.max(a.z0,b.z0)+Math.min(a.z1,b.z1))/2;from=dir==='x+'?a.x1:b.x1;to=dir==='x+'?b.x0:a.x0;}
+      else{if(ovl(a.x0,a.x1,b.x0,b.x1)<0.05)return;gap=dir==='z+'?b.z0-a.z1:a.z0-b.z1;mid=(Math.max(a.x0,b.x0)+Math.min(a.x1,b.x1))/2;from=dir==='z+'?a.z1:b.z1;to=dir==='z+'?b.z0:a.z0;}
+      if(gap<0.01||gap>2.0)return;if(!best||gap<best.gap)best={gap,mid,from,to,b};});
+    if(best){const k=[a.id,best.b.id].sort().join('|')+dir[0];if(!seen.has(k)){seen.add(k);out.push({axis:dir[0],gap:best.gap,mid:best.mid,from:best.from,to:best.to});}}
+  });});
+  return out;
+}
+const gapGroup=new THREE.Group();scene.add(gapGroup);
+const gapEls=[];let gapOn=true,gapQueued=false;
+function drawGaps(){
+  gapGroup.children.slice().forEach(o=>{gapGroup.remove(o);o.geometry&&o.geometry.dispose();});
+  gapEls.forEach(g=>g.el.remove());gapEls.length=0;
+  const mt=new THREE.LineBasicMaterial({color:0xb35a00});
+  const W=(x,z)=>new THREE.Vector3(x-RW/2,0.035,z-RD/2);
+  computeGaps().forEach(g=>{
+    const a=g.axis==='x'?W(g.from,g.mid):W(g.mid,g.from),b=g.axis==='x'?W(g.to,g.mid):W(g.mid,g.to);
+    const pts=[a,b];const t=0.06;
+    if(g.axis==='x'){pts.push(W(g.from,g.mid-t),W(g.from,g.mid+t),W(g.to,g.mid-t),W(g.to,g.mid+t));}else{pts.push(W(g.mid-t,g.from),W(g.mid+t,g.from),W(g.mid-t,g.to),W(g.mid+t,g.to));}
+    const geo=new THREE.BufferGeometry().setFromPoints([pts[0],pts[1],pts[2],pts[3],pts[4],pts[5]]);
+    gapGroup.add(new THREE.LineSegments(geo,mt));
+    const el=document.createElement('div');el.className='gaptag';el.textContent=Math.round(g.gap*100)+' cm';labelsEl.appendChild(el);
+    gapEls.push({el,pos:a.clone().add(b).multiplyScalar(0.5).setY(0.06)});
+  });
+}
+function queueGaps(){if(gapQueued)return;gapQueued=true;requestAnimationFrame(()=>{gapQueued=false;drawGaps();});}
+function rebuildSolids(){solids.length=0;scene.updateMatrixWorld(true);itemGroups.forEach(g=>{const b=new THREE.Box3();g.traverse(o=>{if(o.isMesh&&o.geometry.type!=='PlaneGeometry'){const bb=new THREE.Box3().setFromObject(o);if(bb.min.y<1.2)b.union(bb);}});if(!b.isEmpty())solids.push({minX:b.min.x-0.04,maxX:b.max.x+0.04,minZ:b.min.z-0.04,maxZ:b.max.z+0.04});});colBoxes.forEach(c=>addSolid(c,0.02));}
+function savePoses(){try{const o={};ITEMS.forEach(it=>{o[it.no]=it.pose;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+function afterEdit(){savePoses();queueGaps();rebuildSolids();updateEditFields();}
+try{const sv=JSON.parse(localStorage.getItem(KEY)||'null');if(sv)ITEMS.forEach(it=>{const p=sv[it.no];if(p&&isFinite(p.x)&&isFinite(p.z)&&isFinite(p.yaw))setPose(it,p.x,p.z,p.yaw);});}catch(e){}
+drawGaps();rebuildSolids();
+
+const pEdit=document.getElementById('pEdit'),eX=document.getElementById('eX'),eZ=document.getElementById('eZ'),eName=document.getElementById('eName'),eStep=document.getElementById('eStep');
+const editOn=()=>pEdit.classList.contains('show');
+function updateEditFields(){
+  if(!selected){eName.textContent='Belum ada alat dipilih';eX.value='';eZ.value='';return;}
+  eName.textContent=selected.no+'. '+selected.name;eX.value=Math.round(selected.pose.x*100);eZ.value=Math.round(selected.pose.z*100);
+}
+function moveBy(dx,dz){if(!selected)return;const s=EDIT.step/100;setPose(selected,Math.round((selected.pose.x+dx*s)*100)/100,Math.round((selected.pose.z+dz*s)*100)/100,selected.pose.yaw);afterEdit();}
+eStep.addEventListener('change',()=>{EDIT.step=+eStep.value;eX.step=eZ.step=EDIT.step;});
+[eX,eZ].forEach(inp=>inp.addEventListener('change',()=>{if(!selected)return;const x=parseFloat(eX.value),z=parseFloat(eZ.value);if(!isFinite(x)||!isFinite(z))return;setPose(selected,x/100,z/100,selected.pose.yaw);afterEdit();}));
+pEdit.querySelectorAll('[data-mv]').forEach(b=>b.addEventListener('click',()=>{const [dx,dz]=b.dataset.mv.split(',').map(Number);moveBy(dx,dz);}));
+document.getElementById('eRotL').addEventListener('click',()=>{if(!selected)return;setPose(selected,selected.pose.x,selected.pose.z,selected.pose.yaw+Math.PI/2);afterEdit();});
+document.getElementById('eRotR').addEventListener('click',()=>{if(!selected)return;setPose(selected,selected.pose.x,selected.pose.z,selected.pose.yaw-Math.PI/2);afterEdit();});
+document.getElementById('eRs').addEventListener('click',()=>{ITEMS.forEach(it=>{const p=POSE0.get(it.no);setPose(it,p.x,p.z,p.yaw);});afterEdit();});
+document.getElementById('eDl').addEventListener('click',()=>{
+  const data=ITEMS.map(it=>({no:it.no,nama:it.name,x_cm:Math.round(it.pose.x*100),z_cm:Math.round(it.pose.z*100),menghadap:it.dir[0]>0?'barat':it.dir[0]<0?'timur':it.dir[1]>0?'utara':'selatan',ukuran:it.size}));
+  const gaps=computeGaps().map(g=>({sumbu:g.axis,jarak_cm:Math.round(g.gap*100)}));
+  const blob=new Blob([JSON.stringify({keterangan:'X = jarak dari as dinding timur (cm), Z = jarak dari as dinding selatan (cm), sama dengan LKT',alat:data,jarak_antar_unit:gaps},null,1)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='posisi-alat-bu-rini.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+});
+window.addEventListener('keydown',e=>{if(!editOn()||mode!=='view'||!selected)return;if(e.target&&['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
+  const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(!m)return;e.preventDefault();moveBy(m[0],m[1]);});
+// tarik alat di lantai
+const dragS={it:null,dx:0,dz:0,id:null},floorPl=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+function rayAt(e){const r=canvas.getBoundingClientRect();ray.setFromCamera({x:(e.clientX-r.left)/r.width*2-1,y:-(e.clientY-r.top)/r.height*2+1},camera);}
+canvas.addEventListener('pointerdown',e=>{
+  if(!editOn()||mode!=='view'||e.button!==0)return;
+  rayAt(e);const hits=ray.intersectObjects(itemGroups,true).filter(h=>h.object.userData.item&&h.object.geometry.type!=='PlaneGeometry');
+  if(!hits.length)return;const it=hits[0].object.userData.item;const fp=new THREE.Vector3();if(!ray.ray.intersectPlane(floorPl,fp))return;
+  e.stopImmediatePropagation();canvas.setPointerCapture(e.pointerId);select(it,false);
+  dragS.it=it;dragS.id=e.pointerId;dragS.dx=it.pose.x-(fp.x+RW/2);dragS.dz=it.pose.z-(fp.z+RD/2);
+},true);
+canvas.addEventListener('pointermove',e=>{
+  if(!dragS.it||e.pointerId!==dragS.id)return;e.stopImmediatePropagation();
+  rayAt(e);const fp=new THREE.Vector3();if(!ray.ray.intersectPlane(floorPl,fp))return;
+  const s=EDIT.step/100;setPose(dragS.it,Math.round((fp.x+RW/2+dragS.dx)/s)*s,Math.round((fp.z+RD/2+dragS.dz)/s)*s,dragS.it.pose.yaw);
+  queueGaps();updateEditFields();
+},true);
+const endDrag=e=>{if(dragS.it&&e.pointerId===dragS.id){e.stopImmediatePropagation();dragS.it=null;afterEdit();}};
+canvas.addEventListener('pointerup',endDrag,true);canvas.addEventListener('pointercancel',endDrag,true);
+const tGap=document.getElementById('tGap');
+tGap.addEventListener('click',()=>{gapOn=!gapOn;tGap.setAttribute('aria-pressed',gapOn);});
 
 /* ---------- Modes & toggles ---------- */
 const bView=document.getElementById('mView'),bWalk=document.getElementById('mWalk');
@@ -1829,6 +1945,7 @@ function animate(){
   const proj=(pos,el,show)=>{if(!show){el.style.display='none';return;}tmp.copy(pos).project(camera);if(tmp.z>1){el.style.display='none';return;}el.style.display='';el.style.left=((tmp.x+1)/2*w)+'px';el.style.top=((1-tmp.y)/2*h)+'px';};
   tagEls.forEach(t=>proj(t.pos,t.el,mode==='view'&&showLabels));
   const topOn=tT.getAttribute('aria-pressed')==='true';
+  gapGroup.visible=mode==='view'&&gapOn;gapEls.forEach(d=>proj(d.pos,d.el,mode==='view'&&gapOn));
   dimEls.forEach(d=>proj(d.pos,d.el,mode==='view'&&showDims&&!(topOn&&d.topHide)&&!(w<=760&&d.hideSmall)));
   requestAnimationFrame(animate);
 }
@@ -1841,7 +1958,7 @@ animate();
 </script>
 <script>
 (function(){
-  const P={mList:'panel',mOpt:'pOpt',mInfo:'pInfo'};
+  const P={mList:'panel',mOpt:'pOpt',mEdit:'pEdit',mInfo:'pInfo'};
   const all=Object.values(P);
   Object.keys(P).forEach(b=>{
     const btn=document.getElementById(b),el=document.getElementById(P[b]);
