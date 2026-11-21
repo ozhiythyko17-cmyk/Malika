@@ -175,6 +175,7 @@ body.walk .panel{display:none!important}
     <button class="chipbtn" id="tGas" aria-pressed="true">Pipa gas</button>
     <button class="chipbtn" id="tGap" aria-pressed="false">Jarak antar unit</button>
     <button class="chipbtn" id="tIpal" aria-pressed="true">IPAL</button>
+    <button class="chipbtn" id="tPlumb" aria-pressed="true">Pipa &amp; aliran IPAL</button>
   </div>
 </section>
 
@@ -185,7 +186,7 @@ body.walk .panel{display:none!important}
     <div class="edr"><label>X (cm)<input type="number" id="eX" step="5"></label><label>Z (cm)<input type="number" id="eZ" step="5"></label><label>Langkah<select id="eStep"><option value="1">1 cm</option><option value="5" selected>5 cm</option><option value="10">10 cm</option><option value="50">50 cm</option></select></label></div>
     <div class="edr"><button class="chipbtn" data-mv="0,-1">↑ Selatan</button><button class="chipbtn" data-mv="0,1">↓ Utara</button><button class="chipbtn" data-mv="-1,0">← Timur</button><button class="chipbtn" data-mv="1,0">→ Barat</button></div>
     <div class="edr"><button class="chipbtn" id="eRotL">⟲ Putar 90°</button><button class="chipbtn" id="eRotR">⟳ Putar 90°</button><button class="chipbtn" id="eDl">Unduh JSON</button><button class="chipbtn" id="eRs">Kembalikan semua</button></div>
-    <p class="dim">Perubahan tersimpan otomatis di browser ini. IPAL (satu paket) dan tabung gas LPG ikut bisa dipilih, ditarik, dan diputar; sambungan pipa ke dinding perlu diatur ulang. Hood dan ducting tidak ikut bergeser. Tombol panah keyboard juga menggeser yang terpilih.</p>
+    <p class="dim">Perubahan tersimpan otomatis di browser ini. Tiap bagian IPAL (grease trap, IPAL 2500 L, blower, filter, dosing klorin, saluran got, panel listrik) dan tabung gas LPG bisa dipilih, ditarik, dan diputar satu per satu. Pipa antar bagian IPAL tetap di tempat lama (bisa disembunyikan lewat menu Tampilan) dan akan disambung ulang sesuai posisi akhir; sambungan pipa gas ke dinding juga perlu diatur ulang. Hood dan ducting tidak ikut bergeser. Tombol panah keyboard juga menggeser yang terpilih.</p>
   </div>
 </section>
 
@@ -1363,6 +1364,8 @@ const T=THREE,V=T.Vector3;
 const root=new T.Group();root.position.set(1.05,0,-3.0);HW.add(root);window.__ipalRoot=root;
 const XF=4.4,ZOFF=1.7; // sistem dilipat (U-turn) di x=4,4 supaya ringkas: grease trap + IPAL baris pertama, filter + dosing + got baris kedua
 const root2=new T.Group();root2.position.set(2*XF,0,ZOFF);root2.rotation.y=Math.PI;root.add(root2);
+const _mk=p=>{const g=new T.Group();p.add(g);return g;};
+const gtG=_mk(root),blowG=_mk(root),panG=_mk(root),plumb=_mk(root),filtG=_mk(root2),dosG=_mk(root2),gotG=_mk(root2),plumb2=_mk(root2);
 const mat=(c,o={})=>new T.MeshStandardMaterial(Object.assign({color:c,roughness:.6,metalness:.05},o));
 function box(p,w,h,d,m,x,y,z,sh=true){const o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=sh;o.receiveShadow=true;p.add(o);return o;}
 function cyl(p,r,h,m,x,y,z,seg=24){const o=new T.Mesh(new T.CylinderGeometry(r,r,h,seg),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;p.add(o);return o;}
@@ -1383,8 +1386,8 @@ const M={
  edge:new T.LineBasicMaterial({color:0x4b6358,transparent:true,opacity:.9})
 };
 
-{const sm=mat(0x6e5139,{transparent:true,opacity:.35,depthWrite:false});box(root,2.1,1.0,3.5,sm,.7,-.5,1.55,false);
- const eg=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(2.1,1.0,3.5)),new T.LineBasicMaterial({color:0x4a3624}));eg.position.set(.7,-.5,1.55);root.add(eg);}
+{const sm=mat(0x6e5139,{transparent:true,opacity:.35,depthWrite:false});box(gtG,2.1,1.0,3.5,sm,.7,-.5,1.55,false);
+ const eg=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(2.1,1.0,3.5)),new T.LineBasicMaterial({color:0x4a3624}));eg.position.set(.7,-.5,1.55);gtG.add(eg);}
 /* ---------- tangki ---------- */
 const water=[],lids=[],fronts=[],scum=[],sludge=[],ripples=[],clipMats=[],fish=[];
 function ripTex(w,h){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.clearRect(0,0,128,128);x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=2;
@@ -1396,7 +1399,7 @@ const BLUEL=mat(0x2a74c4,{transparent:true,opacity:.7,side:T.DoubleSide,depthWri
 const BLUES=mat(0x2a8ee0,{roughness:.35});
 const IPS=mat(0x2e8fd8,{transparent:true,opacity:.4,side:T.DoubleSide,depthWrite:false,roughness:.25});const clipP=new T.Plane(new V(0,0,-1),100);IPS.clippingPlanes=[clipP];
 const DY=1.25;const ipg=new T.Group();ipg.position.y=DY;root.add(ipg);
-function tank(x0,x1,z0,z1,yb,yt,sm,lm){const g=new T.Group();root.add(g);const t=.03;
+function tank(x0,x1,z0,z1,yb,yt,sm,lm){const g=new T.Group();gtG.add(g);const t=.03;
  const L=x1-x0,D=z1-z0,H=yt-yb;
  box(g,L,t,D,sm,(x0+x1)/2,yb+t/2,(z0+z1)/2,false);
  box(g,t,H,D,sm,x0+t/2,(yb+yt)/2,(z0+z1)/2,false);box(g,t,H,D,sm,x1-t/2,(yb+yt)/2,(z0+z1)/2,false);
@@ -1405,15 +1408,15 @@ function tank(x0,x1,z0,z1,yb,yt,sm,lm){const g=new T.Group();root.add(g);const t
  const lid=box(g,L,t,D,lm,(x0+x1)/2,yt-t/2,(z0+z1)/2,false);lids.push(lid);
  const eg=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(L,H,D)),M.edge);eg.position.set((x0+x1)/2,(yb+yt)/2,(z0+z1)/2);g.add(eg);
  return g;}
-function addRipple(x0,x1,z0,z1,wl,par){par=par||root;const rp=new T.Mesh(new T.PlaneGeometry(x1-x0,z1-z0),new T.MeshBasicMaterial({map:ripTex(x1-x0,z1-z0),transparent:true,opacity:.55,depthWrite:false}));rp.rotation.x=-Math.PI/2;rp.position.set((x0+x1)/2,wl+.004,(z0+z1)/2);par.add(rp);ripples.push(rp);}
-function chamber(x0,x1,z0,z1,yb,wl,col,op){const m=mat(col,{transparent:true,opacity:op||.82,depthWrite:false,roughness:.1});const o=box(root,x1-x0,wl-yb,z1-z0,m,(x0+x1)/2,(yb+wl)/2,(z0+z1)/2,false);water.push({o,m});addRipple(x0,x1,z0,z1,wl);return o;}
-function baffle(x,yb,yt,z0,z1){box(root,.03,yt-yb,z1-z0,M.baffle,x,(yb+yt)/2,(z0+z1)/2,false);}
+function addRipple(x0,x1,z0,z1,wl,par){par=par||gtG;const rp=new T.Mesh(new T.PlaneGeometry(x1-x0,z1-z0),new T.MeshBasicMaterial({map:ripTex(x1-x0,z1-z0),transparent:true,opacity:.55,depthWrite:false}));rp.rotation.x=-Math.PI/2;rp.position.set((x0+x1)/2,wl+.004,(z0+z1)/2);par.add(rp);ripples.push(rp);}
+function chamber(x0,x1,z0,z1,yb,wl,col,op){const m=mat(col,{transparent:true,opacity:op||.82,depthWrite:false,roughness:.1});const o=box(gtG,x1-x0,wl-yb,z1-z0,m,(x0+x1)/2,(yb+wl)/2,(z0+z1)/2,false);water.push({o,m});addRipple(x0,x1,z0,z1,wl);return o;}
+function baffle(x,yb,yt,z0,z1){box(gtG,.03,yt-yb,z1-z0,M.baffle,x,(yb+yt)/2,(z0+z1)/2,false);}
 /* ===== GREASE TRAP 1000 L (referensi Bio Boss 140 x 80 x 90 cm, 4 ruang) ===== */
 const GT={x0:0,x1:1.4,z0:-.4,z1:.4,yb:-.9,yt:0,wl:-.1};
 tank(GT.x0,GT.x1,GT.z0,GT.z1,GT.yb,GT.yt,BLUE,BLUEL);
 [[.03,.335,0xa59d78],[.365,.685,0xa8a074],[.715,1.035,0xada78a],[1.065,1.37,0xb3b09a]].forEach(c=>chamber(c[0],c[1],GT.z0+.03,GT.z1-.03,GT.yb+.03,GT.wl,c[2]));
 [.35,.70,1.05].forEach(x=>baffle(x,-.6,0,GT.z0+.03,GT.z1-.03));
-[.18,.525,.875,1.22].forEach(x=>{box(root,.32,.02,.32,mat(0xaab2b9,{metalness:.6,roughness:.4}),x,.03,0,false);box(root,.26,.05,.26,mat(0x1f5fa8,{roughness:.4}),x,.065,0,false);box(root,.12,.02,.03,mat(0xdfe5ea,{metalness:.7,roughness:.3}),x,.105,0,false);});
+[.18,.525,.875,1.22].forEach(x=>{box(gtG,.32,.02,.32,mat(0xaab2b9,{metalness:.6,roughness:.4}),x,.03,0,false);box(gtG,.26,.05,.26,mat(0x1f5fa8,{roughness:.4}),x,.065,0,false);box(gtG,.12,.02,.03,mat(0xdfe5ea,{metalness:.7,roughness:.3}),x,.105,0,false);});
 /* ===== IPAL 2500 L (referensi Bio MIF / Bio Deft: tangki fiberglass oval, 2 manhole, 4 kaki) ===== */
 const IP={x0:1.8,x1:4.2,yb:-1.1,wl:-.3,cy:-.575,ay:.575,az:.65};
 {const geo=new T.CapsuleGeometry(1,.8,12,40);geo.rotateZ(Math.PI/2);geo.scale(2.4/2.8,IP.ay,IP.az);const m=new T.Mesh(geo,IPS);m.position.set(3.0,IP.cy,0);ipg.add(m);clipMats.push(IPS);
@@ -1435,43 +1438,43 @@ media(2.52,2.92,-.88,-.4,-.4,.4,.1);media(3.08,3.48,-.88,-.5,-.4,.4,.1);
 // diffuser + 2 blower aerasi
 const diffuser=cyl(ipg,.12,.03,mat(0x333c44),3.27,-.98,0,24);
 pipe(ipg,[3.27,-.96,0],[3.27,.08,0],.018,M.pvcD);pipe(ipg,[3.27,.08,0],[3.27,.08,-1.0],.018,M.pvcD);
-[3.0,3.5].forEach(x=>{box(root,.3,.22,.26,mat(0x2f9e63,{roughness:.5}),x,.11,-1.15);pipe(root,[x,.22,-1.15],[x,DY+.08,-1.15],.016,mat(0x222a30));pipe(root,[x,DY+.08,-1.15],[x,DY+.08,-1.0],.016,mat(0x222a30));});
+[3.0,3.5].forEach(x=>{box(blowG,.3,.22,.26,mat(0x2f9e63,{roughness:.5}),x,.11,-1.15);pipe(plumb,[x,.22,-1.15],[x,DY+.08,-1.15],.016,mat(0x222a30));pipe(plumb,[x,DY+.08,-1.15],[x,DY+.08,-1.0],.016,mat(0x222a30));});
 pipe(ipg,[3.0,.08,-1.0],[3.5,.08,-1.0],.018,M.pvcD);
 // 2 pompa submersible di ruang akhir
 [[.15],[-.15]].forEach(p=>{cyl(ipg,.07,.2,mat(0x2a2f35,{metalness:.5,roughness:.5}),3.82,-1.0,p[0],18);pipe(ipg,[3.82,-.8,p[0]],[3.82,.12,p[0]],.025,M.pvc);});
-pipe(ipg,[3.82,.12,.15],[3.82,.12,-.15],.025,M.pvc);pipe(ipg,[3.82,.12,0],[XF,.12,0],.03,M.pvc);pipe(ipg,[XF,.12,0],[XF,.12,ZOFF],.03,M.pvc);pipe(root2,[XF,DY+.12,0],[4.55,DY+.12,0],.03,M.pvc);
+pipe(ipg,[3.82,.12,.15],[3.82,.12,-.15],.025,M.pvc);pipe(plumb,[3.82,DY+.12,0],[XF,DY+.12,0],.03,M.pvc);pipe(plumb,[XF,DY+.12,0],[XF,DY+.12,ZOFF],.03,M.pvc);pipe(plumb2,[XF,DY+.12,0],[4.55,DY+.12,0],.03,M.pvc);
 /* ===== FILTER AIR: 2 vessel FRP 10" x 54" (pasir silika + karbon aktif) ===== */
-function vessel(x,layers){const r=.13,h=1.2;const body=new T.Mesh(new T.CylinderGeometry(r,r,h,28),mat(0xeef2f4,{transparent:true,opacity:.55,depthWrite:false,roughness:.3}));body.position.set(x,.1+h/2,0);root2.add(body);
- [[.1,0],[.1+h,1]].forEach(([y,up])=>{const d=new T.Mesh(new T.SphereGeometry(r,24,10,0,Math.PI*2,0,Math.PI/2),mat(0xe4e9ec,{roughness:.3}));d.position.set(x,y,0);if(!up)d.rotation.x=Math.PI;root2.add(d);});
- layers.forEach(l=>cyl(root2,r-.012,l[1]-l[0],mat(l[2],{roughness:.9,transparent:true,opacity:.95}),x,l[0]+.1,0,24));
- box(root2,.14,.1,.14,mat(0x2f6fb5),x,.1+h+.14,0,false);cyl(root2,.03,.05,mat(0x222a30),x+.1,.1+h+.1,0,12);
- box(root2,.3,.1,.3,mat(0x9aa2a8),x,.05,0);}
+function vessel(x,layers){const r=.13,h=1.2;const body=new T.Mesh(new T.CylinderGeometry(r,r,h,28),mat(0xeef2f4,{transparent:true,opacity:.55,depthWrite:false,roughness:.3}));body.position.set(x,.1+h/2,0);filtG.add(body);
+ [[.1,0],[.1+h,1]].forEach(([y,up])=>{const d=new T.Mesh(new T.SphereGeometry(r,24,10,0,Math.PI*2,0,Math.PI/2),mat(0xe4e9ec,{roughness:.3}));d.position.set(x,y,0);if(!up)d.rotation.x=Math.PI;filtG.add(d);});
+ layers.forEach(l=>cyl(filtG,r-.012,l[1]-l[0],mat(l[2],{roughness:.9,transparent:true,opacity:.95}),x,l[0]+.1,0,24));
+ box(filtG,.14,.1,.14,mat(0x2f6fb5),x,.1+h+.14,0,false);cyl(filtG,.03,.05,mat(0x222a30),x+.1,.1+h+.1,0,12);
+ box(filtG,.3,.1,.3,mat(0x9aa2a8),x,.05,0);}
 vessel(4.75,[[0,.2,0x8f9296],[.2,.75,0xd9c391]]);vessel(5.2,[[0,.2,0x8f9296],[.2,.75,0x1b2024]]);
-pipe(root2,[4.55,DY+.12,0],[4.55,1.55,0],.03,M.pvc);pipe(root2,[4.55,1.55,0],[4.75,1.55,0],.03,M.pvc);
-pipe(root2,[4.75,.12,0],[4.98,.12,0],.03,M.pvc);pipe(root2,[4.98,.12,0],[4.98,1.55,0],.03,M.pvc);pipe(root2,[4.98,1.55,0],[5.2,1.55,0],.03,M.pvc);
-pipe(root2,[5.2,.12,0],[6.2,.12,0],.03,M.pvc);pipe(root2,[6.2,.12,0],[6.2,-.2,0],.03,M.pvc);   // filter langsung ke saluran pembuangan
+pipe(plumb2,[4.55,DY+.12,0],[4.55,1.55,0],.03,M.pvc);pipe(plumb2,[4.55,1.55,0],[4.75,1.55,0],.03,M.pvc);
+pipe(filtG,[4.75,.12,0],[4.98,.12,0],.03,M.pvc);pipe(filtG,[4.98,.12,0],[4.98,1.55,0],.03,M.pvc);pipe(filtG,[4.98,1.55,0],[5.2,1.55,0],.03,M.pvc);
+pipe(plumb2,[5.2,.12,0],[6.2,.12,0],.03,M.pvc);pipe(plumb2,[6.2,.12,0],[6.2,-.2,0],.03,M.pvc);   // filter langsung ke saluran pembuangan
 /* ===== dosing klorin ===== */
-box(root2,.2,.14,.16,mat(0x2e7d4f,{roughness:.5}),5.45,.07,.75);box(root2,.1,.06,.1,mat(0x222a30),5.45,.17,.75);cyl(root2,.11,.3,mat(0xe9edf0,{transparent:true,opacity:.8}),5.75,0,.75,20);
-pipe(root2,[5.45,.17,.75],[5.45,.4,.5],.008,mat(0x2a74c4));pipe(root2,[5.45,.4,.5],[5.7,.15,.03],.008,mat(0x2a74c4));
+box(dosG,.2,.14,.16,mat(0x2e7d4f,{roughness:.5}),5.45,.07,.75);box(dosG,.1,.06,.1,mat(0x222a30),5.45,.17,.75);cyl(dosG,.11,.3,mat(0xe9edf0,{transparent:true,opacity:.8}),5.75,0,.75,20);
+pipe(dosG,[5.45,.17,.75],[5.45,.4,.5],.008,mat(0x2a74c4));pipe(dosG,[5.45,.4,.5],[5.7,.15,.03],.008,mat(0x2a74c4));
 // panel kelistrikan
-cyl(root,.03,1.0,mat(0x5a626a),2.1,0,-1.6,10);cyl(root,.03,1.0,mat(0x5a626a),2.5,0,-1.6,10);box(root,.5,.7,.18,mat(0xb9c0c6,{metalness:.4,roughness:.4}),2.3,.95,-1.6);box(root,.4,.5,.01,mat(0x8f99a1),2.3,.95,-1.5,false);
-for(let i=0;i<4;i++)cyl(root,.018,.01,mat(i%2?0x2fb060:0xd44a3a,{emissive:i%2?0x1a6a38:0x7a1d12,emissiveIntensity:.6}),2.14+i*.08,1.1,-1.51,10).rotation.x=Math.PI/2;
+cyl(panG,.03,1.0,mat(0x5a626a),2.1,0,-1.6,10);cyl(panG,.03,1.0,mat(0x5a626a),2.5,0,-1.6,10);box(panG,.5,.7,.18,mat(0xb9c0c6,{metalness:.4,roughness:.4}),2.3,.95,-1.6);box(panG,.4,.5,.01,mat(0x8f99a1),2.3,.95,-1.5,false);
+for(let i=0;i<4;i++)cyl(panG,.018,.01,mat(i%2?0x2fb060:0xd44a3a,{emissive:i%2?0x1a6a38:0x7a1d12,emissiveIntensity:.6}),2.14+i*.08,1.1,-1.51,10).rotation.x=Math.PI/2;
 // vent
 pipe(ipg,[2.3,0,.35],[2.3,1.1,.35],.04,M.pvc);pipe(ipg,[2.3,1.1,.35],[2.38,1.1,.35],.04,M.pvc);cyl(ipg,.055,.03,M.pvcD,2.4,1.1,.35,16);
-pipe(root,[1.2,0,-.3],[1.2,.9,-.3],.03,M.pvc);cyl(root,.045,.03,M.pvcD,1.2,.9,-.3,16);
+pipe(gtG,[1.2,0,-.3],[1.2,.9,-.3],.03,M.pvc);cyl(gtG,.045,.03,M.pvcD,1.2,.9,-.3,16);
 // saluran pembuangan
-box(root2,1.3,.4,.7,mat(0xbfc5ca),6.3,-.2,0);box(root2,1.16,.34,.56,mat(0x6f7a83),6.3,-.17,0);box(root2,1.06,.12,.46,mat(0xd2edf5,{transparent:true,opacity:.8,depthWrite:false}),6.3,-.3,0,false);
+box(gotG,1.3,.4,.7,mat(0xbfc5ca),6.3,-.2,0);box(gotG,1.16,.34,.56,mat(0x6f7a83),6.3,-.17,0);box(gotG,1.06,.12,.46,mat(0xd2edf5,{transparent:true,opacity:.8,depthWrite:false}),6.3,-.3,0,false);
 /* ===== pipa ===== */
 const P=M.pvc;
-pipe(root,[.15,0,3.0],[.15,-.1,3.0],.045,P);pipe(root,[.15,-.1,3.0],[.15,-.1,0],.05,P);
-pipe(root,[.15,-.1,0],[.15,-.45,0],.05,P);                                    // T-pipe inlet grease trap
-cyl(root,.06,.18,mat(0x2a2f35,{metalness:.5,roughness:.5}),1.22,-.88,0,18);                  // pompa transfer submersible di ruang akhir grease trap
-pipe(root,[1.22,-.7,0],[1.22,DY-.12,0],.04,P);pipe(root,[1.22,DY-.12,0],[2.05,DY-.12,0],.04,P);   // naik ke inlet IPAL (IPAL lebih tinggi)
-pipe(ipg,[2.05,-.12,0],[2.05,-.55,0],.05,P);                                  // inlet IPAL
+pipe(plumb,[.15,0,3.0],[.15,-.1,3.0],.045,P);pipe(plumb,[.15,-.1,3.0],[.15,-.1,0],.05,P);
+pipe(plumb,[.15,-.1,0],[.15,-.45,0],.05,P);                                    // T-pipe inlet grease trap
+cyl(gtG,.06,.18,mat(0x2a2f35,{metalness:.5,roughness:.5}),1.22,-.88,0,18);                  // pompa transfer submersible di ruang akhir grease trap
+pipe(plumb,[1.22,-.7,0],[1.22,DY-.12,0],.04,P);pipe(plumb,[1.22,DY-.12,0],[2.05,DY-.12,0],.04,P);   // naik ke inlet IPAL (IPAL lebih tinggi)
+pipe(plumb,[2.05,DY-.12,0],[2.05,DY-.55,0],.05,P);                                  // inlet IPAL
 /* ---------- lapisan lemak & lumpur ---------- */
-const scumM=mat(0xe8c44a,{roughness:.8});const sc=box(root,.95,.01,.7,scumM,.52,WL-.005,0,false);scum.push(sc);
+const scumM=mat(0xe8c44a,{roughness:.8});const sc=box(gtG,.95,.01,.7,scumM,.52,WL-.005,0,false);scum.push(sc);
 const sl1=box(ipg,.5,.01,.5,mat(0x5a4733,{roughness:1}),2.2,IP.yb+.04,0,false);sludge.push(sl1);
-const sl2=box(root,1.3,.01,.7,mat(0x6b6048,{roughness:1}),.7,GT.yb+.035,0,false);sludge.push(sl2);
+const sl2=box(gtG,1.3,.01,.7,mat(0x6b6048,{roughness:1}),.7,GT.yb+.035,0,false);sludge.push(sl2);
 /* ---------- partikel ---------- */
 const PATH=[
 [.15,0,3.0,0x6a604e],[.15,-.1,3.0,0x6a604e],[.15,-.1,0,0x75694c],[.15,-.45,0,0x7d7050],
@@ -1486,9 +1489,10 @@ function atS(s){for(const g of SEG){if(s<=g.s0+g.l||g===SEG[SEG.length-1]){const
 const sAt=i=>SEG[i].s0;
 const idxOf=(x,y)=>PATH.findIndex(p=>Math.abs(p[0]-x)<.01&&Math.abs(p[1]-y)<.01);
 const S_GT=sAt(idxOf(.25,-.6)),S_C1=sAt(idxOf(2.25,DY-.75));
-function mkPts(n,size,op,vc){const g=new T.BufferGeometry(),pos=new Float32Array(n*3),col=new Float32Array(n*3);g.setAttribute('position',new T.BufferAttribute(pos,3));g.setAttribute('color',new T.BufferAttribute(col,3));
- const m=new T.PointsMaterial({size,sizeAttenuation:true,transparent:true,opacity:op,vertexColors:true,depthWrite:false});const pt=new T.Points(g,m);pt.frustumCulled=false;root.add(pt);return {pt,pos,col,g,n,list:new Array(n).fill(null),free:Array.from({length:n},(_,i)=>i)};}
-const fl=mkPts(1000,.085,.95),gr=mkPts(260,.075,.95),sd=mkPts(200,.07,.9),bb=mkPts(260,.06,.8),so=mkPts(200,.13,1),dp=mkPts(140,.05,.95);
+function mkPts(n,size,op,vc,par){const g=new T.BufferGeometry(),pos=new Float32Array(n*3),col=new Float32Array(n*3);g.setAttribute('position',new T.BufferAttribute(pos,3));g.setAttribute('color',new T.BufferAttribute(col,3));
+ const m=new T.PointsMaterial({size,sizeAttenuation:true,transparent:true,opacity:op,vertexColors:true,depthWrite:false});const pt=new T.Points(g,m);pt.frustumCulled=false;(par||root).add(pt);return {pt,pos,col,g,n,list:new Array(n).fill(null),free:Array.from({length:n},(_,i)=>i)};}
+const ipOff=new T.Group();ipOff.position.y=-DY;ipg.add(ipOff); // kerangka root di dalam ipg, supaya partikel ikut IPAL
+const fl=mkPts(1000,.085,.95),gr=mkPts(260,.075,.95,0,gtG),sd=mkPts(200,.07,.9,0,ipOff),bb=mkPts(260,.06,.8,0,ipOff),so=mkPts(200,.13,1),dp=mkPts(140,.05,.95);
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const SCOL=[0x8a5a2b,0xc8741f,0x5f8a3a,0xe7d9a8,0xb5352a].map(c=>new T.Color(c));
 const S={flow:true,bub:true,sed:true,speed:1,acc:{fl:0,gr:0,sd:0,bb:0,so:0,dp:0}};
@@ -1534,6 +1538,9 @@ function step(dt){
  [fl,gr,sd,bb,so,dp].forEach(s=>{s.g.attributes.position.needsUpdate=true;s.g.attributes.color.needsUpdate=true;});
 }
 window.__ipalStep=step;window.__ipalOn=true;
+window.__ipalParts={gt:gtG,ipal:ipg,blower:blowG,filter:filtG,dosing:dosG,got:gotG,panel:panG};
+const tP=document.getElementById('tPlumb');
+if(tP)tP.addEventListener('click',()=>{const on=tP.getAttribute('aria-pressed')!=='true';tP.setAttribute('aria-pressed',on?'true':'false');plumb.visible=on;plumb2.visible=on;fl.pt.visible=on;so.pt.visible=on;dp.pt.visible=on;});
 const vb=document.getElementById('vIpal');if(vb)vb.addEventListener('click',()=>{goal.target.set(4.54,0.6,0.4);goal.radius=window.innerWidth<=760?11:8;goal.theta=Math.PI/2-0.45;goal.phi=1.0;goal.active=true;});
 const chip=document.getElementById('tIpal');
 if(chip)chip.addEventListener('click',()=>{const on=chip.getAttribute('aria-pressed')!=='true';chip.setAttribute('aria-pressed',on?'true':'false');root.visible=on;window.__ipalOn=on;});
@@ -1681,7 +1688,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v46';
+const EDIT={step:5},KEY='rini-layout-v47';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
@@ -1690,12 +1697,19 @@ ITEMS.forEach(it=>{const p=poseNow(it);POSE0.set(it.no,p);it.pose={x:p.x,z:p.z,y
 const EXTRAS=[];
 function mkExtra(key,name,grp,tagTexts){
   scene.updateMatrixWorld(true);
-  const box=new THREE.Box3().setFromObject(grp),c=box.getCenter(new THREE.Vector3());c.y=0;
+  const box=new THREE.Box3();grp.updateWorldMatrix(true,true);grp.traverse(o=>{if(o.isMesh&&o.geometry.type!=='PlaneGeometry'){const b=new THREE.Box3().setFromObject(o);if(!b.isEmpty())box.union(b);}});const c=box.getCenter(new THREE.Vector3());c.y=0;
   const par=grp.parent,pv=new THREE.Group();par.add(pv);pv.position.copy(par.worldToLocal(c.clone()));pv.updateMatrixWorld(true);pv.attach(grp);
   const ex={no:null,key,name,group:pv,anchor:new THREE.Vector3(c.x,0,c.z),dir:[1,0],w:1,d:1,tags:dimEls.filter(d=>tagTexts.some(t=>d.el.textContent.startsWith(t)))};
   const p=poseNow(ex);POSE0.set(key,p);ex.pose={x:p.x,z:p.z,yaw:p.yaw};EXTRAS.push(ex);return ex;
 }
-mkExtra('ipal','Paket IPAL (grease trap, IPAL 2500 L, filter, got)',window.__ipalRoot,['Grease trap','IPAL 2500','Filter air','Ke got']);
+{const P=window.__ipalParts;
+mkExtra('gt','Grease trap 1000 L',P.gt,['Grease trap']);
+mkExtra('ipal','IPAL 2500 L',P.ipal,['IPAL 2500']);
+mkExtra('blower','Blower aerasi (2 unit)',P.blower,[]);
+mkExtra('filter','Filter air (2 vessel)',P.filter,['Filter air']);
+mkExtra('dosing','Dosing klorin',P.dosing,[]);
+mkExtra('got','Saluran got / pembuangan',P.got,['Ke got']);
+mkExtra('panel','Panel listrik IPAL',P.panel,[]);}
 mkExtra('gas','Tabung gas LPG + feeder (di luar dinding)',gasOut,['2 tabung LPG']);
 function setPose(it,x,z,yaw){
   const old=it.pose;it.pose={x,z,yaw};
