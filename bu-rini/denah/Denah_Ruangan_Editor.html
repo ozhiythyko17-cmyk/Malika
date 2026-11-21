@@ -56,7 +56,7 @@ button:disabled{opacity:.4}
 const NS='http://www.w3.org/2000/svg';
 const svg=document.getElementById('svg');
 const INK='#23282d',WALL='#2e3338',GREY='#8b949c',FONT="Inter,'Helvetica Neue',Arial,sans-serif";
-const PAPER={x:-170,y:-350,w:960,h:1420};
+const PAPER={x:-170,y:-350,w:960,h:1550};
 /* ---------- denah (cm): kolom 45 x 45 sejajar, grid 175 cm; dinding tebal 15 cm ---------- */
 function W(x1,y1,x2,y2){return {t:'line',x1,y1,x2,y2,c:WALL,w:15,e:'none',cap:'square'};}
 function L(x1,y1,x2,y2,o){return Object.assign({t:'line',x1,y1,x2,y2,c:GREY,w:1.2,e:'none'},o||{});}
@@ -66,38 +66,45 @@ function K(x,y,w,h){return {t:'rect',x,y,w:w||45,h:h||45,c:INK,sw:1.6,fill:'#dfe
 function G(x,y,w,h){return {t:'rect',x,y,w,h,c:'#d9dee3',sw:0.4,fill:'#d9dee3'};}
 const TD=10; // tonjolan tiang tepi dari muka dinding (cm); lebar tetap 45
 const INIT=[
- {t:'rect',x:-150,y:-330,w:920,h:1380,c:'#1f262c',sw:2,fill:'none'},
- {t:'rect',x:-150,y:950,w:920,h:100,c:'#1f262c',sw:2,fill:'none'},
- T(-130,980,'DENAH RUANGAN',30,0,{b:1,a:'start'}),
- T(-130,1016,'Satuan cm / m · kolom 45 × 45 cm · ukuran belum diverifikasi di lapangan',15,0,{c:'#5d6a77',a:'start'}),
+ {t:'rect',x:-150,y:-330,w:920,h:1510,c:'#1f262c',sw:2,fill:'none'},
+ {t:'rect',x:-150,y:1080,w:920,h:100,c:'#1f262c',sw:2,fill:'none'},
+ T(-130,1110,'DENAH RUANGAN',30,0,{b:1,a:'start'}),
+ T(-130,1146,'Satuan cm / m · kolom 45 × 45 cm · ukuran belum diverifikasi di lapangan',15,0,{c:'#5d6a77',a:'start'}),
  // dinding
- W(0,-90,0,905),                      // dinding kiri
+ W(0,-90,0,1028),                     // dinding kiri (timur)
  W(235,-110,235,0),                    // dinding lorong selatan (tebal 15), muka kiri sebidang dengan muka kiri tiang tengah (x 227,5)
  W(235,0,500,0),                       // dinding selatan
- W(500,0,500,538),                     // dinding kanan (hotline)
- L(500,538,500,620,{d:1,w:1.4,c:'#9aa3ab'}),
- W(500,743,500,800),                   // sisa dinding kanan bawah
- W(235,800,500,800),                   // dinding utara (digeser ke y 800)
- W(235,800,235,895),                   // dinding lorong utara, kembaran dinding lorong selatan
+ W(500,0,500,620),                     // dinding barat (hotline) sampai awal pintu A (6,20 m)
+ L(500,620,500,743,{d:1,w:1.4,c:'#9aa3ab'}),   // pintu A (terbuka)
+ W(500,743,500,788),                   // dinding di belakang tiang pintu A
+ L(500,788,500,866,{d:1,w:1.4,c:'#9aa3ab'}),   // pintu B (terbuka)
+ W(500,866,500,923),                   // sisa dinding barat
+ W(235,923,500,923),                   // dinding utara (tambahan di luar 6,20 m)
+ W(235,923,235,1018),                  // dinding lorong utara, kembaran dinding lorong selatan
  // saluran air / grill (lebar ± 12-16 cm, posisi perkiraan dari sketsa, belum diverifikasi)
- G(7.5,44,485,12),G(7.5,530,485,12),G(92.5,44,16,498),G(391.5,44,16,498),   // saluran kiri/kanan: jarak kanan ke muka tiang kanan = 1 keramik (asumsi 40 cm), kiri simetris terhadap tiang tengah (x 250)
- T(258,36,'saluran air / grill',12,0,{c:'#7b8791'}),
+ // keramik 50 x 50 (hitungan dari urutan keramik): grill selatan 1,5 keramik dari dinding selatan, grill utara di sisi utara pintu A, grill kiri 2 keramik dari dinding timur, grill kanan 2¼ keramik dari dinding barat
+ G(7.5,82.5,485,11.25),G(7.5,731.25,485,11.25),G(107.5,82.5,11.25,660),G(368.75,82.5,11.25,660),
+ T(300,76,'saluran air / grill',12,0,{c:'#7b8791'}),
  // kolom 45 x 45, sejajar (jarak bersih 175 cm)
  K(7.5,357,TD,45),K(227.5,357),K(447.5,357),
- K(7.5,620,TD,45),K(227.5,620),K(492.5-TD,620,TD,45),
- K(227.5,792.5-TD,45,TD),
+ K(7.5,743,TD,45),K(227.5,743),K(492.5-TD,743,TD,45),      // baris 2: tiang pintu A (barat) di sebelah utara pintu A
+ K(227.5,915.5-TD,45,TD),
  // ukuran
  L(242.5,-10,242.5,-72,{w:1}),L(492.5,-10,492.5,-72,{w:1}),D(242.5,-65,492.5,-65),     // bentang 2,50 m
  L(508,0,610,0,{w:1}),L(508,357,570,357,{w:1}),D(553,0,553,357),                         // 3,57 m
  L(508,620,640,620,{w:1}),D(598,0,598,620),                                              // 6,20 m
  L(272.5,342,272.5,355,{w:1}),L(447.5,342,447.5,355,{w:1}),D(272.5,342,447.5,342,'175 cm'),
  L(447.5,357,433,357,{w:1}),L(447.5,402,433,402,{w:1}),D(437,357,437,402,'45 cm'),
- L(407.5,285,407.5,355,{w:1}),L(447.5,285,447.5,355,{w:1}),D(407.5,295,447.5,295,'1 keramik'),
+ D(7.5,230,107.5,230,'2 keramik'),D(118.75,230,368.75,230,'5 keramik'),D(380,230,492.5,230,'2¼ keramik'),
+ D(60,7.5,60,82.5,'1,5 keramik'),
+ {t:'rect',x:412.5,y:405,w:80,h:180,c:'#9aa3ab',sw:1,fill:'none'},   // kompor 2 tungku (kwali), utara tiang, sebelum pintu A
  // keterangan
  T(125,-12,'lorong',16),
  T(430,170,'hotline',16),
- T(440,579,'pintu',16),T(470,725,'pintu',16),T(150,885,'pintu',16),
- T(528,579,'terbuka',13,90,{c:'#9aa3ab'}),
+ T(452,497,'kompor 2 tungku',12,0,{c:'#7b8791'}),
+ T(452,690,'PINTU A',15,0,{b:1}),T(452,830,'PINTU B',15,0,{b:1}),T(440,772,'tiang pintu A',12,0,{c:'#7b8791'}),
+ T(528,690,'terbuka',13,90,{c:'#9aa3ab'}),T(528,827,'terbuka',13,90,{c:'#9aa3ab'}),
+ T(150,1008,'pintu',16),
  T(43,-172,'PINTU',15,0,{b:1}),T(43,-154,'SELATAN',15,0,{b:1}),
  {t:'arrow',x1:43,y1:-100,x2:43,y2:-134,c:INK,w:2.4},
  // panah utara
@@ -108,8 +115,8 @@ const INIT=[
 let objs=[],hist=[],redo=[],sel=null,tool='select',snap=true,ortho=true,showGrid=false;
 let idc=1;const uid=()=> 'o'+(idc++);
 function load(a){objs=JSON.parse(JSON.stringify(a));objs.forEach(o=>{if(!o.id)o.id=uid();});}
-try{const sv=localStorage.getItem('denah-v10');if(sv)load(JSON.parse(sv));else load(INIT);}catch(e){load(INIT);}
-function save(){try{localStorage.setItem('denah-v10',JSON.stringify(objs));}catch(e){}}
+try{const sv=localStorage.getItem('denah-v11');if(sv)load(JSON.parse(sv));else load(INIT);}catch(e){load(INIT);}
+function save(){try{localStorage.setItem('denah-v11',JSON.stringify(objs));}catch(e){}}
 function push(){hist.push(JSON.stringify(objs));if(hist.length>150)hist.shift();redo=[];updUndo();}
 function updUndo(){document.getElementById('bUndo').disabled=!hist.length;document.getElementById('bRedo').disabled=!redo.length;}
 function undo(){if(!hist.length)return;redo.push(JSON.stringify(objs));objs=JSON.parse(hist.pop());sel=null;draw();save();updUndo();fillProps();}
