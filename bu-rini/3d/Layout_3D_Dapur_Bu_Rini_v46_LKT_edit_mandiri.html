@@ -534,9 +534,9 @@ function getCss(v){return getComputedStyle(document.documentElement).getProperty
 const ITEMS=[
  {no:1, name:'Showcase Chiller 2 Pintu', brand:'Crown LG-800', size:'112 × 60 × 208,5 cm', qty:1, price:17482500, zone:'cold', px:2.585, pz:8.445, pr:Math.PI, dir:[0,-1], w:1.12, d:0.60, kind:'showcase'},
  {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:0.45, pz:5.55, pr:Math.PI/2, dir:[1,0], w:0.70, d:0.55, kind:'handwash'},
- {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:1.775, pz:2.57, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
+ {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:2.10, pz:2.57, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
  {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:8.95, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
- {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:1.775, pz:4.77, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
+ {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:2.10, pz:4.77, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
  {no:7, name:'Kwali Range High Pressure', brand:'Crown MKR-2T1S', size:'180 × 80 cm, 2 tungku + water bowl', qty:1, price:22825000, zone:'hot', hot:true, gas:true, c:4.95, dir:[-1,0], w:1.80, d:0.80, kind:'kwali'},
  {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, gas:true, c:1.94, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
  {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:3.055, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
@@ -1681,7 +1681,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v45';
+const EDIT={step:5},KEY='rini-layout-v46';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
