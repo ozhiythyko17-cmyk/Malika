@@ -535,12 +535,12 @@ const ITEMS=[
  {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:8.15, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
  {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:0.575, pz:5.75, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
  {no:7, name:'Kwali Range High Pressure', brand:'Crown MKR-2T1S', size:'180 × 80 cm, 2 tungku + water bowl', qty:1, price:22825000, zone:'hot', hot:true, c:4.95, dir:[-1,0], w:1.80, d:0.80, kind:'kwali'},
- {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, c:1.75, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
- {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:2.80, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
+ {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, c:1.855, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
+ {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:2.985, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
  {no:10, name:'Kompor 6 Tungku + Oven', brand:'GETRA RBJ-6', size:'105 × 80 cm', qty:1, price:24000000, zone:'hot', hot:true, c:0.60, dir:[-1,0], w:1.05, d:0.80, kind:'sixburner'},
  {no:11, name:'Meja Piring Kotor', brand:'Crown (Fotec)', size:'110 × 80 cm, lubang di sisi kiri', qty:1, price:3250000, zone:'wash', px:0.575, pz:2.50, pr:Math.PI/2, dir:[1,0], w:1.10, d:0.80, kind:'dirty'},
  {no:12, name:'Sink 3 Bak', brand:'Crown (Fotec)', size:'180 × 80 cm, 3 keran', qty:1, price:12500000, zone:'wash', px:0.575, pz:1.00, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.80, kind:'sink3'},
- {no:13, name:'Deep Fryer Listrik 2 Basket', brand:'GETRA EF-89', size:'di atas meja no. 9', qty:1, price:2500000, zone:'hot', hot:true, c:2.80, dir:[-1,0], w:0.57, d:0.44, kind:'fryer', onTop:0.87},
+ {no:13, name:'Deep Fryer Listrik 2 Basket', brand:'GETRA EF-89', size:'di atas meja no. 9', qty:1, price:2500000, zone:'hot', hot:true, c:2.985, dir:[-1,0], w:0.57, d:0.44, kind:'fryer', onTop:0.87},
  {no:14, name:'Kompor Stock Pot', brand:'GETRA SP-1DX', size:'60 × 62 cm', qty:1, price:4200000, zone:'hot', px:3.50, pz:0.385, pr:0, dir:[0,1], w:0.60, d:0.62, kind:'stockpot'}
 ];
 const RW=5.0, RD=6.2, RH=3.4, RK=7.925; // RD dipakai sebagai titik tengah tampilan; RK = muka dalam dinding utara (dapur diperpanjang ke utara sampai dinding utara, melewati pintu A) // dapur: x ke barat (5,0 m dari as dinding timur), z ke utara (6,2 m dari as dinding selatan sampai tiang pintu A)
@@ -1307,7 +1307,7 @@ const gasOut=new THREE.Group(),gasIn=new THREE.Group();gasGrp.add(gasOut);gasGrp
   cyl(gasIn,pipeIn,'x',c0-2.55,(2.55+c0)/2,IY,IZ);}
   cyl(gasIn,pipeIn,'z',7.575-IZ,XE,IY,(7.575+IZ)/2);
   // cabang ke alat gas: lava grill (2.85), kompor 6 tungku (3.975), kwali (5.4), stock pot (6.75)
-  [2.55,5.75,6.9].forEach(x=>{
+  [2.55,5.645,6.9].forEach(x=>{
     cyl(gasIn,pipeIn,'y',0.2,x,IY+0.1,IZ);                  // cabang naik pendek, berhenti di bawah dek kompor (y 0,65 m)
     B(gasIn,0.06,0.06,0.06,valveM,x,IY+0.08,IZ,false);   // kran cabang (merah)
     cyl(gasIn,pipeIn,'z',0.14,x,IY+0.2,IZ-0.07);           // ke inlet alat, dari bawah
@@ -1650,7 +1650,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v33';
+const EDIT={step:5},KEY='rini-layout-v34';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
