@@ -1295,7 +1295,7 @@ const gasOut=new THREE.Group(),gasIn=new THREE.Group();gasGrp.add(gasOut);gasGrp
 {
   const pipeOut=mat({color:0xe3b400,metalness:.35,roughness:.4});
   const pipeIn=mat({color:0xf2c200,metalness:.35,roughness:.4});
-  const valveM=mat({color:0xc9302c,roughness:.45}),tankM=mat({color:0xb8392b,roughness:.4,metalness:.25}),darkM=mat({color:0x2d3338,metalness:.6,roughness:.4});
+  const valveM=mat({color:0xc9302c,roughness:.45}),regM=mat({color:0xb5882a,metalness:.7,roughness:.35}),hoseM=mat({color:0x1d1f22,roughness:.7}),tankM=mat({color:0xb8392b,roughness:.4,metalness:.25}),darkM=mat({color:0x2d3338,metalness:.6,roughness:.4});
   const T=0.04; // pipa 1" (diameter ±4 cm termasuk lapisan)
   const cyl=(g,m,axis,len,x,y,z,r=T/2)=>{const c=C(g,r,r,len,m,x,y,z,14);if(axis==='x')c.rotation.z=Math.PI/2;if(axis==='z')c.rotation.x=Math.PI/2;return c;};
   // --- tabung LPG 50 kg x2 di luar dinding hot (sisi kiri), di atas pelat beton
@@ -1317,21 +1317,33 @@ const gasOut=new THREE.Group(),gasIn=new THREE.Group();gasGrp.add(gasOut);gasGrp
   B(gasOut,0.07,0.07,0.07,valveM,RX,1.05,7.7,false);      // kran utama (merah)
   cyl(gasOut,pipeOut,'x',Math.max(.001,XE-RX),(RX+XE)/2,0.45,7.7);        // feeder menyusur dinding luar ke titik masuk
   cyl(gasOut,pipeOut,'z',0.35,XE,0.45,7.575);             // menembus dinding (bawah, jauh dari panas)
-  // --- pipa di dalam: sepanjang kaki dinding hot di belakang alat, ketinggian 45 cm
-  const IZ=7.43,IY=0.45,X0=XE,X1=7.4;
+  // --- pipa di dalam: 5 cm dari lantai dan 5 cm dari dinding (permukaan pipa; sumbu = 5 + jari-jari 2 = 7 cm)
+  const IZ=7.43,IY=0.07,X0=XE,X1=7.355,YE=0.45; // YE = tinggi pipa saat menembus dinding
   {const CJ=6.98,c0=3.45,c1=3.96; // pipa memutar di depan tiang (tiang di x 3,48-3,93)
   cyl(gasIn,pipeIn,'x',X1-X0,(X0+X1)/2,IY,IZ);cyl(gasIn,pipeIn,'x',X0-c1,(c1+X0)/2,IY,IZ);
   cyl(gasIn,pipeIn,'z',IZ-CJ,c1,IY,(IZ+CJ)/2);cyl(gasIn,pipeIn,'x',c1-c0,(c0+c1)/2,IY,CJ);cyl(gasIn,pipeIn,'z',IZ-CJ,c0,IY,(IZ+CJ)/2);
   cyl(gasIn,pipeIn,'x',c0-2.55,(2.55+c0)/2,IY,IZ);}
-  cyl(gasIn,pipeIn,'z',7.575-IZ,XE,IY,(7.575+IZ)/2);
-  // cabang ke alat gas: lava grill (2.85), kompor 6 tungku (3.975), kwali (5.4), stock pot (6.75)
-  [2.55,5.56,6.8].forEach(x=>{
-    cyl(gasIn,pipeIn,'y',0.2,x,IY+0.1,IZ);                  // cabang naik pendek, berhenti di bawah dek kompor (y 0,65 m)
-    B(gasIn,0.06,0.06,0.06,valveM,x,IY+0.08,IZ,false);   // kran cabang (merah)
-    cyl(gasIn,pipeIn,'z',0.14,x,IY+0.2,IZ-0.07);           // ke inlet alat, dari bawah
-  });
-  // cabang ke kompor stock pot di dinding selatan (x lokal 7,1; z lokal 6,075)
-  cyl(gasIn,pipeIn,'z',IZ-5.6,7.4,IY,(IZ+5.6)/2);cyl(gasIn,pipeIn,'y',0.2,7.4,IY+0.1,5.6);B(gasIn,0.06,0.06,0.06,valveM,7.4,IY+0.08,5.6,false);   // pipa ke stock pot menyusur dinding selatan (celah 10 cm)
+  cyl(gasIn,pipeIn,'z',7.575-IZ,XE,YE,(7.575+IZ)/2);       // masuk menembus dinding
+  cyl(gasIn,pipeIn,'y',YE-IY,XE,(YE+IY)/2,IZ);             // turun ke pipa lantai
+  // tiap alat gas: pipa -> naik -> kran -> REGULATOR -> SELANG fleksibel -> alat (pipa tidak langsung masuk alat)
+  const regSet=(x,z,face)=>{ // face: 'z' = alat di sisi -z dari pipa (belakang alat di z=7.40); 'x' = alat di sisi -x (belakang di x=7.325)
+    const y0=IY,yv=0.22,yr=0.34;
+    cyl(gasIn,pipeIn,'y',yv-y0,x,(yv+y0)/2,z);                         // riser dari pipa lantai
+    B(gasIn,0.06,0.06,0.06,valveM,x,yv,z,false);                        // kran cabang (merah)
+    cyl(gasIn,pipeIn,'y',yr-0.035-yv-0.03,x,(yr-0.035+yv+0.03)/2,z);   // nipel ke regulator
+    C(gasIn,0.032,0.032,0.07,regM,x,yr,z,18);                          // badan regulator (kuningan)
+    C(gasIn,0.02,0.02,0.03,darkM,x,yr+0.05,z,14);                      // tutup/knob regulator
+    const p0=[x,yr+0.035,z];
+    const end=face==='z'?[x+0.09,0.46,7.40]:[7.325,0.46,z-0.09];
+    const mid=face==='z'?[x+0.10,yr+0.16,z-0.02]:[x-0.02,yr+0.16,z-0.10];
+    tube(gasIn,[p0,[x,yr+0.12,z],mid,end],0.009,hoseM);                // selang fleksibel ke inlet alat
+    const cp=face==='z'?[x+0.09,0.46,7.40]:[7.325,0.46,z-0.09];
+    C(gasIn,0.014,0.014,0.03,regM,cp[0],cp[1],cp[2],12).rotation[face==='z'?'x':'z']=Math.PI/2; // sambungan selang di inlet alat
+  };
+  [2.55,5.56,6.8].forEach(x=>regSet(x,IZ,'z'));
+  // cabang ke kompor stock pot di dinding selatan: pipa lantai menyusur dinding selatan (7 cm dari dinding)
+  cyl(gasIn,pipeIn,'z',IZ-5.6,X1,IY,(IZ+5.6)/2);
+  regSet(X1,5.6,'x');
   // pipa dalam tampil menembus alat (x-ray) supaya terlihat walau di balik badan alat
   const xr=on=>{[pipeIn,valveM].forEach(m=>{});gasIn.traverse(o=>{if(o.isMesh){o.material.depthTest=!on;o.renderOrder=on?20:0;o.material.needsUpdate=true;}});};
   const tG=document.getElementById('tGas');
@@ -1340,7 +1352,7 @@ const gasOut=new THREE.Group(),gasIn=new THREE.Group();gasGrp.add(gasOut);gasGrp
   xr(true);
 }
 dimTagH('2 tabung LPG 50 kg + feeder (acuan, di luar dinding)',3.5,2.0,-0.5,'dimtag',false,true);
-dimTagH('Pipa gas ke 4 alat (lewat bawah kompor)',3.0,0.75,0.95,'dimtag',true,true);
+dimTagH('Pipa gas 5 cm dari lantai & dinding → regulator + selang ke tiap alat',3.0,0.75,0.95,'dimtag',true,true);
 dimTagH('Hood dipisah 2 unit di kiri-kanan tiang (acuan, pesanan 6 m, belum masuk penawaran)',2.0,2.75,0.55,'dimtag',true,true);
 dimTagH('Ducting BJLS: 3 saluran 35 × 35 cm menyatu ke 1 jalur 50 × 50 cm',1.2,4.1,0.75,'dimtag',true,true);
 dimTagH('Axial fan 20 inci (Ø508 mm), lewat lubang 1',4.625,3.55,-0.8,'dimtag',false,true);
@@ -1669,7 +1681,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v44';
+const EDIT={step:5},KEY='rini-layout-v45';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
