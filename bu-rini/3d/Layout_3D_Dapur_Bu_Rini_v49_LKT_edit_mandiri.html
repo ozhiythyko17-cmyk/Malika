@@ -534,6 +534,7 @@ function getCss(v){return getComputedStyle(document.documentElement).getProperty
 // px,pz,pr = posisi tengah dan putaran untuk alat lain; dir = arah muka alat di dunia (x,z).
 const ITEMS=[
  {no:1, name:'Showcase Chiller 2 Pintu', brand:'Crown LG-800', size:'112 × 60 × 208,5 cm', qty:1, price:17482500, zone:'cold', px:2.585, pz:8.445, pr:Math.PI, dir:[0,-1], w:1.12, d:0.60, kind:'showcase'},
+ {no:2, name:'Chest Freezer 2 Pintu', brand:'AQUA AQF-600GC', size:'180 × 76 × 83 cm, 561 L', qty:1, price:0, zone:'cold', px:0.56, pz:7.10, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.76, kind:'chest2'},
  {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:0.45, pz:5.55, pr:Math.PI/2, dir:[1,0], w:0.70, d:0.55, kind:'handwash'},
  {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:2.10, pz:2.57, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
  {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:8.95, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
@@ -549,7 +550,7 @@ const ITEMS=[
 ];
 const RW=4.275, RD=6.2, RH=3.4, RK=8.745; // RD = titik tengah tampilan; RK = muka dalam dinding utara. Lebar bersih 4,125 m (9,25 keramik 40 cm + 2 grill 21 cm). Inti dapur sampai z 6,20 (grill utara tepat di sisi selatan pintu A); sesudahnya pintu A, tiang pintu A, pintu B, dinding utara (tambahan di luar 6,20 m) // dapur: x ke barat (5,0 m dari as dinding timur), z ke utara (6,2 m dari as dinding selatan sampai tiang pintu A)
 const ORW=8, ORD=7.5;           // bingkai lama area hot line (dipakai grup HW)
-const rupiah=n=>'Rp'+n.toLocaleString('id-ID');
+const rupiah=n=>n?'Rp'+n.toLocaleString('id-ID'):'belum ada harga';
 const total=ITEMS.reduce((s,i)=>s+i.price*i.qty,0);
 document.getElementById('total').textContent=rupiah(total);
 
@@ -874,6 +875,23 @@ const BUILD={
     }
   });
   [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>C(g,0.025,0.025,0.04,M.rubber,a*(w/2-0.06),0.02,b*(d/2-0.06),10));
+ },
+ chest2(g,it){ // AQUA AQF-600GC: chest freezer, 2 tutup atas, bodi putih, 2 pegangan abu dengan kunci, panel kontrol kanan bawah, roda
+  const {w,d}=it,h=0.83;
+  RB(g,w,h-0.1,d,0.03,M.freezerWhite,0,0.06+(h-0.1)/2,0);
+  RB(g,w+0.006,0.07,d+0.006,0.025,M.freezerWhite,0,h-0.035,0);
+  [-1,1].forEach(sx=>{
+    RB(g,w/2-0.012,0.03,d-0.012,0.012,M.freezerWhite,sx*w/4,h-0.012,0);
+    RB(g,0.17,0.045,0.04,0.015,M.lidGrip,sx*w/4-0.02,h-0.05,d/2+0.014);
+    B(g,0.02,0.02,0.01,M.ssPolish,sx*w/4-0.02,h-0.052,d/2+0.036,false);
+  });
+  B(g,0.004,0.06,d+0.004,M.grey,0,h-0.035,0,false);
+  B(g,w-0.01,0.004,d-0.01,M.grey,0,h-0.078,0,false);
+  RB(g,0.15,0.075,0.012,0.008,M.frameBlack,w/2-0.2,0.2,d/2+0.002);
+  B(g,0.04,0.014,0.004,mat({color:0x111,emissive:0x2bff7a,emissiveIntensity:.8}),w/2-0.22,0.22,d/2+0.009,false);
+  B(g,0.15,0.01,0.004,mat({color:0xb59a5a,metalness:.5,roughness:.4}),w/2-0.2,0.16,d/2+0.009,false);
+  B(g,w-0.02,0.04,d-0.02,M.grey,0,0.06,0);
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>{const c=C(g,0.025,0.025,0.02,M.rubber,a*(w/2-0.07),0.025,b*(d/2-0.07),12);c.rotation.z=Math.PI/2;});
  },
  freezer(g,it){ // GEA AB-318-R: bodi putih membulat, tutup dengan pegangan biru keabuan, panel kontrol kanan bawah, roda
   const {w,d}=it,h=0.847;
@@ -1610,7 +1628,7 @@ const listEl=document.getElementById('list');const rowEls={};
   listEl.appendChild(grp);
 });
 const note=document.createElement('div');note.className='note';
-note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Alat gas (kwali, grill lava, kompor 6 tungku, stock pot) diberi jarak 10 cm dari dinding untuk jalur pipa gas. Inti dapur 6,20 m dari dinding selatan, berakhir di grill utara yang tepat di sisi selatan pintu A. Urutan di dinding barat dari selatan: kompor 2 tungku, grill utara, pintu A, tiang pintu A, pintu B, dinding utara (area dari pintu A ke utara tambahan di luar 6,20 m). Lantai keramik 40 × 40 cm, lebar bersih ±412 cm. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Urutan keramik dari selatan ke utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di atas dinding barat ada 2 lubang antara tiang dan pintu A, lubang 2 sampai ujung utara pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
+note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer AQUA AQF-600GC (no. 2, 180 × 76 × 83 cm) ditambahkan di dinding timur, di samping undercounter, belum ada harga dan belum masuk penawaran. Alat gas (kwali, grill lava, kompor 6 tungku, stock pot) diberi jarak 10 cm dari dinding untuk jalur pipa gas. Inti dapur 6,20 m dari dinding selatan, berakhir di grill utara yang tepat di sisi selatan pintu A. Urutan di dinding barat dari selatan: kompor 2 tungku, grill utara, pintu A, tiang pintu A, pintu B, dinding utara (area dari pintu A ke utara tambahan di luar 6,20 m). Lantai keramik 40 × 40 cm, lebar bersih ±412 cm. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Urutan keramik dari selatan ke utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di atas dinding barat ada 2 lubang antara tiang dan pintu A, lubang 2 sampai ujung utara pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
 listEl.appendChild(note);
 const panel=document.getElementById('panel'),sheetLbl=document.getElementById('sheetLbl');
 document.getElementById('panelTop').addEventListener('click',()=>{if(window.innerWidth>760)return;panel.classList.toggle('open');sheetLbl.textContent=panel.classList.contains('open')?'Tutup':'Lihat daftar';});
@@ -1726,7 +1744,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v48';
+const EDIT={step:5},KEY='rini-layout-v49';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
