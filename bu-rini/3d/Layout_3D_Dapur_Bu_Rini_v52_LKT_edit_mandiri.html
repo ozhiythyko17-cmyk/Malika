@@ -921,12 +921,12 @@ const BUILD={
   B(g,0.01,bh,bd,M.ss,-bw/2,by,0.005);B(g,0.01,bh,bd,M.ss,bw/2,by,0.005);
   C(g,0.03,0.03,0.006,M.ssDark,0,h-0.03-bh+0.006,0.005,16);
   B(g,w,0.03,0.012,M.ss,0,h-0.045,d/2-0.006);
-  RB(g,w,0.15,0.025,0.006,M.ss,0,h+0.075,-d/2+0.0125);
+  RB(g,w,0.05,0.025,0.006,M.ss,0,h+0.025,-d/2+0.0125);
   const lx=w/2-0.04,lz=d/2-0.04;[[-lx,-lz],[lx,-lz],[-lx,lz],[lx,lz]].forEach(([x,z])=>tubeLeg(g,x,z,h-0.05));
   rodZ(g,d-0.08,0.013,M.ss,-lx,0.22,0);rodZ(g,d-0.08,0.013,M.ss,lx,0.22,0);rodX(g,w-0.08,0.013,M.ss,0,0.22,-lz);
   gooseneck(g,0,h,-d/2+0.06,0.2,0.32);
   RB(g,0.12,0.05,0.06,0.01,M.ssPolish,0,h-0.33,d/2-0.08); // pedal lutut
-  B(g,0.08,0.12,0.06,mat({color:0xf3f3f3,roughness:.4}),0.18,h+0.28,-d/2+0.06); // dispenser sabun
+  B(g,0.08,0.12,0.06,mat({color:0xf3f3f3,roughness:.4}),0.18,h+0.28,-d/2+0.03); // dispenser sabun
  },
  cupboard(g,it){const {w,d}=it,h=0.85;cabinetTable(g,w,d,h,3,true);wallRack(g,w,d,h);
   for(let i=0;i<4;i++){C(g,0.1,0.1,0.14,M.ssPolish,-w/2+0.25+i*0.45,h+0.3825,-d/2+0.15,20);}
@@ -1087,7 +1087,7 @@ const BUILD={
   const ring=new THREE.Mesh(new THREE.TorusGeometry(hr,0.012,8,28),M.ssPolish);ring.rotation.x=Math.PI/2;ring.position.set(hx,h+0.002,hz);g.add(ring);
   const chute=new THREE.Mesh(new THREE.CylinderGeometry(hr,hr*0.85,0.18,24,1,true),mat({color:0x5d666e,metalness:.85,roughness:.3,side:THREE.DoubleSide}));chute.position.set(hx,h-0.1,hz);g.add(chute);
   B(g,w,0.045,0.012,M.ss,0,h-0.05,d/2-0.006);
-  RB(g,w,0.2,0.025,0.006,M.ss,0,h+0.1,-d/2+0.0125);
+  RB(g,w,0.1,0.025,0.006,M.ss,0,h+0.05,-d/2+0.0125);
   const lx=w/2-0.05,lz=d/2-0.05;[[-lx,-lz],[lx,-lz],[-lx,lz],[lx,lz]].forEach(([x,z])=>tubeLeg(g,x,z,h-0.07));
   RB(g,w/2,0.02,d-0.08,0.004,M.ss,w/4-0.02,0.2,0);
   rodZ(g,d-0.1,0.014,M.ss,-lx,0.22,0);rodX(g,w-0.1,0.014,M.ss,0,0.22,-lz);
@@ -1096,7 +1096,7 @@ const BUILD={
   for(let i=0;i<6;i++)C(g,0.12,0.11,0.012,M.white,0.2,h+0.01+i*0.015,0.02,24);
   for(let i=0;i<4;i++)C(g,0.08,0.07,0.07,M.white,-0.02,h+0.035,-0.2+i*0.0,18);
   RB(g,0.36,0.03,0.26,0.02,mat({color:0x8a8f94,roughness:.5}),0.25,h+0.12,0.05);},
- sink3(g,it){ // sink 3 bak (referensi Crown CRW-1001): rangka H, bak dalam, splash 25 cm, 3 keran leher angsa
+ sink3(g,it){ // sink 3 bak (referensi Crown CRW-1001): rangka H, bak dalam, splash 5 cm, 3 keran leher angsa
   const {w,d}=it,h=0.9;
   const bw=w/3-0.1,bd=d-0.2,bh=0.32,zc=0.02;
   // top dengan 3 lubang
@@ -1110,10 +1110,10 @@ const BUILD={
     rodZ(g,0.12,0.02,M.ssDark,x,h-0.03-bh-0.08,zc).rotation.x=0;
     if(i===1)B(g,bw-0.02,0.004,bd-0.02,M.water,x,h-0.12,zc,false);
     if(i===0)for(let k=0;k<4;k++){const pl=C(g,0.11,0.1,0.01,M.white,x-0.05+k*0.03,h-0.27+k*0.02,zc,22);pl.rotation.z=0.5;}
-    gooseneck(g,x,h+0.12,-d/2+0.05,0.26,0.36);
+    gooseneck(g,x,h,-d/2+0.05,0.26,0.36);
   }
   B(g,w,0.045,0.012,M.ss,0,h-0.05,d/2-0.006);
-  RB(g,w,0.25,0.025,0.006,M.ss,0,h+0.125,-d/2+0.0125);B(g,w,0.012,0.045,M.ss,0,h+0.25,-d/2+0.022);
+  RB(g,w,0.05,0.025,0.006,M.ss,0,h+0.025,-d/2+0.0125);B(g,w,0.012,0.045,M.ss,0,h+0.05,-d/2+0.022);
   const lx=w/2-0.05,lz=d/2-0.05;
   [-lx,0,lx].forEach(x=>[-lz,lz].forEach(z=>tubeLeg(g,x,z,h-0.07,0.022)));
   [-lx,0,lx].forEach(x=>rodZ(g,d-0.1,0.014,M.ss,x,0.2,0));rodX(g,w-0.1,0.014,M.ss,0,0.2,0);
@@ -1747,7 +1747,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v51';
+const EDIT={step:5},KEY='rini-layout-v52';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
