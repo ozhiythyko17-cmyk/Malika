@@ -1,0 +1,287 @@
+{
+ "keterangan": "X = jarak dari as dinding timur (cm), Z = jarak dari as dinding selatan (cm), sama dengan LKT",
+ "alat": [
+  {
+   "no": 1,
+   "nama": "Showcase Chiller 2 Pintu",
+   "x_cm": 259,
+   "z_cm": 845,
+   "menghadap": "selatan",
+   "ukuran": "112 × 60 × 208,5 cm"
+  },
+  {
+   "no": 3,
+   "nama": "Hand Washer Sink",
+   "x_cm": 45,
+   "z_cm": 555,
+   "menghadap": "barat",
+   "ukuran": "70 × 55 cm"
+  },
+  {
+   "no": 4,
+   "nama": "Meja Cupboard + Rak 2 Tingkat",
+   "x_cm": 210,
+   "z_cm": 257,
+   "menghadap": "barat",
+   "ukuran": "190 × 80 cm, 3 pintu sliding"
+  },
+  {
+   "no": 5,
+   "nama": "Undercounter Chiller + Rak",
+   "x_cm": 55,
+   "z_cm": 895,
+   "menghadap": "barat",
+   "ukuran": "180 × 75 cm, 2 pintu"
+  },
+  {
+   "no": 6,
+   "nama": "Meja Checker Cupboard + Rak",
+   "x_cm": 210,
+   "z_cm": 477,
+   "menghadap": "barat",
+   "ukuran": "140 × 80 cm"
+  },
+  {
+   "no": 7,
+   "nama": "Kwali Range High Pressure",
+   "x_cm": 370,
+   "z_cm": 495,
+   "menghadap": "timur",
+   "ukuran": "180 × 80 cm, 2 tungku + water bowl"
+  },
+  {
+   "no": 8,
+   "nama": "Grill Batu Lava",
+   "x_cm": 370,
+   "z_cm": 194,
+   "menghadap": "timur",
+   "ukuran": "120 × 80 cm, medium high pressure"
+  },
+  {
+   "no": 9,
+   "nama": "Meja 2 Tingkat untuk Fryer",
+   "x_cm": 380,
+   "z_cm": 306,
+   "menghadap": "timur",
+   "ukuran": "80 × 80 cm"
+  },
+  {
+   "no": 10,
+   "nama": "Kompor 6 Tungku + Oven",
+   "x_cm": 370,
+   "z_cm": 70,
+   "menghadap": "timur",
+   "ukuran": "105 × 80 cm"
+  },
+  {
+   "no": 11,
+   "nama": "Meja Piring Kotor",
+   "x_cm": 57,
+   "z_cm": 460,
+   "menghadap": "barat",
+   "ukuran": "110 × 80 cm, lubang di sisi kiri"
+  },
+  {
+   "no": 12,
+   "nama": "Sink 3 Bak",
+   "x_cm": 57,
+   "z_cm": 245,
+   "menghadap": "barat",
+   "ukuran": "180 × 80 cm, 3 keran"
+  },
+  {
+   "no": 13,
+   "nama": "Deep Fryer Listrik 2 Basket",
+   "x_cm": 380,
+   "z_cm": 306,
+   "menghadap": "timur",
+   "ukuran": "di atas meja no. 9"
+  },
+  {
+   "no": 14,
+   "nama": "Kompor Stock Pot",
+   "x_cm": 230,
+   "z_cm": 48,
+   "menghadap": "utara",
+   "ukuran": "60 × 62 cm"
+  },
+  {
+   "no": "gt",
+   "nama": "Grease trap 1000 L",
+   "x_cm": 400,
+   "z_cm": 175,
+   "putaran_derajat": -90
+  },
+  {
+   "no": "ipal",
+   "nama": "IPAL 2500 L",
+   "x_cm": 785,
+   "z_cm": 60,
+   "putaran_derajat": -90
+  },
+  {
+   "no": "blower",
+   "nama": "Blower aerasi (2 unit)",
+   "x_cm": 645,
+   "z_cm": 330,
+   "putaran_derajat": -180
+  },
+  {
+   "no": "filter",
+   "nama": "Filter air (2 vessel)",
+   "x_cm": 775,
+   "z_cm": 350,
+   "putaran_derajat": 90
+  },
+  {
+   "no": "dosing",
+   "nama": "Dosing klorin",
+   "x_cm": 594,
+   "z_cm": 425,
+   "putaran_derajat": 90
+  },
+  {
+   "no": "got",
+   "nama": "Saluran got / pembuangan",
+   "x_cm": 760,
+   "z_cm": 510,
+   "putaran_derajat": 90
+  },
+  {
+   "no": "panel",
+   "nama": "Panel listrik IPAL",
+   "x_cm": 470,
+   "z_cm": 340,
+   "putaran_derajat": -180
+  },
+  {
+   "no": "gas",
+   "nama": "Tabung gas LPG + feeder (di luar dinding)",
+   "x_cm": 450,
+   "z_cm": 485,
+   "putaran_derajat": 90
+  }
+ ],
+ "jarak_antar_unit": [
+  {
+   "sumbu": "x",
+   "jarak_cm": 106
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 2
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 98
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 5
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 80
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 73
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 5
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 83
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 62
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 80
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 73
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 155
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 5
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 3
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 12
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 11
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 90
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 11
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 70
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 70
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 10
+  },
+  {
+   "sumbu": "x",
+   "jarak_cm": 192
+  },
+  {
+   "sumbu": "z",
+   "jarak_cm": 10
+  }
+ ]
+}
