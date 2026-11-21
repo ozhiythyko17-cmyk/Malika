@@ -529,11 +529,11 @@ function getCss(v){return getComputedStyle(document.documentElement).getProperty
 // hot:true = alat di area hot line (dinding barat), c = posisi tengah sepanjang dinding barat dari ujung selatan (m).
 // px,pz,pr = posisi tengah dan putaran untuk alat lain; dir = arah muka alat di dunia (x,z).
 const ITEMS=[
- {no:1, name:'Showcase Chiller 2 Pintu', brand:'Crown LG-800', size:'112 × 60 × 208,5 cm', qty:1, price:17482500, zone:'cold', px:0.475, pz:5.51, pr:Math.PI/2, dir:[1,0], w:1.12, d:0.60, kind:'showcase'},
+ {no:1, name:'Showcase Chiller 2 Pintu', brand:'Crown LG-800', size:'112 × 60 × 208,5 cm', qty:1, price:17482500, zone:'cold', px:3.31, pz:7.625, pr:Math.PI, dir:[0,-1], w:1.12, d:0.60, kind:'showcase'},
  {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:2.80, pz:0.35, pr:0, dir:[0,1], w:0.70, d:0.55, kind:'handwash'},
- {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:2.50, pz:2.57, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
- {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:4.00, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
- {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:2.50, pz:4.77, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
+ {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:0.575, pz:4.05, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
+ {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:8.15, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
+ {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:0.575, pz:5.75, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
  {no:7, name:'Kwali Range High Pressure', brand:'Crown MKR-2T1S', size:'180 × 80 cm, 2 tungku + water bowl', qty:1, price:22825000, zone:'hot', hot:true, c:4.95, dir:[-1,0], w:1.80, d:0.80, kind:'kwali'},
  {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, c:1.75, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
  {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:2.80, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
@@ -543,7 +543,7 @@ const ITEMS=[
  {no:13, name:'Deep Fryer Listrik 2 Basket', brand:'GETRA EF-89', size:'di atas meja no. 9', qty:1, price:2500000, zone:'hot', hot:true, c:2.80, dir:[-1,0], w:0.57, d:0.44, kind:'fryer', onTop:0.87},
  {no:14, name:'Kompor Stock Pot', brand:'GETRA SP-1DX', size:'60 × 62 cm', qty:1, price:4200000, zone:'hot', px:3.50, pz:0.385, pr:0, dir:[0,1], w:0.60, d:0.62, kind:'stockpot'}
 ];
-const RW=5.0, RD=6.2, RH=3.4; // dapur: x ke barat (5,0 m dari as dinding timur), z ke utara (6,2 m dari as dinding selatan sampai tiang pintu A)
+const RW=5.0, RD=6.2, RH=3.4, RK=7.925; // RD dipakai sebagai titik tengah tampilan; RK = muka dalam dinding utara (dapur diperpanjang ke utara sampai dinding utara, melewati pintu A) // dapur: x ke barat (5,0 m dari as dinding timur), z ke utara (6,2 m dari as dinding selatan sampai tiang pintu A)
 const ORW=8, ORD=7.5;           // bingkai lama area hot line (dipakai grup HW)
 const rupiah=n=>'Rp'+n.toLocaleString('id-ID');
 const total=ITEMS.reduce((s,i)=>s+i.price*i.qty,0);
@@ -662,7 +662,7 @@ function drain(cx,cz,w,len,alongX){
 [0.88125,7.36875].forEach(z=>drain(2.5,z,0.1125,4.85,true));
 
 const WALL_T=0.15;
-const walls={W:new THREE.Group(),E:new THREE.Group(),S:new THREE.Group(),C:new THREE.Group()};
+const walls={W:new THREE.Group(),E:new THREE.Group(),S:new THREE.Group(),C:new THREE.Group(),N:new THREE.Group()};
 Object.values(walls).forEach(g=>ROOM.add(g));
 function wallSeg(group,axis,a0,a1,y0,y1,fixed){
   // axis 'x': wall runs along x at z=fixed; axis 'z': runs along z at x=fixed
@@ -673,44 +673,36 @@ function wallSeg(group,axis,a0,a1,y0,y1,fixed){
   else mesh=B(group,WALL_T,h,len,m,fixed,(y0+y1)/2,(a0+a1)/2,true);
   mesh.castShadow=false;return mesh;
 }
-// dinding barat (hot line): penuh sampai z 4,10; di utara tiang ada 2 lubang atas (y 2,7 sampai plafon) sampai ujung pintu A (z 6,2, mentok sebelum pintu B):
-// lubang 1 z 4,10-5,15 (dilewati axial fan), sekat 5,15-5,30, lubang 2 z 5,30-6,2; dinding bawah penuh sampai 6,20 = awal bukaan pintu A (tiang pintu A di z 6,2-6,65)
+// dinding barat (hot line): penuh sampai z 4,10; di utara tiang ada 2 lubang atas (y 2,7 sampai plafon): lubang 1 z 4,10-5,15 (dilewati axial fan), sekat 5,15-5,30, lubang 2 z 5,30-6,20
+// dinding penuh sampai tiang pintu A (6,20-6,65); pintu A terbuka z 6,65-7,43 (tinggi 2,15); dinding penuh lagi z 7,43 sampai dinding utara
 wallSeg(walls.W,'z',-WALL_T/2,4.10,0,RH,RW);
 wallSeg(walls.W,'z',4.10,5.15,0,2.7,RW);
 wallSeg(walls.W,'z',5.15,5.30,0,RH,RW);
-wallSeg(walls.W,'z',5.30,RD,0,2.7,RW);
+wallSeg(walls.W,'z',5.30,6.20,0,2.7,RW);
+wallSeg(walls.W,'z',6.20,6.65,0,RH,RW);
+wallSeg(walls.W,'z',6.65,7.43,2.15,RH,RW);
+wallSeg(walls.W,'z',7.43,8.0+WALL_T/2,0,RH,RW);
 // dinding timur (sisi lorong sampai tiang pintu A)
-wallSeg(walls.E,'z',-1.1,RD,0,RH,0);
+wallSeg(walls.E,'z',-1.1,9.05,0,RH,0);
 // dinding selatan (x 2,275 sampai dinding barat) + dinding lorong selatan di x 2,35 (tebal 15 cm)
 wallSeg(walls.S,'x',2.275,RW+WALL_T/2,0,RH,0);
 wallSeg(walls.S,'z',-1.1,WALL_T/2,0,RH,2.35);
 // lorong selatan terbuka (tanpa pintu)
+// dinding utara (x 2,275 sampai dinding barat) + dinding lorong utara di x 2,35 (tebal 15 cm), lorong utara terbuka
+wallSeg(walls.N,'x',2.275,RW+WALL_T/2,0,RH,8.0);
+wallSeg(walls.N,'z',8.0,8.95,0,RH,2.35);
 // tiang: lebar sepanjang dinding 45 cm; tiang tepi menonjol 10 cm; tiang tengah 45 x 45
 const colMat=tiled(wallTile,0.45,RH);
-const COLS=[[0.125,3.795,0.10,0.45,['E']],[2.5,3.795,0.45,0.45,[]],[RW-0.3,3.795,0.45,0.45,['W']],[0.125,6.425,0.10,0.45,['E']],[2.5,6.425,0.45,0.45,[]],[RW-0.125,6.425,0.10,0.45,['W']]];
+const COLS=[[0.125,3.795,0.10,0.45,['E']],[2.5,3.795,0.45,0.45,[]],[RW-0.3,3.795,0.45,0.45,['W']],[0.125,6.425,0.10,0.45,['E']],[2.5,6.425,0.45,0.45,[]],[RW-0.125,6.425,0.10,0.45,['W']],[2.5,7.875,0.45,0.10,['N']]];
 const colBoxes=[];
 COLS.forEach(([x,z,w,d,wl])=>{const m=B(ROOM,w,RH,d,colMat.clone(),x,RH/2,z,true);m.material.transparent=true;m.userData.walls=wl;colBoxes.push(m);});
-// ===== sisi utara (BUKAN area dapur, hanya patokan): dinding semi transparan =====
-const REF=new THREE.Group();ROOM.add(REF);
-const refMat=mat({color:0xc9ccd0,roughness:.9,transparent:true,opacity:.5,depthWrite:false});
-function refBox(w,h,d,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),refMat);m.position.set(x,y,z);REF.add(m);return m;}
-const refZ=(a0,a1,y0,y1,x)=>refBox(WALL_T,y1-y0,a1-a0,x,(y0+y1)/2,(a0+a1)/2);
-const refX=(a0,a1,y0,y1,z)=>refBox(a1-a0,y1-y0,WALL_T,(a0+a1)/2,(y0+y1)/2,z);
-refZ(6.2,7.43,2.15,RH,RW);          // atas bukaan pintu A (z 6,65-7,43, terbuka)
-refZ(7.43,8.0+WALL_T/2,0,RH,RW);    // dinding barat utara
-refX(2.275,RW+WALL_T/2,0,RH,8.0);   // dinding utara
-refZ(8.0,8.95,0,RH,2.35);           // dinding lorong utara (kembaran lorong selatan)
-refZ(RD,9.05,0,RH,0);               // dinding timur sampai ujung lorong utara
-refBox(0.45,RH,0.10,2.5,RH/2,7.875); // tiang tepi utara (menonjol 10 cm)
-{const rfm=mat({color:0xb9b2a4,roughness:1,transparent:true,opacity:.55,depthWrite:false});
- [[2.2,1.025,1.175,8.4375]].forEach(([w,d,x,z])=>{const f=new THREE.Mesh(new THREE.PlaneGeometry(w,d),rfm);f.rotation.x=-Math.PI/2;f.position.set(x,0.003,z);REF.add(f);});}
-// batas dapur (tiang pintu A, z 6,2)
-{const bl=new THREE.Mesh(new THREE.PlaneGeometry(RW-0.15,0.05),mat({color:0xe5b40b,roughness:.6}));bl.rotation.x=-Math.PI/2;bl.position.set(RW/2,0.006,RD);ROOM.add(bl);}
+// lantai lorong utara
+{const f3=new THREE.Mesh(new THREE.PlaneGeometry(2.2,1.125),tiled(floorTile,2.2,1.125,{roughness:.38}));f3.rotation.x=-Math.PI/2;f3.position.set(1.175,0.0005,8.4875);f3.receiveShadow=true;ROOM.add(f3);}
 // ceiling (visible in walk mode)
-const ceiling=new THREE.Mesh(new THREE.PlaneGeometry(RW,RD),mat({color:0xf6f7f8,roughness:.9}));
-ceiling.rotation.x=Math.PI/2;ceiling.position.set(RW/2,RH,RD/2);ROOM.add(ceiling);
+const ceiling=new THREE.Mesh(new THREE.PlaneGeometry(RW,RK),mat({color:0xf6f7f8,roughness:.9}));
+ceiling.rotation.x=Math.PI/2;ceiling.position.set(RW/2,RH,RK/2);ROOM.add(ceiling);
 const ceilLights=new THREE.Group();ROOM.add(ceilLights);
-[[1.4,1.5],[3.4,1.5],[1.4,4.6],[3.4,4.6]].forEach(([x,z])=>B(ceilLights,0.6,0.02,0.6,M.light,x,RH-0.011,z,false));
+[[1.4,1.5],[3.4,1.5],[1.4,4.3],[3.4,4.3],[1.4,6.8],[3.4,6.8]].forEach(([x,z])=>B(ceilLights,0.6,0.02,0.6,M.light,x,RH-0.011,z,false));
 
 /* ---------- Equipment builders (local: width on x, depth on z, front faces +z) ---------- */
 // Bentuk mengikuti foto produk di Odoo (Crown, GEA, GETRA). Logo merek sengaja tidak digambar.
@@ -1224,7 +1216,7 @@ itemGroups.forEach(g=>{
   if(!b.isEmpty())solids.push({minX:b.min.x-0.04,maxX:b.max.x+0.04,minZ:b.min.z-0.04,maxZ:b.max.z+0.04});
 });
 colBoxes.forEach(c=>addSolid(c,0.02));
-const BOUND={minX:0.075-RW/2+0.02,maxX:RW-0.075-RW/2-0.02,minZ:0.075-RD/2+0.02,maxZ:RD-RD/2-0.02};
+const BOUND={minX:0.075-RW/2+0.02,maxX:RW-0.075-RW/2-0.02,minZ:0.075-RD/2+0.02,maxZ:RK-RD/2-0.02};
 
 /* ---------- Person (dewasa ±170 cm) ---------- */
 function buildPerson(){
@@ -1272,13 +1264,11 @@ const dimEls=[];
 function dimTagW(text,wp,cls='dimtag',topHide=false,hideSmall=false){const el=document.createElement('div');el.className=cls;el.textContent=text;labelsEl.appendChild(el);dimEls.push({el,pos:wp,topHide,hideSmall,kind:/^(620|±485)/.test(text)?'dim':'note'});}
 function dimTag(text,x,y,z,cls,topHide,hideSmall){ROOM.updateMatrixWorld(true);dimTagW(text,ROOM.localToWorld(new THREE.Vector3(x,y,z)),cls,topHide,hideSmall);}
 function dimTagH(text,x,y,z,cls,topHide,hideSmall){ROOM.updateMatrixWorld(true);dimTagW(text,HW.localToWorld(new THREE.Vector3(x,y,z)),cls,topHide,hideSmall);}
-dimTag('620 cm (dinding selatan ke tiang pintu A)',-0.8,0.05,RD/2);
-dimTag('±485 cm (lebar bersih, ukuran LKT)',RW/2,0.05,6.95);
+dimTag('±785 cm (dinding selatan ke dinding utara)',-0.8,0.05,RK/2);
+dimTag('±485 cm (lebar bersih, ukuran LKT)',RW/2,0.05,8.45);
 dimTag('Lorong selatan (terbuka)',1.15,0.05,-0.65,'dimtag',false,true);
-dimTag('Pintu A (terbuka, mulai z 6,20)',RW-0.1,2.3,7.05,'dimtag',true,true);
-dimTag('Sisi utara: bukan area dapur (patokan)',2.5,0.05,7.1,'dimtag',false,true);
+dimTag('Pintu A (terbuka)',RW-0.1,2.3,7.05,'dimtag',true,true);
 dimTag('Lorong utara (terbuka)',1.15,0.05,8.5,'dimtag',true,true);
-dimTag('Batas dapur (tiang pintu A)',RW/2,0.05,RD+0.2,'dimtag',true,true);
 dimTag('Saluran air / grill',2.5,0.05,0.88,'dimtag',true,true);
 dimTag('Area hot line (sisi barat)',RW-0.9,0.05,3.0,'dimtag',true,true);
 /* ---------- Instalasi gas (acuan, belum masuk penawaran): tabung + feeder di luar dinding, kiri area hot ---------- */
@@ -1526,8 +1516,8 @@ dimTagH('Ke got / saluran pembuangan',3.55,0.55,-1.3,'dimtag',false,true);
 const dimLines=new THREE.Group();scene.add(dimLines);
 function line(a,b){const geo=new THREE.BufferGeometry().setFromPoints([a,b]);dimLines.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0x16202a})));}
 const v=(x,z)=>new THREE.Vector3(x-RW/2,0.02,z-RD/2);
-line(v(-0.8,0.075),v(-0.8,RD));line(v(-0.65,0.075),v(-0.95,0.075));line(v(-0.65,RD),v(-0.95,RD));
-line(v(0.075,6.9),v(RW-0.075,6.9));line(v(0.075,6.75),v(0.075,7.05));line(v(RW-0.075,6.75),v(RW-0.075,7.05));
+line(v(-0.8,0.075),v(-0.8,RK));line(v(-0.65,0.075),v(-0.95,0.075));line(v(-0.65,RK),v(-0.95,RK));
+line(v(0.075,8.3),v(RW-0.075,8.3));line(v(0.075,8.15),v(0.075,8.45));line(v(RW-0.075,8.15),v(RW-0.075,8.45));
 
 /* ---------- Panel list ---------- */
 const listEl=document.getElementById('list');const rowEls={};
@@ -1545,7 +1535,7 @@ const listEl=document.getElementById('list');const rowEls={};
   listEl.appendChild(grp);
 });
 const note=document.createElement('div');note.className='note';
-note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Lantai keramik 50 × 50 cm. Arah selatan-utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara (di ambang pintu, di luar area dapur). Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. Sisi utara (bukan area dapur) ditampilkan transparan sebagai patokan. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di utara tiang ada 2 lubang di dinding sampai awal pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
+note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Dapur diperpanjang ke utara sampai dinding utara (±785 cm): pintu A tetap ada di dinding barat (z 6,65-7,43) dan grill utara di sisi utara pintu A. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Lantai keramik 50 × 50 cm. Arah selatan-utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di utara tiang ada 2 lubang di dinding sampai awal pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
 listEl.appendChild(note);
 const panel=document.getElementById('panel'),sheetLbl=document.getElementById('sheetLbl');
 document.getElementById('panelTop').addEventListener('click',()=>{if(window.innerWidth>760)return;panel.classList.toggle('open');sheetLbl.textContent=panel.classList.contains('open')?'Tutup':'Lihat daftar';});
@@ -1595,8 +1585,8 @@ function focusItem(it,close){
   // look at item from the room side
   goal.theta=Math.atan2(it.dir[0],it.dir[1])+0.25;goal.phi=close?1.05:0.95;goal.active=true;
 }
-function resetView(){goal.target.set(1.4,0.4,1.3);goal.radius=window.innerWidth<=760?22:14;goal.theta=-1.1;goal.phi=0.92;goal.active=true;}
-function topView(){goal.target.set(1.5,0,1.3);goal.radius=window.innerWidth<=760?22:18;goal.theta=0;goal.phi=0.02;goal.active=true;}
+function resetView(){goal.target.set(1.4,0.4,1.5);goal.radius=window.innerWidth<=760?24:15.5;goal.theta=-1.1;goal.phi=0.92;goal.active=true;}
+function topView(){goal.target.set(1.5,0,1.5);goal.radius=window.innerWidth<=760?24:19;goal.theta=0;goal.phi=0.02;goal.active=true;}
 
 /* ---------- Walk state ---------- */
 let mode='view',pov='third';
@@ -1660,7 +1650,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v32';
+const EDIT={step:5},KEY='rini-layout-v33';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
@@ -1676,7 +1666,7 @@ function setPose(it,x,z,yaw){
   it.anchor.x+=x-old.x;it.anchor.z+=z-old.z;
 }
 function footprint(it){const p=it.pose,d=it.onTop?0.8:it.d,w=it.w;const fx=Math.abs(Math.sin(p.yaw))>0.5;const ex=(fx?d:w)/2,ez=(fx?w:d)/2;return {x0:p.x-ex,x1:p.x+ex,z0:p.z-ez,z1:p.z+ez};}
-const OBST=[{n:'dinding barat',x0:4.925,x1:5.075,z0:0.075,z1:6.2},{n:'dinding timur',x0:-0.075,x1:0.075,z0:0.075,z1:6.2},{n:'dinding selatan',x0:2.275,x1:5.075,z0:-0.075,z1:0.075}]
+const OBST=[{n:'dinding barat',x0:4.925,x1:5.075,z0:0.075,z1:6.65},{n:'dinding barat utara',x0:4.925,x1:5.075,z0:7.43,z1:8.075},{n:'dinding timur',x0:-0.075,x1:0.075,z0:0.075,z1:9.05},{n:'dinding selatan',x0:2.275,x1:5.075,z0:-0.075,z1:0.075},{n:'dinding utara',x0:2.275,x1:5.075,z0:7.925,z1:8.075}]
   .concat(COLS.map((c,k)=>({n:'tiang'+k,x0:c[0]-c[2]/2,x1:c[0]+c[2]/2,z0:c[1]-c[3]/2,z1:c[1]+c[3]/2})));
 const ovl=(a0,a1,b0,b1)=>Math.min(a1,b1)-Math.max(a0,b0);
 function computeGaps(){
@@ -1785,7 +1775,7 @@ const nearEl=document.getElementById('near');let nearItem=null;
 document.getElementById('nGo').addEventListener('click',()=>{if(nearItem)select(nearItem,false);});
 
 /* ---------- Wall fading in overview ---------- */
-const wallNormals={W:new THREE.Vector3(1,0,0),E:new THREE.Vector3(-1,0,0),S:new THREE.Vector3(0,0,-1),C:new THREE.Vector3(0,0,-1)};
+const wallNormals={W:new THREE.Vector3(1,0,0),E:new THREE.Vector3(-1,0,0),S:new THREE.Vector3(0,0,-1),C:new THREE.Vector3(0,0,-1),N:new THREE.Vector3(0,0,1)};
 const wallTh=k=>(k==='W'||k==='E')?RW/2:RD/2;
 Object.entries(walls).forEach(([k,g])=>g.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.transparent=true;}}));
 function updateWalls(){
