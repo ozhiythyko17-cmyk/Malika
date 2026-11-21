@@ -185,7 +185,7 @@ body.walk .panel{display:none!important}
     <div class="edr"><label>X (cm)<input type="number" id="eX" step="5"></label><label>Z (cm)<input type="number" id="eZ" step="5"></label><label>Langkah<select id="eStep"><option value="1">1 cm</option><option value="5" selected>5 cm</option><option value="10">10 cm</option><option value="50">50 cm</option></select></label></div>
     <div class="edr"><button class="chipbtn" data-mv="0,-1">↑ Selatan</button><button class="chipbtn" data-mv="0,1">↓ Utara</button><button class="chipbtn" data-mv="-1,0">← Timur</button><button class="chipbtn" data-mv="1,0">→ Barat</button></div>
     <div class="edr"><button class="chipbtn" id="eRotL">⟲ Putar 90°</button><button class="chipbtn" id="eRotR">⟳ Putar 90°</button><button class="chipbtn" id="eDl">Unduh JSON</button><button class="chipbtn" id="eRs">Kembalikan semua</button></div>
-    <p class="dim">Perubahan tersimpan otomatis di browser ini. Hood, ducting, pipa gas, dan IPAL tidak ikut bergeser. Tombol panah keyboard juga menggeser alat terpilih.</p>
+    <p class="dim">Perubahan tersimpan otomatis di browser ini. IPAL (satu paket) dan tabung gas LPG ikut bisa dipilih, ditarik, dan diputar; sambungan pipa ke dinding perlu diatur ulang. Hood dan ducting tidak ikut bergeser. Tombol panah keyboard juga menggeser yang terpilih.</p>
   </div>
 </section>
 
@@ -533,18 +533,18 @@ function getCss(v){return getComputedStyle(document.documentElement).getProperty
 // px,pz,pr = posisi tengah dan putaran untuk alat lain; dir = arah muka alat di dunia (x,z).
 const ITEMS=[
  {no:1, name:'Showcase Chiller 2 Pintu', brand:'Crown LG-800', size:'112 × 60 × 208,5 cm', qty:1, price:17482500, zone:'cold', px:2.585, pz:8.445, pr:Math.PI, dir:[0,-1], w:1.12, d:0.60, kind:'showcase'},
- {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:0.45, pz:0.45, pr:Math.PI/2, dir:[1,0], w:0.70, d:0.55, kind:'handwash'},
+ {no:3, name:'Hand Washer Sink', brand:'GETRA SST-0755', size:'70 × 55 cm', qty:1, price:3850000, zone:'wash', px:0.45, pz:5.55, pr:Math.PI/2, dir:[1,0], w:0.70, d:0.55, kind:'handwash'},
  {no:4, name:'Meja Cupboard + Rak 2 Tingkat', brand:'Crown (Fotec)', size:'190 × 80 cm, 3 pintu sliding', qty:1, price:18300000, zone:'prep', px:1.775, pz:2.57, pr:Math.PI/2, dir:[1,0], w:1.90, d:0.80, kind:'cupboard'},
  {no:5, name:'Undercounter Chiller + Rak', brand:'Crown', size:'180 × 75 cm, 2 pintu', qty:1, price:27400000, zone:'cold', px:0.55, pz:8.95, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.75, kind:'undercounter'},
  {no:6, name:'Meja Checker Cupboard + Rak', brand:'Crown (Fotec)', size:'140 × 80 cm', qty:1, price:14150000, zone:'prep', px:1.775, pz:4.77, pr:Math.PI/2, dir:[1,0], w:1.40, d:0.80, kind:'checker'},
- {no:7, name:'Kwali Range High Pressure', brand:'Crown MKR-2T1S', size:'180 × 80 cm, 2 tungku + water bowl', qty:1, price:22825000, zone:'hot', hot:true, c:4.95, dir:[-1,0], w:1.80, d:0.80, kind:'kwali'},
- {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, c:1.855, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
- {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:2.985, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
- {no:10, name:'Kompor 6 Tungku + Oven', brand:'GETRA RBJ-6', size:'105 × 80 cm', qty:1, price:24000000, zone:'hot', hot:true, c:0.60, dir:[-1,0], w:1.05, d:0.80, kind:'sixburner'},
- {no:11, name:'Meja Piring Kotor', brand:'Crown (Fotec)', size:'110 × 80 cm, lubang di sisi kiri', qty:1, price:3250000, zone:'wash', px:0.575, pz:1.40, pr:Math.PI/2, dir:[1,0], w:1.10, d:0.80, kind:'dirty'},
- {no:12, name:'Sink 3 Bak', brand:'Crown (Fotec)', size:'180 × 80 cm, 3 keran', qty:1, price:12500000, zone:'wash', px:0.575, pz:2.90, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.80, kind:'sink3'},
- {no:13, name:'Deep Fryer Listrik 2 Basket', brand:'GETRA EF-89', size:'di atas meja no. 9', qty:1, price:2500000, zone:'hot', hot:true, c:2.985, dir:[-1,0], w:0.57, d:0.44, kind:'fryer', onTop:0.87},
- {no:14, name:'Kompor Stock Pot', brand:'GETRA SP-1DX', size:'60 × 62 cm', qty:1, price:4200000, zone:'hot', px:2.30, pz:0.385, pr:0, dir:[0,1], w:0.60, d:0.62, kind:'stockpot'}
+ {no:7, name:'Kwali Range High Pressure', brand:'Crown MKR-2T1S', size:'180 × 80 cm, 2 tungku + water bowl', qty:1, price:22825000, zone:'hot', hot:true, gas:true, c:4.95, dir:[-1,0], w:1.80, d:0.80, kind:'kwali'},
+ {no:8, name:'Grill Batu Lava', brand:'Crown (custom)', size:'120 × 80 cm, medium high pressure', qty:1, price:22500000, zone:'hot', hot:true, gas:true, c:1.94, dir:[-1,0], w:1.20, d:0.80, kind:'lava'},
+ {no:9, name:'Meja 2 Tingkat untuk Fryer', brand:'Crown (Fotec)', size:'80 × 80 cm', qty:1, price:2600000, zone:'hot', hot:true, c:3.055, dir:[-1,0], w:0.80, d:0.80, kind:'fryertable'},
+ {no:10, name:'Kompor 6 Tungku + Oven', brand:'GETRA RBJ-6', size:'105 × 80 cm', qty:1, price:24000000, zone:'hot', hot:true, gas:true, c:0.70, dir:[-1,0], w:1.05, d:0.80, kind:'sixburner'},
+ {no:11, name:'Meja Piring Kotor', brand:'Crown (Fotec)', size:'110 × 80 cm, lubang di sisi kiri', qty:1, price:3250000, zone:'wash', px:0.575, pz:4.60, pr:Math.PI/2, dir:[1,0], w:1.10, d:0.80, kind:'dirty'},
+ {no:12, name:'Sink 3 Bak', brand:'Crown (Fotec)', size:'180 × 80 cm, 3 keran', qty:1, price:12500000, zone:'wash', px:0.575, pz:2.45, pr:Math.PI/2, dir:[1,0], w:1.80, d:0.80, kind:'sink3'},
+ {no:13, name:'Deep Fryer Listrik 2 Basket', brand:'GETRA EF-89', size:'di atas meja no. 9', qty:1, price:2500000, zone:'hot', hot:true, c:3.055, dir:[-1,0], w:0.57, d:0.44, kind:'fryer', onTop:0.87},
+ {no:14, name:'Kompor Stock Pot', brand:'GETRA SP-1DX', size:'60 × 62 cm', qty:1, price:4200000, zone:'hot', px:2.30, pz:0.485, pr:0, dir:[0,1], w:0.60, d:0.62, kind:'stockpot'}
 ];
 const RW=4.275, RD=6.2, RH=3.4, RK=8.745; // RD = titik tengah tampilan; RK = muka dalam dinding utara. Lebar bersih 4,125 m (9,25 keramik 40 cm + 2 grill 21 cm). Inti dapur sampai z 6,20 (grill utara tepat di sisi selatan pintu A); sesudahnya pintu A, tiang pintu A, pintu B, dinding utara (tambahan di luar 6,20 m) // dapur: x ke barat (5,0 m dari as dinding timur), z ke utara (6,2 m dari as dinding selatan sampai tiang pintu A)
 const ORW=8, ORD=7.5;           // bingkai lama area hot line (dipakai grup HW)
@@ -1115,7 +1115,7 @@ const BUILD={
 /* ---------- Place equipment ---------- */
 const itemGroups=[];const decals=[];
 function placement(it){
-  if(it.hot)return {x:it.c,z:(it.onTop?0.8:it.d)/2,r:0}; // dalam bingkai HW (menempel dinding barat)
+  if(it.hot)return {x:it.c,z:(it.gas?0.10:0)+(it.onTop?0.8:it.d)/2,r:0}; // alat gas diberi jarak 10 cm dari dinding (ruang pipa gas) // dalam bingkai HW (menempel dinding barat)
   return {x:it.px,z:it.pz,r:it.pr};
 }
 ITEMS.forEach(it=>{
@@ -1318,20 +1318,20 @@ const gasOut=new THREE.Group(),gasIn=new THREE.Group();gasGrp.add(gasOut);gasGrp
   cyl(gasOut,pipeOut,'x',Math.max(.001,XE-RX),(RX+XE)/2,0.45,7.7);        // feeder menyusur dinding luar ke titik masuk
   cyl(gasOut,pipeOut,'z',0.35,XE,0.45,7.575);             // menembus dinding (bawah, jauh dari panas)
   // --- pipa di dalam: sepanjang kaki dinding hot di belakang alat, ketinggian 45 cm
-  const IZ=7.43,IY=0.45,X0=XE,X1=7.0;
-  {const CJ=6.98,c0=3.40,c1=3.96; // pipa memutar di depan tiang (tiang di x 3,48-3,93)
+  const IZ=7.43,IY=0.45,X0=XE,X1=7.4;
+  {const CJ=6.98,c0=3.45,c1=3.96; // pipa memutar di depan tiang (tiang di x 3,48-3,93)
   cyl(gasIn,pipeIn,'x',X1-X0,(X0+X1)/2,IY,IZ);cyl(gasIn,pipeIn,'x',X0-c1,(c1+X0)/2,IY,IZ);
   cyl(gasIn,pipeIn,'z',IZ-CJ,c1,IY,(IZ+CJ)/2);cyl(gasIn,pipeIn,'x',c1-c0,(c0+c1)/2,IY,CJ);cyl(gasIn,pipeIn,'z',IZ-CJ,c0,IY,(IZ+CJ)/2);
   cyl(gasIn,pipeIn,'x',c0-2.55,(2.55+c0)/2,IY,IZ);}
   cyl(gasIn,pipeIn,'z',7.575-IZ,XE,IY,(7.575+IZ)/2);
   // cabang ke alat gas: lava grill (2.85), kompor 6 tungku (3.975), kwali (5.4), stock pot (6.75)
-  [2.55,5.645,6.9].forEach(x=>{
+  [2.55,5.56,6.8].forEach(x=>{
     cyl(gasIn,pipeIn,'y',0.2,x,IY+0.1,IZ);                  // cabang naik pendek, berhenti di bawah dek kompor (y 0,65 m)
     B(gasIn,0.06,0.06,0.06,valveM,x,IY+0.08,IZ,false);   // kran cabang (merah)
     cyl(gasIn,pipeIn,'z',0.14,x,IY+0.2,IZ-0.07);           // ke inlet alat, dari bawah
   });
   // cabang ke kompor stock pot di dinding selatan (x lokal 7,1; z lokal 6,075)
-  cyl(gasIn,pipeIn,'x',0.2,7.0,IY,IZ);cyl(gasIn,pipeIn,'z',IZ-5.6,7.1,IY,(IZ+5.6)/2);cyl(gasIn,pipeIn,'y',0.2,7.1,IY+0.1,5.6);B(gasIn,0.06,0.06,0.06,valveM,7.1,IY+0.08,5.6,false);
+  cyl(gasIn,pipeIn,'z',IZ-5.6,7.4,IY,(IZ+5.6)/2);cyl(gasIn,pipeIn,'y',0.2,7.4,IY+0.1,5.6);B(gasIn,0.06,0.06,0.06,valveM,7.4,IY+0.08,5.6,false);   // pipa ke stock pot menyusur dinding selatan (celah 10 cm)
   // pipa dalam tampil menembus alat (x-ray) supaya terlihat walau di balik badan alat
   const xr=on=>{[pipeIn,valveM].forEach(m=>{});gasIn.traverse(o=>{if(o.isMesh){o.material.depthTest=!on;o.renderOrder=on?20:0;o.material.needsUpdate=true;}});};
   const tG=document.getElementById('tGas');
@@ -1348,7 +1348,7 @@ dimTagH('Lubang 2 (sampai ujung utara pintu A)',6.15,3.1,0.0,'dimtag',true,true)
 /* ---------- IPAL 2500 L + grease trap 1000 L di halaman belakang area hot line ---------- */
 (function(){
 const T=THREE,V=T.Vector3;
-const root=new T.Group();root.position.set(1.05,0,-3.0);HW.add(root);
+const root=new T.Group();root.position.set(1.05,0,-3.0);HW.add(root);window.__ipalRoot=root;
 const XF=4.4,ZOFF=1.7; // sistem dilipat (U-turn) di x=4,4 supaya ringkas: grease trap + IPAL baris pertama, filter + dosing + got baris kedua
 const root2=new T.Group();root2.position.set(2*XF,0,ZOFF);root2.rotation.y=Math.PI;root.add(root2);
 const mat=(c,o={})=>new T.MeshStandardMaterial(Object.assign({color:c,roughness:.6,metalness:.05},o));
@@ -1553,13 +1553,13 @@ const listEl=document.getElementById('list');const rowEls={};
   listEl.appendChild(grp);
 });
 const note=document.createElement('div');note.className='note';
-note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Inti dapur 6,20 m dari dinding selatan, berakhir di grill utara yang tepat di sisi selatan pintu A. Urutan di dinding barat dari selatan: kompor 2 tungku, grill utara, pintu A, tiang pintu A, pintu B, dinding utara (area dari pintu A ke utara tambahan di luar 6,20 m). Lantai keramik 40 × 40 cm, lebar bersih ±412 cm. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Urutan keramik dari selatan ke utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di atas dinding barat ada 2 lubang antara tiang dan pintu A, lubang 2 sampai ujung utara pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
+note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Alat gas (kwali, grill lava, kompor 6 tungku, stock pot) diberi jarak 10 cm dari dinding untuk jalur pipa gas. Inti dapur 6,20 m dari dinding selatan, berakhir di grill utara yang tepat di sisi selatan pintu A. Urutan di dinding barat dari selatan: kompor 2 tungku, grill utara, pintu A, tiang pintu A, pintu B, dinding utara (area dari pintu A ke utara tambahan di luar 6,20 m). Lantai keramik 40 × 40 cm, lebar bersih ±412 cm. Showcase di dinding utara menempel tiang lorong utara, undercounter di sisi timur lorong utara, meja dan sink di sisi timur dapur. Urutan keramik dari selatan ke utara: dinding selatan, 1,5 keramik, grill, 1/4 + 12 + 1/2 keramik, grill utara. Urutan dari dinding timur: 1/4, 1, 3/4 keramik, grill, 3/4, 4, 1/4 keramik, grill, 1/4, 2 keramik, dinding barat. Lorong selatan terbuka tanpa pintu. Kompor kwali (no. 7) di utara tiang, sebelum pintu A; bukaan pintu A mulai di 6,20 m dari dinding selatan, jadi tidak ada alat yang menghalangi pintu. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di atas dinding barat ada 2 lubang antara tiang dan pintu A, lubang 2 sampai ujung utara pintu A; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
 listEl.appendChild(note);
 const panel=document.getElementById('panel'),sheetLbl=document.getElementById('sheetLbl');
 document.getElementById('panelTop').addEventListener('click',()=>{if(window.innerWidth>760)return;panel.classList.toggle('open');sheetLbl.textContent=panel.classList.contains('open')?'Tutup':'Lihat daftar';});
 
 /* ---------- Selection & info ---------- */
-let selected=null;const info=document.getElementById('info');
+let selected=null,selX=null;const info=document.getElementById('info');
 const glowMats=new Map();
 function setHighlight(it,on){
   if(!it)return;it.group.traverse(o=>{if(o.isMesh&&o.material&&o.material.emissive&&o.geometry.type!=='PlaneGeometry'){
@@ -1568,6 +1568,7 @@ function setHighlight(it,on){
   }});
 }
 function select(it,focus){
+  selX=null;
   if(selected)setHighlight(selected,false);
   Object.values(rowEls).forEach(r=>r.removeAttribute('aria-current'));
   tagEls.forEach(t=>t.el.classList.toggle('sel',t.it===it));
@@ -1668,11 +1669,22 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v40';
+const EDIT={step:5},KEY='rini-layout-v44';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
 ITEMS.forEach(it=>{const p=poseNow(it);POSE0.set(it.no,p);it.pose={x:p.x,z:p.z,yaw:p.yaw};});
+// IPAL dan tabung gas juga bisa digeser/diputar: dibungkus pivot di tengahnya
+const EXTRAS=[];
+function mkExtra(key,name,grp,tagTexts){
+  scene.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(grp),c=box.getCenter(new THREE.Vector3());c.y=0;
+  const par=grp.parent,pv=new THREE.Group();par.add(pv);pv.position.copy(par.worldToLocal(c.clone()));pv.updateMatrixWorld(true);pv.attach(grp);
+  const ex={no:null,key,name,group:pv,anchor:new THREE.Vector3(c.x,0,c.z),dir:[1,0],w:1,d:1,tags:dimEls.filter(d=>tagTexts.some(t=>d.el.textContent.startsWith(t)))};
+  const p=poseNow(ex);POSE0.set(key,p);ex.pose={x:p.x,z:p.z,yaw:p.yaw};EXTRAS.push(ex);return ex;
+}
+mkExtra('ipal','Paket IPAL (grease trap, IPAL 2500 L, filter, got)',window.__ipalRoot,['Grease trap','IPAL 2500','Filter air','Ke got']);
+mkExtra('gas','Tabung gas LPG + feeder (di luar dinding)',gasOut,['2 tabung LPG']);
 function setPose(it,x,z,yaw){
   const old=it.pose;it.pose={x,z,yaw};
   const g=it.group,par=g.parent;ROOM.updateMatrixWorld(true);
@@ -1720,46 +1732,55 @@ function drawGaps(){
 }
 function queueGaps(){if(gapQueued)return;gapQueued=true;requestAnimationFrame(()=>{gapQueued=false;drawGaps();});}
 function rebuildSolids(){solids.length=0;scene.updateMatrixWorld(true);itemGroups.forEach(g=>{const b=new THREE.Box3();g.traverse(o=>{if(o.isMesh&&o.geometry.type!=='PlaneGeometry'){const bb=new THREE.Box3().setFromObject(o);if(bb.min.y<1.2)b.union(bb);}});if(!b.isEmpty())solids.push({minX:b.min.x-0.04,maxX:b.max.x+0.04,minZ:b.min.z-0.04,maxZ:b.max.z+0.04});});colBoxes.forEach(c=>addSolid(c,0.02));}
-function savePoses(){try{const o={};ITEMS.forEach(it=>{o[it.no]=it.pose;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+function savePoses(){try{const o={};ITEMS.forEach(it=>{o[it.no]=it.pose;});EXTRAS.forEach(ex=>{o[ex.key]=ex.pose;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
 function afterEdit(){savePoses();queueGaps();rebuildSolids();updateEditFields();}
-try{const sv=JSON.parse(localStorage.getItem(KEY)||'null');if(sv)ITEMS.forEach(it=>{const p=sv[it.no];if(p&&isFinite(p.x)&&isFinite(p.z)&&isFinite(p.yaw))setPose(it,p.x,p.z,p.yaw);});}catch(e){}
+try{const sv=JSON.parse(localStorage.getItem(KEY)||'null');if(sv){const ok=p=>p&&isFinite(p.x)&&isFinite(p.z)&&isFinite(p.yaw);ITEMS.forEach(it=>{const p=sv[it.no];if(ok(p))setPose(it,p.x,p.z,p.yaw);});EXTRAS.forEach(ex=>{const p=sv[ex.key];if(ok(p))applyPose(ex,p.x,p.z,p.yaw);});}}catch(e){}
 drawGaps();rebuildSolids();
 
 const pEdit=document.getElementById('pEdit'),eX=document.getElementById('eX'),eZ=document.getElementById('eZ'),eName=document.getElementById('eName'),eStep=document.getElementById('eStep');
 const editOn=()=>pEdit.classList.contains('show');
+const cur=()=>selX||selected;
 function updateEditFields(){
-  if(!selected){eName.textContent='Belum ada alat dipilih';eX.value='';eZ.value='';return;}
-  eName.textContent=selected.no+'. '+selected.name;eX.value=Math.round(selected.pose.x*100);eZ.value=Math.round(selected.pose.z*100);
+  const c=cur();if(!c){eName.textContent='Belum ada alat dipilih';eX.value='';eZ.value='';return;}
+  eName.textContent=(c.no?c.no+'. ':'')+c.name;eX.value=Math.round(c.pose.x*100);eZ.value=Math.round(c.pose.z*100);
 }
-function moveBy(dx,dz){if(!selected)return;const s=EDIT.step/100;setPose(selected,Math.round((selected.pose.x+dx*s)*100)/100,Math.round((selected.pose.z+dz*s)*100)/100,selected.pose.yaw);afterEdit();}
+function applyPose(c,x,z,yaw){const o={x:c.pose.x,z:c.pose.z};setPose(c,x,z,yaw);if(c.tags){const dx=x-o.x,dz=z-o.z;c.tags.forEach(t=>{t.pos.x+=dx;t.pos.z+=dz;});}}
+function moveBy(dx,dz){const c=cur();if(!c)return;const s=EDIT.step/100;applyPose(c,Math.round((c.pose.x+dx*s)*100)/100,Math.round((c.pose.z+dz*s)*100)/100,c.pose.yaw);afterEdit();}
 eStep.addEventListener('change',()=>{EDIT.step=+eStep.value;eX.step=eZ.step=EDIT.step;});
-[eX,eZ].forEach(inp=>inp.addEventListener('change',()=>{if(!selected)return;const x=parseFloat(eX.value),z=parseFloat(eZ.value);if(!isFinite(x)||!isFinite(z))return;setPose(selected,x/100,z/100,selected.pose.yaw);afterEdit();}));
+[eX,eZ].forEach(inp=>inp.addEventListener('change',()=>{const c=cur();if(!c)return;const x=parseFloat(eX.value),z=parseFloat(eZ.value);if(!isFinite(x)||!isFinite(z))return;applyPose(c,x/100,z/100,c.pose.yaw);afterEdit();}));
 pEdit.querySelectorAll('[data-mv]').forEach(b=>b.addEventListener('click',()=>{const [dx,dz]=b.dataset.mv.split(',').map(Number);moveBy(dx,dz);}));
-document.getElementById('eRotL').addEventListener('click',()=>{if(!selected)return;setPose(selected,selected.pose.x,selected.pose.z,selected.pose.yaw+Math.PI/2);afterEdit();});
-document.getElementById('eRotR').addEventListener('click',()=>{if(!selected)return;setPose(selected,selected.pose.x,selected.pose.z,selected.pose.yaw-Math.PI/2);afterEdit();});
-document.getElementById('eRs').addEventListener('click',()=>{ITEMS.forEach(it=>{const p=POSE0.get(it.no);setPose(it,p.x,p.z,p.yaw);});afterEdit();});
+document.getElementById('eRotL').addEventListener('click',()=>{const c=cur();if(!c)return;applyPose(c,c.pose.x,c.pose.z,c.pose.yaw+Math.PI/2);afterEdit();});
+document.getElementById('eRotR').addEventListener('click',()=>{const c=cur();if(!c)return;applyPose(c,c.pose.x,c.pose.z,c.pose.yaw-Math.PI/2);afterEdit();});
+document.getElementById('eRs').addEventListener('click',()=>{ITEMS.forEach(it=>{const p=POSE0.get(it.no);setPose(it,p.x,p.z,p.yaw);});EXTRAS.forEach(ex=>{const p=POSE0.get(ex.key);applyPose(ex,p.x,p.z,p.yaw);});afterEdit();});
 document.getElementById('eDl').addEventListener('click',()=>{
-  const data=ITEMS.map(it=>({no:it.no,nama:it.name,x_cm:Math.round(it.pose.x*100),z_cm:Math.round(it.pose.z*100),menghadap:it.dir[0]>0?'barat':it.dir[0]<0?'timur':it.dir[1]>0?'utara':'selatan',ukuran:it.size}));
+  const dirName=it=>it.dir[0]>0?'barat':it.dir[0]<0?'timur':it.dir[1]>0?'utara':'selatan';
+  const data=ITEMS.map(it=>({no:it.no,nama:it.name,x_cm:Math.round(it.pose.x*100),z_cm:Math.round(it.pose.z*100),menghadap:dirName(it),ukuran:it.size})).concat(EXTRAS.map(ex=>({no:ex.key,nama:ex.name,x_cm:Math.round(ex.pose.x*100),z_cm:Math.round(ex.pose.z*100),putaran_derajat:Math.round(ex.pose.yaw*180/Math.PI)})));
   const gaps=computeGaps().map(g=>({sumbu:g.axis,jarak_cm:Math.round(g.gap*100)}));
   const blob=new Blob([JSON.stringify({keterangan:'X = jarak dari as dinding timur (cm), Z = jarak dari as dinding selatan (cm), sama dengan LKT',alat:data,jarak_antar_unit:gaps},null,1)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='posisi-alat-bu-rini.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 });
-window.addEventListener('keydown',e=>{if(!editOn()||mode!=='view'||!selected)return;if(e.target&&['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
+window.addEventListener('keydown',e=>{if(!editOn()||mode!=='view'||!cur())return;if(e.target&&['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
   const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(!m)return;e.preventDefault();moveBy(m[0],m[1]);});
-// tarik alat di lantai
+// tarik alat, IPAL, atau tabung gas di lantai
 const dragS={it:null,dx:0,dz:0,id:null},floorPl=new THREE.Plane(new THREE.Vector3(0,1,0),0);
 function rayAt(e){const r=canvas.getBoundingClientRect();ray.setFromCamera({x:(e.clientX-r.left)/r.width*2-1,y:-(e.clientY-r.top)/r.height*2+1},camera);}
+function pickEdit(e){
+  rayAt(e);const hits=ray.intersectObjects(itemGroups,true).filter(h=>h.object.userData.item&&h.object.geometry.type!=='PlaneGeometry');
+  let best=hits.length?{d:hits[0].distance,it:hits[0].object.userData.item}:null;
+  EXTRAS.forEach(ex=>{const h=ray.intersectObject(ex.group,true).filter(h=>h.object.isMesh&&h.object.geometry.type!=='PlaneGeometry');if(h.length&&(!best||h[0].distance<best.d))best={d:h[0].distance,it:ex};});
+  return best;
+}
 canvas.addEventListener('pointerdown',e=>{
   if(!editOn()||mode!=='view'||e.button!==0)return;
-  rayAt(e);const hits=ray.intersectObjects(itemGroups,true).filter(h=>h.object.userData.item&&h.object.geometry.type!=='PlaneGeometry');
-  if(!hits.length)return;const it=hits[0].object.userData.item;const fp=new THREE.Vector3();if(!ray.ray.intersectPlane(floorPl,fp))return;
-  e.stopImmediatePropagation();canvas.setPointerCapture(e.pointerId);select(it,false);
+  const b=pickEdit(e);if(!b)return;const it=b.it;const fp=new THREE.Vector3();rayAt(e);if(!ray.ray.intersectPlane(floorPl,fp))return;
+  e.stopImmediatePropagation();canvas.setPointerCapture(e.pointerId);
+  if(it.key){select(null);selX=it;updateEditFields();}else select(it,false);
   dragS.it=it;dragS.id=e.pointerId;dragS.dx=it.pose.x-(fp.x+RW/2);dragS.dz=it.pose.z-(fp.z+RD/2);
 },true);
 canvas.addEventListener('pointermove',e=>{
   if(!dragS.it||e.pointerId!==dragS.id)return;e.stopImmediatePropagation();
   rayAt(e);const fp=new THREE.Vector3();if(!ray.ray.intersectPlane(floorPl,fp))return;
-  const s=EDIT.step/100;setPose(dragS.it,Math.round((fp.x+RW/2+dragS.dx)/s)*s,Math.round((fp.z+RD/2+dragS.dz)/s)*s,dragS.it.pose.yaw);
+  const s=EDIT.step/100;applyPose(dragS.it,Math.round((fp.x+RW/2+dragS.dx)/s)*s,Math.round((fp.z+RD/2+dragS.dz)/s)*s,dragS.it.pose.yaw);
   queueGaps();updateEditFields();
 },true);
 const endDrag=e=>{if(dragS.it&&e.pointerId===dragS.id){e.stopImmediatePropagation();dragS.it=null;afterEdit();}};
