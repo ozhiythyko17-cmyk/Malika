@@ -828,15 +828,18 @@ function cabinetTable(g,w,d,h,nDoors,openFirst=true){
   for(let i=0;i<3;i++)B(g,0.32,0.035,0.24,M.ssPolish,-w/2+0.25,bodyY0+bodyH*0.5+0.02+i*0.04,0,false);
   const lx=w/2-0.04,lz=d/2-0.05;[[-lx,-lz],[lx,-lz],[-lx,lz],[lx,lz]].forEach(([x,z])=>tubeLeg(g,x,z,bodyY0+0.01,0.022));
 }
-function wallRack(g,w,d,h){
-  [h+0.45,h+0.85].forEach(y=>{
-    RB(g,w,0.025,0.3,0.004,M.ss,0,y,-d/2+0.15);
-    B(g,w,0.035,0.01,M.ss,0,y+0.012,-d/2+0.3);
+function wallRack(g,w,d,h){ // rak 2 tingkat menempel di meja/kabinet: tiang tabung berdiri dari permukaan meja, rak tidak melayang
+  const ys=[h+0.45,h+0.85],sd=0.3,zb=-d/2+0.15,zBack=-d/2+0.04,zFront=-d/2+sd-0.04;
+  ys.forEach(y=>{
+    RB(g,w,0.025,sd,0.004,M.ss,0,y,zb);
+    B(g,w,0.035,0.01,M.ss,0,y+0.012,-d/2+sd);
   });
-  const nb=Math.max(2,Math.round(w/0.9)+1);
-  for(let i=0;i<nb;i++){const x=-w/2+0.05+(w-0.1)*i/(nb-1);
-    B(g,0.012,0.55,0.02,M.ssDark,x,h+0.64,-d/2+0.012);
-    [h+0.45,h+0.85].forEach(y=>{const br=B(g,0.01,0.012,0.22,M.ssDark,x,y-0.06,-d/2+0.11,false);br.rotation.x=0.45;});
+  const nb=Math.max(2,Math.round(w/0.9)+1),top=ys[1]+0.0125;
+  for(let i=0;i<nb;i++){const x=-w/2+0.04+(w-0.08)*i/(nb-1),ends=(i===0||i===nb-1);
+    (ends?[zBack,zFront]:[zBack]).forEach(z=>{
+      C(g,0.014,0.014,top-h,M.ss,x,(top+h)/2,z,12);      // tiang dari permukaan meja sampai rak atas
+      C(g,0.03,0.03,0.008,M.ssPolish,x,h+0.004,z,14);     // flens dudukan di permukaan meja
+    });
   }
 }
 
@@ -1744,7 +1747,7 @@ canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointer
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode!=='view')return;goal.active=false;orbit.radius=THREE.MathUtils.clamp(orbit.radius*(1+e.deltaY*0.0012),3,26);},{passive:false});
 
 /* ---------- Ubah posisi alat + ukuran jarak antar unit ---------- */
-const EDIT={step:5},KEY='rini-layout-v49';
+const EDIT={step:5},KEY='rini-layout-v50';
 const POSE0=new Map();
 const yawOf=g=>{let y=g.rotation.y,p=g.parent;while(p&&p!==scene){y+=p.rotation.y;p=p.parent;}return y;};
 function poseNow(it){ROOM.updateMatrixWorld(true);const wp=new THREE.Vector3();it.group.getWorldPosition(wp);const r=ROOM.worldToLocal(wp);return {x:r.x,z:r.z,yaw:yawOf(it.group)};}
