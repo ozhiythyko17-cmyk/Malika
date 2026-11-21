@@ -661,12 +661,13 @@ function wallSeg(group,axis,a0,a1,y0,y1,fixed){
   else mesh=B(group,WALL_T,h,len,m,fixed,(y0+y1)/2,(a0+a1)/2,true);
   mesh.castShadow=false;return mesh;
 }
-// dinding barat (hot line): penuh sampai z 4,10; di utara tiang ada 2 lubang atas (y 2,7 sampai plafon): lubang 1 z 4,10-4,70 (dilewati axial fan), lubang 2 z 4,85-5,38; pintu A z 5,38-6,2 terbuka
+// dinding barat (hot line): penuh sampai z 4,10; di utara tiang ada 2 lubang atas (y 2,7 sampai plafon) sampai ujung pintu A (z 6,2, mentok sebelum pintu B):
+// lubang 1 z 4,10-5,15 (dilewati axial fan), sekat 5,15-5,30, lubang 2 z 5,30-6,2 (di atas pintu A); pintu A z 5,38-6,2 terbuka (tinggi 2,15)
 wallSeg(walls.W,'z',-WALL_T/2,4.10,0,RH,RW);
-wallSeg(walls.W,'z',4.10,4.70,0,2.7,RW);
-wallSeg(walls.W,'z',4.70,4.85,0,RH,RW);
-wallSeg(walls.W,'z',4.85,5.38,0,2.7,RW);
-wallSeg(walls.W,'z',5.38,RD,2.15,RH,RW);
+wallSeg(walls.W,'z',4.10,5.15,0,2.7,RW);
+wallSeg(walls.W,'z',5.15,5.30,0,RH,RW);
+wallSeg(walls.W,'z',5.30,5.38,0,2.7,RW);
+wallSeg(walls.W,'z',5.38,RD,2.15,2.7,RW);
 // dinding timur (sisi lorong sampai tiang pintu A)
 wallSeg(walls.E,'z',-1.1,RD,0,RH,0);
 // dinding selatan (x 2,275 sampai dinding barat) + dinding lorong selatan di x 2,35 (tebal 15 cm)
@@ -1149,7 +1150,7 @@ const fans=[],ductMats=[];
   function galv(rx,ry){const t=gTex.clone();t.needsUpdate=true;t.repeat.set(rx,ry);const m=mat({color:0xdfe5ea,map:t,metalness:.8,roughness:.45,side:THREE.DoubleSide});ductMats.push(m);return m;}
   const fm=mat({color:0x8f98a1,metalness:.75,roughness:.5}); // flens siku
   const grp=new THREE.Group();HOTX.add(grp);
-  const A=0.35,TR=0.5,yH=3.08,zD=6.75,xs=[2.507,4.44,6.373],xEnd=3.1;
+  const A=0.35,TR=0.5,yH=3.08,zD=6.75,xs=[2.507,4.44,6.373],xEnd=2.875;
   // kotak lurus: axis x/y/z, panjang len, penampang w (horizontal) x h (vertikal)
   function box(len,axis,x,y,z,w,h,m){
     let sx=len,sy=h,sz=w;if(axis==='y'){sx=w;sy=len;sz=w;}if(axis==='z'){sx=w;sy=h;sz=len;}
@@ -1322,8 +1323,8 @@ dimTagH('2 tabung LPG 50 kg + feeder (acuan, di luar dinding, belakang no. 10)',
 dimTagH('Pipa gas ke 4 alat (lewat bawah kompor)',3.0,0.75,0.95,'dimtag',true,true);
 dimTagH('Hood dipisah 2 unit di kiri-kanan tiang, tidak sampai pintu A (acuan, pesanan 6 m, belum masuk penawaran)',2.0,2.75,0.55,'dimtag',true,true);
 dimTagH('Ducting BJLS: 3 saluran 35 × 35 cm menyatu ke 1 jalur 50 × 50 cm',1.2,4.1,0.75,'dimtag',true,true);
-dimTagH('Axial fan 20 inci (Ø508 mm), lewat lubang 1',4.4,3.55,-0.8,'dimtag',false,true);
-dimTagH('Lubang 2 (cadangan)',5.1,3.1,0.0,'dimtag',true,true);
+dimTagH('Axial fan 20 inci (Ø508 mm), lewat lubang 1',4.625,3.55,-0.8,'dimtag',false,true);
+dimTagH('Lubang 2 (di atas pintu A, sampai ujung pintu A)',5.75,3.1,0.0,'dimtag',true,true);
 /* ---------- IPAL 2500 L + grease trap 1000 L di halaman belakang area hot line ---------- */
 (function(){
 const T=THREE,V=T.Vector3;
@@ -1532,7 +1533,7 @@ const listEl=document.getElementById('list');const rowEls={};
   listEl.appendChild(grp);
 });
 const note=document.createElement('div');note.className='note';
-note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Lorong selatan terbuka tanpa pintu. Meja fryer (no. 9) dan fryer (no. 13) dipindah ke dinding selatan, hood berhenti sebelum pintu A, dan tabung gas dipindah ke belakang no. 10 supaya pintu A dan pintu B tidak terhalang. Sisi utara (bukan area dapur) ditampilkan transparan sebagai patokan. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di utara tiang ada 2 lubang di dinding; axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
+note.textContent='Posisi alat adalah usulan dan bisa digeser saat survei. Lima item custom Crown masih menunggu konfirmasi harga pabrik. Hood, 3 ducting BJLS kotak, dan axial fan 20 inci ditampilkan sebagai acuan saja. IPAL 2500 L dan grease trap 1000 L di halaman belakang area hot line juga acuan: ukuran, posisi pipa, dan jalur ke got perlu dikonfirmasi pabrik dan survei. Layout menyesuaikan LKT: area hot line di dinding barat, dapur sampai tiang pintu A. Ukuran dari LKT masih menunggu konfirmasi pemilik, saluran air / grill digambar sesuai sketsa. Chest freezer tidak ada lagi sesuai penawaran terbaru. Lorong selatan terbuka tanpa pintu. Meja fryer (no. 9) dan fryer (no. 13) dipindah ke dinding selatan, hood berhenti sebelum pintu A, dan tabung gas dipindah ke belakang no. 10 supaya pintu A dan pintu B tidak terhalang. Sisi utara (bukan area dapur) ditampilkan transparan sebagai patokan. IPAL dilipat jadi 2 baris (± 4,4 × 3,5 m) karena area terbatas, dan meja tengah menghadap hot line (rak di sisi timur). Di utara tiang ada 2 lubang di dinding sampai ujung pintu A (mentok sebelum pintu B); axial fan lewat salah satunya (lubang 1), ducting menghindari tiang dan hood dipisah menjadi 2 unit di kiri-kanan tiang.';
 listEl.appendChild(note);
 const panel=document.getElementById('panel'),sheetLbl=document.getElementById('sheetLbl');
 document.getElementById('panelTop').addEventListener('click',()=>{if(window.innerWidth>760)return;panel.classList.toggle('open');sheetLbl.textContent=panel.classList.contains('open')?'Tutup':'Lihat daftar';});
@@ -1823,7 +1824,7 @@ const sim=(function(){
     if(it.kind==='fryer')smokeSrc.push({p:toRoom(g,0,0.3,0),rate:4,c:[0.85,0.86,0.88],a:0.3,size:0.1,acc:0});
   });
   // ---- jalur ducting (koordinat ruang) ----
-  const XS=[ORW-0.5-2.507,ORW-0.5-4.44,ORW-0.5-6.373],ZD=ORD-6.75,YH=3.08,XO=ORW-0.5-3.1;
+  const XS=[ORW-0.5-2.507,ORW-0.5-4.44,ORW-0.5-6.373],ZD=ORD-6.75,YH=3.08,XO=ORW-0.5-2.875;
   function tail(px,jx){
     let rx=XS[0];XS.forEach(x=>{if(Math.abs(x-px)<Math.abs(rx-px))rx=x;});
     return {pts:[new V(rx,2.62,ZD),new V(rx,YH,ZD),new V(XO+jx*0.1,YH,ZD),new V(XO+jx*0.1,YH,ORD-7.65),new V(XO+jx*0.12,YH+jx*0.05,ORD-8.0),new V(XO+jx*0.5,YH+rnd(0.5,0.9),ORD-9.6)],
