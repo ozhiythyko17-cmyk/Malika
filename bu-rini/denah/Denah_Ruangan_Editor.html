@@ -70,53 +70,52 @@ const INIT=[
  {t:'rect',x:-150,y:1080,w:920,h:100,c:'#1f262c',sw:2,fill:'none'},
  T(-130,1110,'DENAH RUANGAN',30,0,{b:1,a:'start'}),
  T(-130,1146,'Satuan cm / m · kolom 45 × 45 cm · ukuran belum diverifikasi di lapangan',15,0,{c:'#5d6a77',a:'start'}),
- // dinding
- W(0,-90,0,1028),                     // dinding kiri (timur)
- W(235,-110,235,0),                    // dinding lorong selatan (tebal 15), muka kiri sebidang dengan muka kiri tiang tengah (x 227,5)
- W(235,0,500,0),                       // dinding selatan
- W(500,0,500,620),                     // dinding barat (hotline) sampai awal pintu A (6,20 m)
- L(500,620,500,743,{d:1,w:1.4,c:'#9aa3ab'}),   // pintu A (terbuka)
- W(500,743,500,788),                   // dinding di belakang tiang pintu A
- L(500,788,500,866,{d:1,w:1.4,c:'#9aa3ab'}),   // pintu B (terbuka)
- W(500,866,500,923),                   // sisa dinding barat
- W(235,923,500,923),                   // dinding utara (tambahan di luar 6,20 m)
- W(235,923,235,1018),                  // dinding lorong utara, kembaran dinding lorong selatan
- // saluran air / grill (lebar ± 12-16 cm, posisi perkiraan dari sketsa, belum diverifikasi)
- // keramik 50 x 50 (hitungan dari urutan keramik): grill selatan 1,5 keramik dari dinding selatan, grill utara di sisi utara pintu A, grill kiri 2 keramik dari dinding timur, grill kanan 2¼ keramik dari dinding barat
- G(7.5,82.5,485,11.25),G(7.5,731.25,485,11.25),G(107.5,82.5,11.25,660),G(368.75,82.5,11.25,660),
- T(300,76,'saluran air / grill',12,0,{c:'#7b8791'}),
- // kolom 45 x 45, sejajar (jarak bersih 175 cm)
- K(7.5,357,TD,45),K(227.5,357),K(447.5,357),
- K(7.5,743,TD,45),K(227.5,743),K(492.5-TD,743,TD,45),      // baris 2: tiang pintu A (barat) di sebelah utara pintu A
- K(227.5,915.5-TD,45,TD),
+ // dinding (keramik 40 x 40: lebar bersih 412 cm = 9,25 keramik + 2 grill 21 cm; dinding barat as x 427,5)
+ W(0,-90,0,987),                       // dinding timur
+ W(162.5,-110,162.5,0),                // dinding lorong selatan (tebal 15), muka kiri sebidang dengan muka kiri tiang tengah (x 155)
+ W(162.5,0,427.5,0),                   // dinding selatan
+ W(427.5,0,427.5,620),                 // dinding barat (hotline) sampai awal pintu A (6,20 m)
+ L(427.5,620,427.5,702,{d:1,w:1.4,c:'#9aa3ab'}),   // pintu A (terbuka)
+ W(427.5,702,427.5,747),               // dinding di belakang tiang pintu A
+ L(427.5,747,427.5,825,{d:1,w:1.4,c:'#9aa3ab'}),   // pintu B (terbuka)
+ W(427.5,825,427.5,882),               // sisa dinding barat
+ W(162.5,882,427.5,882),               // dinding utara (tambahan di luar 6,20 m)
+ W(162.5,882,162.5,977),               // dinding lorong utara, kembaran dinding lorong selatan
+ // saluran air / grill (lebar ± 21 cm): selatan 1,5 keramik dari dinding selatan; utara tepat di sisi selatan pintu A; kiri 2 keramik dari dinding timur; kanan 2¼ keramik dari dinding barat
+ G(7.5,67.5,322.5,21.25),G(7.5,598.75,322.5,21.25),G(87.5,67.5,21.25,552.5),G(308.75,67.5,21.25,552.5),
+ T(200,60,'saluran air / grill',12,0,{c:'#7b8791'}),
+ // kolom 45 x 45
+ K(7.5,357,TD,45),K(155,357),K(375,357),
+ K(7.5,702,TD,45),K(155,702),K(420-TD,702,TD,45),      // baris 2: tiang pintu A (barat) di sebelah utara pintu A
+ K(155,874.5-TD,45,TD),
  // ukuran
- L(242.5,-10,242.5,-72,{w:1}),L(492.5,-10,492.5,-72,{w:1}),D(242.5,-65,492.5,-65),     // bentang 2,50 m
- L(508,0,610,0,{w:1}),L(508,357,570,357,{w:1}),D(553,0,553,357),                         // 3,57 m
- L(508,620,640,620,{w:1}),D(598,0,598,620),                                              // 6,20 m
- L(272.5,342,272.5,355,{w:1}),L(447.5,342,447.5,355,{w:1}),D(272.5,342,447.5,342,'175 cm'),
- L(447.5,357,433,357,{w:1}),L(447.5,402,433,402,{w:1}),D(437,357,437,402,'45 cm'),
- D(7.5,230,107.5,230,'2 keramik'),D(118.75,230,368.75,230,'5 keramik'),D(380,230,492.5,230,'2¼ keramik'),
- D(60,7.5,60,82.5,'1,5 keramik'),
- {t:'rect',x:412.5,y:405,w:80,h:180,c:'#9aa3ab',sw:1,fill:'none'},   // kompor 2 tungku (kwali), utara tiang, sebelum pintu A
+ L(170,-10,170,-72,{w:1}),L(420,-10,420,-72,{w:1}),D(170,-65,420,-65),     // bentang 2,50 m
+ L(443,0,545,0,{w:1}),L(443,357,505,357,{w:1}),D(488,0,488,357),             // 3,57 m
+ L(443,620,575,620,{w:1}),D(533,0,533,620),                                  // 6,20 m
+ L(200,342,200,355,{w:1}),L(375,342,375,355,{w:1}),D(200,342,375,342,'175 cm'),
+ L(375,357,360,357,{w:1}),L(375,402,360,402,{w:1}),D(365,357,365,402,'45 cm'),
+ D(7.5,200,87.5,200,'2 keramik'),D(108.75,200,308.75,200,'5 keramik'),D(330,200,420,200,'2¼ keramik'),
+ D(40,7.5,40,67.5,'1,5 keramik'),
+ {t:'rect',x:340,y:405,w:80,h:180,c:'#9aa3ab',sw:1,fill:'none'},   // kompor 2 tungku (kwali), utara tiang, sebelum grill utara dan pintu A
  // keterangan
- T(125,-12,'lorong',16),
- T(430,170,'hotline',16),
- T(452,497,'kompor 2 tungku',12,0,{c:'#7b8791'}),
- T(452,690,'PINTU A',15,0,{b:1}),T(452,830,'PINTU B',15,0,{b:1}),T(440,772,'tiang pintu A',12,0,{c:'#7b8791'}),
- T(528,690,'terbuka',13,90,{c:'#9aa3ab'}),T(528,827,'terbuka',13,90,{c:'#9aa3ab'}),
- T(150,1008,'pintu',16),
- T(43,-172,'PINTU',15,0,{b:1}),T(43,-154,'SELATAN',15,0,{b:1}),
- {t:'arrow',x1:43,y1:-100,x2:43,y2:-134,c:INK,w:2.4},
- // panah utara
- {t:'circle',x:700,y:-230,r:32,c:INK,sw:2,fill:'none'},
- {t:'arrow',x1:700,y1:-247,x2:700,y2:-211,c:INK,w:5},
- T(700,-280,'U',22,0,{b:1})
+ T(80,-12,'lorong',16),
+ T(360,160,'hotline',16),
+ T(345,497,'kompor 2 tungku',12,0,{c:'#7b8791'}),
+ T(380,672,'PINTU A',15,0,{b:1}),T(380,790,'PINTU B',15,0,{b:1}),T(345,735,'tiang pintu A',12,0,{c:'#7b8791'}),
+ T(446,672,'terbuka',13,90,{c:'#9aa3ab'}),T(446,790,'terbuka',13,90,{c:'#9aa3ab'}),
+ T(80,960,'pintu',16),
+ T(81,-172,'SELATAN',15,0,{b:1}),T(81,-154,'(lorong terbuka)',12,0,{c:'#5d6a77'}),
+ {t:'arrow',x1:81,y1:-100,x2:81,y2:-134,c:INK,w:2.4},
+ // arah mata angin: selatan di atas, utara di bawah, timur di kiri, barat di kanan
+ {t:'circle',x:560,y:-230,r:32,c:INK,sw:2,fill:'none'},
+ {t:'arrow',x1:560,y1:-247,x2:560,y2:-211,c:INK,w:5},
+ T(560,-278,'S',22,0,{b:1}),T(560,-172,'U',22,0,{b:1}),T(508,-222,'T',22,0,{b:1}),T(612,-222,'B',22,0,{b:1})
 ];
 let objs=[],hist=[],redo=[],sel=null,tool='select',snap=true,ortho=true,showGrid=false;
 let idc=1;const uid=()=> 'o'+(idc++);
 function load(a){objs=JSON.parse(JSON.stringify(a));objs.forEach(o=>{if(!o.id)o.id=uid();});}
-try{const sv=localStorage.getItem('denah-v11');if(sv)load(JSON.parse(sv));else load(INIT);}catch(e){load(INIT);}
-function save(){try{localStorage.setItem('denah-v11',JSON.stringify(objs));}catch(e){}}
+try{const sv=localStorage.getItem('denah-v12');if(sv)load(JSON.parse(sv));else load(INIT);}catch(e){load(INIT);}
+function save(){try{localStorage.setItem('denah-v12',JSON.stringify(objs));}catch(e){}}
 function push(){hist.push(JSON.stringify(objs));if(hist.length>150)hist.shift();redo=[];updUndo();}
 function updUndo(){document.getElementById('bUndo').disabled=!hist.length;document.getElementById('bRedo').disabled=!redo.length;}
 function undo(){if(!hist.length)return;redo.push(JSON.stringify(objs));objs=JSON.parse(hist.pop());sel=null;draw();save();updUndo();fillProps();}
